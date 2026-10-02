@@ -30,3 +30,5 @@ Format follows Keep a Changelog; versions follow semantic versioning.
 - Phase 7: `config` and `maintenance verify [--repair]` commands, JSON
   `version`, strict flag validation, TUI `/verify` + `/config` parity and
   persisted command history.
+- Phase 8: plain-text + JSON status reports, full/db-only backups with
+  manifests, verify/restore/list commands, export→wipe→restore e2e test.

@@ -140,3 +140,17 @@ alternatives, revisit trigger.
 - Alternatives: auto-import unindexed files (violates never-auto-link),
   silent temp cleanup during verify (hides crash evidence).
 - Revisit: none expected.
+
+## D13 — Backup format and restore gating (Phase 8)
+
+- Context: backups must verify, restore safely onto live roots, and round-trip.
+- Choice: zip with `database/zlanpiko.db` (VACUUM INTO snapshot) +
+  `files/<root-rel>` entries + `manifest.json` (hashes, versions, kind).
+  Restore verifies hashes first, refuses newer schemas, replaces files via
+  same-volume staging, and drops stale WAL sidecars. An *empty* database
+  counts as an empty target (app.Open recreates the file anyway); otherwise
+  restore needs `--overwrite-data` plus a safety backup taken with the live
+  handle before closing it.
+- Alternatives: raw file copy of the live DB (unsafe under WAL), tar
+  (worse Windows tooling).
+- Revisit: none expected.

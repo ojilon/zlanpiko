@@ -2,7 +2,26 @@
 
 ## Current phase
 
-**Phase 7 — CLI and command system: DONE, awaiting user review + commit.**
+**Phase 8 — Export, import and backup: DONE, awaiting user review + commit.**
+
+- `internal/exporter` (new): 72-column phone-friendly text report
+  (units, attention topics, upcoming, overdue, summary — all from live rows)
+  + stable v1 JSON document (app, generated_at, units+attention, topics,
+  tasks, summary).
+- `internal/backup` (new): manifest-sealed zips (VACUUM INTO snapshot +
+  `files/` content), `Create` (default timestamped name, overwrite refusal,
+  self-verify), `Verify` (hash re-check), `List`, `Restore` (verify-first,
+  newer-schema refusal, zip-slip guard, WAL cleanup, empty-DB target rule —
+  D13); safety backup taken with the live handle by the caller.
+- CLI: `export [--unit] [--format] [--out]` (stdout default, no-overwrite
+  files) and `backup create|list|verify|restore` (safety backup +
+  handle-swap-restore flow); TUI settings keys e/B and `/export`+`/backup`
+  routing.
+- Verification 2026-10-03: `gofmt`/`vet` clean, `go test ./...` green
+  (21 test packages incl. export→backup→wipe→restore→identical e2e,
+  newer-schema refusal, overwrite refusal), `scripts/test.bat` exit 0;
+  live binary: export → backup → wipe → restore → identical report
+  (workflow steps 9–10 covered).
 
 - `internal/maintenance` (new): `Verify` (integrity_check, Scan
   missing/unindexed, sidecar freshness vs rows, temp leftovers) and `Repair`
@@ -152,6 +171,8 @@
   screens + CLI, dashboard/topics attention, parity tests; green (see above).
 - [x] Phase 7: maintenance verify/repair, config + version commands,
   strict flags, TUI parity + history persistence; green (see above).
+- [x] Phase 8: exporter, backup/restore, CLI + TUI wiring, e2e round-trip;
+  green (see above).
 
 ## Incomplete tasks / blockers
 
@@ -163,7 +184,7 @@
 
 ## Test status
 
-- `go test ./...`: 19 test packages green, `migrations` has no test files
+- `go test ./...`: 21 test packages green, `migrations` has no test files
   (by design — exercised through `database` tests via the embedded FS).
 - Manual-on-Windows items (installer PATH/shortcuts, OS `open`) are pre-listed
   in `docs/13` for later phases.
@@ -185,17 +206,18 @@ Checked 2026-10-02 across all docs (re-swept after rename):
 - Time policy (store UTC RFC3339, local display): 01/05/09/10/11 agree. ✅
 - `zlanpiko .` preview-first: 01/06/08/11/16 agree. ✅
 
-## Next exact implementation step (Phase 8, after commit)
+## Next exact implementation step (Phase 9, after commit)
 
-1. `internal/exporter`: plain-text status report (overall + per-unit,
-   72-col, from live rows) + stable JSON export.
-2. `internal/backup`: manifest, `VACUUM INTO` snapshot + files zip,
-   verify, restore (with safety backup + newer-schema refusal), list.
-3. CLI `export`/`backup` + TUI settings wiring; the 10-step e2e round-trip
-   (export → wipe → restore → identical export); green `test.bat`.
+1. `cmd/installer` + `internal/installer`: identity display, install/data
+   dir selection, skeleton + DB init, Start-Menu shortcut, user-PATH entry,
+   existing-install adoption, idempotent re-runs.
+2. First-run setup inside `zlanpiko.exe` (guided data-root selection when
+   unconfigured) per `docs/12`.
+3. Temp-dir installer tests (install → reinstall preserves data);
+   green `scripts/test.bat`.
 
 Suggested commit message for this phase:
 
 ```text
-feat: complete CLI with config, verify and strict validation
+feat: add export, backup and restore with e2e test
 ```

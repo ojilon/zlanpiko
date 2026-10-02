@@ -112,11 +112,11 @@ func TestUnknownCommandSuggests(t *testing.T) {
 func TestPhaseNotice(t *testing.T) {
 	m := size(testModel(t))
 	m = sendKey(t, m, runeKey("/"))
-	for _, r := range "export" {
+	for _, r := range "search" {
 		m = sendKey(t, m, runeKey(string(r)))
 	}
 	m = sendKey(t, m, specialKey(tea.KeyEnter))
-	if !strings.Contains(m.Status(), "Phase 8") {
+	if !strings.Contains(m.Status(), "later release") {
 		t.Errorf("status = %q", m.Status())
 	}
 }

@@ -34,13 +34,14 @@ Commands:
   tasks      Manage assignments, tests and deadlines
   timeline   Show the weekly timeline
   analytics  Show coverage and attention
+  config     Show/set configuration
+  maintenance Verify consistency
+  export     Academic status report
+  backup     Backups (create list verify restore)
   files      Manage files (list import move rename delete open search)
   .          Import the working directory (preview first, needs --yes)
   help       Show this help
   version    Show version information
-
-More commands (export, backup) arrive with later phases
-(see docs/08).
 `
 
 // normalize accepts help, --help, -h and /help spellings.

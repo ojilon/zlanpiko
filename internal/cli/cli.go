@@ -32,6 +32,8 @@ Commands:
   analytics Show coverage + attention [--unit ID]
   config   Show/set configuration   (show set path)
   maintenance Verify consistency    (verify [--repair])
+  export   Academic status report   [--unit ID] [--format txt|json]
+  backup   Backups                  (create list verify restore)
   files    Manage files             (list import move rename delete open search)
   .        Import the working directory (preview first, needs --yes)
   help     Show this help
@@ -65,6 +67,10 @@ func Run(ctx *app.Context, args []string, stdout, stderr io.Writer) int {
 		return runConfig(ctx, args[1:], stdout, stderr)
 	case "maintenance":
 		return runMaintenance(ctx, args[1:], stdout, stderr)
+	case "export":
+		return runExport(ctx, args[1:], stdout, stderr)
+	case "backup":
+		return runBackup(ctx, args[1:], stdout, stderr)
 	case "files":
 		return runFiles(ctx, args[1:], stdout, stderr)
 	case ".":

@@ -14,8 +14,8 @@ import (
 const tuiCommandHelp = `Commands:
   /help /dashboard /units /topics [unit] /tasks [unit]
   /timeline [next|prev|today|YYYY-Www] /files /analytics /settings
-  /config /verify /version /quit
-  /search /export /backup  (later phases)
+  /config /verify /export /backup /version /quit
+  /search  (later release)
 Keys work too: 1-8 switch screens, see ? for more.`
 
 // dispatch runs a command-input line: history, screen switching, filters,
@@ -99,6 +99,10 @@ func (m *Model) dispatch(raw string) tea.Cmd {
 		}
 		m.status = rep.Summary()
 		return nil
+	case "export", "backup":
+		m.switchTo(screens.Settings)
+		m.status = "use e (export) or B (backup) on this screen"
+		return nil
 	case "settings":
 		m.switchTo(screens.Settings)
 		return nil
@@ -107,8 +111,8 @@ func (m *Model) dispatch(raw string) tea.Cmd {
 		return nil
 	case "quit", "q", "exit":
 		return tea.Quit
-	case "search", "export", "backup":
-		m.status = "/" + name + " arrives in Phase 8"
+	case "search":
+		m.status = "/" + name + " arrives in a later release"
 		return nil
 	default:
 		m.status = "unknown command " + quote(line) + suggest(line)

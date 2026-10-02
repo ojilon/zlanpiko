@@ -9,8 +9,11 @@ import (
 
 	"zlanpiko/internal/analytics"
 	"zlanpiko/internal/app"
+	"zlanpiko/internal/backup"
 	"zlanpiko/internal/config"
 	"zlanpiko/internal/database"
+	"zlanpiko/internal/exporter"
+	"zlanpiko/internal/filesystem"
 	"zlanpiko/internal/tui/styles"
 )
 
@@ -61,7 +64,7 @@ func (s *SettingsModel) Reload() error {
 	b.WriteString("\n" + styles.Header("Keys") + "\n")
 	b.WriteString("1–8 screens · / command · esc blur · ? help · q quit\n")
 	b.WriteString("\n" + styles.Header("Maintenance") + "\n")
-	b.WriteString("v verify database · exports and backups arrive in Phase 8\n")
+	b.WriteString("v verify database · e export report · B full backup\n")
 	s.lines = b.String()
 	return nil
 }
@@ -93,6 +96,22 @@ func (s *SettingsModel) Update(msg tea.Msg) tea.Cmd {
 		}
 		s.msg = "database ok"
 		return s.reloadCmd()
+	case "e":
+		path, err := exportReport(s)
+		if err != nil {
+			s.msg = err.Error()
+			return nil
+		}
+		s.msg = "exported " + path
+		return s.reloadCmd()
+	case "B":
+		m, err := backup.Create(s.shared.Ctx.DB, rootOf(s.shared), "", true, logOf(s.shared))
+		if err != nil {
+			s.msg = err.Error()
+			return nil
+		}
+		s.msg = fmt.Sprintf("backup created (%d files)", len(m.Files))
+		return s.reloadCmd()
 	}
 	return nil
 }
@@ -106,6 +125,23 @@ func (s *SettingsModel) reloadCmd() tea.Cmd {
 	}
 }
 
+// exportReport writes the text status report to exports/ and returns its path.
+func exportReport(s *SettingsModel) (string, error) {
+	report, err := exporter.TextReport(s.shared.Ctx.DB, "", time.Now())
+	if err != nil {
+		return "", err
+	}
+	rel := "exports/status-" + time.Now().Format("20060102-150405") + ".txt"
+	if err := filesystem.WriteFile(rootOf(s.shared), rel, []byte(report)); err != nil {
+		return "", err
+	}
+	abs, err := filesystem.Join(rootOf(s.shared), rel)
+	if err != nil {
+		return "", err
+	}
+	return abs, nil
+}
+
 // View renders settings.
 func (s *SettingsModel) View(_, _ int) string {
 	var b strings.Builder
@@ -117,4 +153,4 @@ func (s *SettingsModel) View(_, _ int) string {
 }
 
 // Help lists settings keys.
-func (s *SettingsModel) Help() string { return "t theme · v verify database" }
+func (s *SettingsModel) Help() string { return "t theme · v verify · e export · B backup" }
