@@ -40,6 +40,19 @@ func runFiles(ctx *app.Context, args []string, stdout, stderr io.Writer) int {
 	if err != nil {
 		return usageError(stderr, "%v\n%s", err, filesHelp)
 	}
+	if names, ok := map[string][]string{
+		"list":   {"format"},
+		"import": {"to", "recursive", "yes", "collision", "include-large"},
+		"move":   {},
+		"rename": {},
+		"delete": {"recursive", "yes"},
+		"open":   {},
+		"search": {"limit", "format"},
+	}[args[0]]; ok {
+		if err := rejectUnknown(f, names...); err != nil {
+			return usageError(stderr, "%v", err)
+		}
+	}
 	format, err := outputFormat(f)
 	if err != nil {
 		return usageError(stderr, "%v", err)
@@ -264,6 +277,9 @@ func printPreview(stdout io.Writer, pv *importer.Plan) {
 func runDotImport(ctx *app.Context, args []string, stdout, stderr io.Writer) int {
 	pos, f, err := parseMixed(args)
 	if err != nil {
+		return usageError(stderr, "%v", err)
+	}
+	if err := rejectUnknown(f, "to", "recursive", "yes", "collision", "include-large"); err != nil {
 		return usageError(stderr, "%v", err)
 	}
 	if len(pos) != 0 {

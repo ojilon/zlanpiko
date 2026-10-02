@@ -129,3 +129,14 @@ alternatives, revisit trigger.
 - Alternatives: background connection pool (breaks the single-writer
   simplicity for no v1 benefit).
 - Revisit: thresholds become user-configurable only if requested.
+
+## D12 — Verify repairs sidecars, never file divergence (Phase 7)
+
+- Context: `maintenance verify` finds three independent problem classes.
+- Choice: `--repair` rewrites missing/stale/unreadable sidecars from DB
+  rows (ensuring skeletons) and deletes `.tmp-*` leftovers; missing files
+  and unindexed files are reported only — linking or deleting user content
+  needs a human. Verify exits 1 while issues remain (script-friendly).
+- Alternatives: auto-import unindexed files (violates never-auto-link),
+  silent temp cleanup during verify (hides crash evidence).
+- Revisit: none expected.

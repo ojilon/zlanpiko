@@ -30,6 +30,8 @@ Commands:
   tasks    Manage assignments etc.  (list add edit complete submit delete deadlines)
   timeline Show the weekly timeline  (--week YYYY-Www | --offset N)
   analytics Show coverage + attention [--unit ID]
+  config   Show/set configuration   (show set path)
+  maintenance Verify consistency    (verify [--repair])
   files    Manage files             (list import move rename delete open search)
   .        Import the working directory (preview first, needs --yes)
   help     Show this help
@@ -59,6 +61,10 @@ func Run(ctx *app.Context, args []string, stdout, stderr io.Writer) int {
 		return runTimeline(ctx, args[1:], stdout, stderr)
 	case "analytics":
 		return runAnalytics(ctx, args[1:], stdout, stderr)
+	case "config":
+		return runConfig(ctx, args[1:], stdout, stderr)
+	case "maintenance":
+		return runMaintenance(ctx, args[1:], stdout, stderr)
 	case "files":
 		return runFiles(ctx, args[1:], stdout, stderr)
 	case ".":

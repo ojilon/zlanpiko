@@ -6,7 +6,10 @@
 package tui
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -62,11 +65,12 @@ func NewModel(ctx *app.Context) *Model {
 	return m
 }
 
-// Init applies the saved theme, loads every screen and the status bar.
+// Init applies the saved theme, loads history and every screen.
 func (m *Model) Init() tea.Cmd {
 	if user, err := config.LoadUser(m.ctx.DataRoot); err == nil {
 		styles.Build(user.Theme)
 	}
+	m.history = loadHistory(m.ctx.DataRoot)
 	for _, id := range m.order {
 		if err := m.views[id].Reload(); err != nil {
 			m.status = err.Error()
@@ -280,6 +284,41 @@ func min(a, b int) int {
 		return a
 	}
 	return b
+}
+
+// historyFileName is the persisted command history (<root>/config/).
+const historyFileName = "history.json"
+
+// historyPath returns the history file path.
+func historyPath(root string) string {
+	return filepath.Join(root, "config", historyFileName)
+}
+
+// loadHistory reads persisted history; missing or corrupt files yield empty.
+func loadHistory(root string) []string {
+	raw, err := os.ReadFile(historyPath(root))
+	if err != nil {
+		return nil
+	}
+	var h []string
+	if err := json.Unmarshal(raw, &h); err != nil {
+		return nil
+	}
+	return h
+}
+
+// saveHistory persists the last 100 commands (best effort).
+func (m *Model) saveHistory() {
+	h := m.history
+	if len(h) > 100 {
+		h = h[len(h)-100:]
+		m.history = h
+	}
+	raw, err := json.Marshal(h)
+	if err != nil {
+		return
+	}
+	_ = os.WriteFile(historyPath(m.ctx.DataRoot), raw, 0o644)
 }
 
 func helpView() string {

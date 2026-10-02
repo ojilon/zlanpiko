@@ -2,7 +2,23 @@
 
 ## Current phase
 
-**Phase 6 — Timeline and analytics: DONE, awaiting user review + commit.**
+**Phase 7 — CLI and command system: DONE, awaiting user review + commit.**
+
+- `internal/maintenance` (new): `Verify` (integrity_check, Scan
+  missing/unindexed, sidecar freshness vs rows, temp leftovers) and `Repair`
+  (sidecars rewritten from rows, temps removed; file divergence reported
+  only — D12); unclean verify exits 1.
+- CLI: `config show|set|path` (theme/data_root, JSON + scriptable path),
+  `maintenance verify [--repair]`, JSON `version`; per-command strict
+  unknown-flag rejection across all groups.
+- TUI parity: `/verify` (one-line report in status), `/config` → settings;
+  command history persisted to `<root>/config/history.json` (cap 100,
+  corrupt file → fresh start).
+- Verification 2026-10-03: `gofmt`/`vet` clean, `go test ./...` green
+  (19 test packages incl. verify→repair→clean round-trip, file divergence
+  surviving repair, config round-trips, strict flags, history persistence),
+  `scripts/test.bat` exit 0; live binary: config set/show, verify ok,
+  JSON version, strict-flag exit 2.
 
 - `internal/timeline` (new, sole date-math owner): ISO week math
   (`MondayOf/SundayOf/Offset/ParseWeek/Title`), `Build` projecting tasks
@@ -134,6 +150,8 @@
   model), no-args TUI launch; full verification green (see above).
 - [x] Phase 6: timeline package, attention rules, timeline/analytics
   screens + CLI, dashboard/topics attention, parity tests; green (see above).
+- [x] Phase 7: maintenance verify/repair, config + version commands,
+  strict flags, TUI parity + history persistence; green (see above).
 
 ## Incomplete tasks / blockers
 
@@ -145,7 +163,7 @@
 
 ## Test status
 
-- `go test ./...`: 18 test packages green, `migrations` has no test files
+- `go test ./...`: 19 test packages green, `migrations` has no test files
   (by design — exercised through `database` tests via the embedded FS).
 - Manual-on-Windows items (installer PATH/shortcuts, OS `open`) are pre-listed
   in `docs/13` for later phases.
@@ -167,20 +185,17 @@ Checked 2026-10-02 across all docs (re-swept after rename):
 - Time policy (store UTC RFC3339, local display): 01/05/09/10/11 agree. ✅
 - `zlanpiko .` preview-first: 01/06/08/11/16 agree. ✅
 
-## Next exact implementation step (Phase 7, after commit)
+## Next exact implementation step (Phase 8, after commit)
 
-1. Complete the CLI tree per `docs/08`: `config show|set|path`,
-   `maintenance verify [--repair]` (over `filesystem.Scan` + sidecar
-   refresh + temp cleanup), `version` polish; strict unknown-flag
-   rejection everywhere (currently only timeline/analytics).
-2. TUI `/` dispatcher parity (`/files`, `/config`, `/verify`, ...);
-   command history persistence (currently session-only).
-3. CLI tests for exit codes and the verify/repair flow;
-   green `scripts/test.bat`. (Export/backup commands arrive with their
-   Phase 8 packages.)
+1. `internal/exporter`: plain-text status report (overall + per-unit,
+   72-col, from live rows) + stable JSON export.
+2. `internal/backup`: manifest, `VACUUM INTO` snapshot + files zip,
+   verify, restore (with safety backup + newer-schema refusal), list.
+3. CLI `export`/`backup` + TUI settings wiring; the 10-step e2e round-trip
+   (export → wipe → restore → identical export); green `test.bat`.
 
 Suggested commit message for this phase:
 
 ```text
-feat: add weekly timeline, attention labels and analytics
+feat: complete CLI with config, verify and strict validation
 ```

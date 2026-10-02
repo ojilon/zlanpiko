@@ -26,6 +26,18 @@ func runTopics(ctx *app.Context, args []string, stdout, stderr io.Writer) int {
 	if err != nil {
 		return usageError(stderr, "%v\n%s", err, topicsHelp)
 	}
+	if names, ok := map[string][]string{
+		"list":   {"unit", "status", "format"},
+		"add":    {"unit", "name", "priority"},
+		"status": {"unit", "topic", "status"},
+		"rename": {"unit", "topic", "name"},
+		"move":   {"unit", "topic", "to"},
+		"delete": {"unit", "topic", "yes"},
+	}[args[0]]; ok {
+		if err := rejectUnknown(f, names...); err != nil {
+			return usageError(stderr, "%v", err)
+		}
+	}
 	format, err := outputFormat(f)
 	if err != nil {
 		return usageError(stderr, "%v", err)

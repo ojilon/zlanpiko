@@ -27,3 +27,6 @@ Format follows Keep a Changelog; versions follow semantic versioning.
 - Phase 6: ISO-week timeline package, attention-label rules, timeline and
   analytics screens (with inline deadline editing), dashboard attention
   section, `timeline`/`analytics` CLI commands, cross-front parity tests.
+- Phase 7: `config` and `maintenance verify [--repair]` commands, JSON
+  `version`, strict flag validation, TUI `/verify` + `/config` parity and
+  persisted command history.

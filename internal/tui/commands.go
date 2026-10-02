@@ -6,6 +6,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	"zlanpiko/internal/app"
+	"zlanpiko/internal/maintenance"
 	"zlanpiko/internal/timeline"
 	"zlanpiko/internal/tui/screens"
 )
@@ -13,7 +14,7 @@ import (
 const tuiCommandHelp = `Commands:
   /help /dashboard /units /topics [unit] /tasks [unit]
   /timeline [next|prev|today|YYYY-Www] /files /analytics /settings
-  /version /quit
+  /config /verify /version /quit
   /search /export /backup  (later phases)
 Keys work too: 1-8 switch screens, see ? for more.`
 
@@ -23,6 +24,7 @@ func (m *Model) dispatch(raw string) tea.Cmd {
 	line := strings.TrimSpace(raw)
 	if line != "" {
 		m.history = append(m.history, line)
+		m.saveHistory()
 	}
 	if line == "" {
 		return nil
@@ -85,6 +87,17 @@ func (m *Model) dispatch(raw string) tea.Cmd {
 		return nil
 	case "analytics":
 		m.switchTo(screens.Analytics)
+		return nil
+	case "config":
+		m.switchTo(screens.Settings)
+		return nil
+	case "verify":
+		rep, err := maintenance.Verify(m.ctx.DB, m.ctx.DataRoot, m.ctx.Logger)
+		if err != nil {
+			m.status = err.Error()
+			return nil
+		}
+		m.status = rep.Summary()
 		return nil
 	case "settings":
 		m.switchTo(screens.Settings)

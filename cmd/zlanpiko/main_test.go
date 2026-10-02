@@ -10,6 +10,16 @@ import (
 	"zlanpiko/internal/config"
 )
 
+func TestRunVersionJSON(t *testing.T) {
+	var out, errOut bytes.Buffer
+	if code := run([]string{"version", "--format", "json"}, &out, &errOut); code != 0 {
+		t.Fatalf("exit = %d", code)
+	}
+	if !strings.Contains(out.String(), `"schema_version":1`) {
+		t.Errorf("version json = %q", out.String())
+	}
+}
+
 func TestRunVersion(t *testing.T) {
 	var out, errOut bytes.Buffer
 	if code := run([]string{"version"}, &out, &errOut); code != 0 {

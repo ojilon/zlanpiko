@@ -26,6 +26,19 @@ func runUnits(ctx *app.Context, args []string, stdout, stderr io.Writer) int {
 	if err != nil {
 		return usageError(stderr, "%v\n%s", err, unitsHelp)
 	}
+	if names, ok := map[string][]string{
+		"list":      {"archived", "format"},
+		"add":       {"name", "code", "colour", "description"},
+		"rename":    {"unit", "name"},
+		"archive":   {"unit"},
+		"unarchive": {"unit"},
+		"delete":    {"unit", "yes"},
+		"show":      {"unit", "format"},
+	}[args[0]]; ok {
+		if err := rejectUnknown(f, names...); err != nil {
+			return usageError(stderr, "%v", err)
+		}
+	}
 	format, err := outputFormat(f)
 	if err != nil {
 		return usageError(stderr, "%v", err)

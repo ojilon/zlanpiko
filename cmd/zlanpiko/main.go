@@ -57,6 +57,11 @@ func run(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stdout, usage, app.Version)
 		return 0
 	case "version", "v":
+		if hasJSONFlag(args[1:]) {
+			fmt.Fprintf(stdout, "{\"name\":%q,\"version\":%q,\"commit\":%q,\"build_date\":%q,\"schema_version\":%d}\n",
+				app.Name, app.Version, app.Commit, app.BuildDate, app.SchemaVersion)
+			return 0
+		}
 		fmt.Fprintf(stdout, "%s\n", app.Info())
 		return 0
 	default:
@@ -90,6 +95,19 @@ func runTUI(dataRoot *string, stdout, stderr io.Writer) int {
 		return 1
 	}
 	return 0
+}
+
+// hasJSONFlag reports --format json in either spelling.
+func hasJSONFlag(args []string) bool {
+	for i, a := range args {
+		if a == "--format=json" {
+			return true
+		}
+		if a == "--format" && i+1 < len(args) && args[i+1] == "json" {
+			return true
+		}
+	}
+	return false
 }
 
 // extractDataRoot pulls --data-root (both spellings) out of args.

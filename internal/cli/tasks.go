@@ -49,6 +49,19 @@ func runTasks(ctx *app.Context, args []string, stdout, stderr io.Writer) int {
 	if err != nil {
 		return usageError(stderr, "%v\n%s", err, tasksHelp)
 	}
+	if names, ok := map[string][]string{
+		"list":      {"unit", "kind", "status", "format"},
+		"add":       {"unit", "title", "kind", "due", "priority", "description"},
+		"edit":      {"unit", "task", "title", "kind", "status", "priority", "description", "notes", "due"},
+		"complete":  {"unit", "task"},
+		"submit":    {"unit", "task"},
+		"delete":    {"unit", "task", "yes"},
+		"deadlines": {"unit", "days", "format"},
+	}[args[0]]; ok {
+		if err := rejectUnknown(f, names...); err != nil {
+			return usageError(stderr, "%v", err)
+		}
+	}
 	format, err := outputFormat(f)
 	if err != nil {
 		return usageError(stderr, "%v", err)
