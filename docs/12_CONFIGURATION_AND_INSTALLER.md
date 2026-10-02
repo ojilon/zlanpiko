@@ -46,12 +46,34 @@ write pointer → continue into the app. No admin rights needed (user scope only
 
 ## Installer (`zlanpiko-installer.exe`, same repo)
 
-Interactive console flow: identity/version → install dir → data dir (existing
-data detected → **preserve + adopt**, never wipe) → create structure + DB →
+Interactive flow: identity/version → install dir → data dir (existing data
+detected → **preserve + adopt**, never wipe) → create structure + DB →
 optional Start-Menu shortcut + user-PATH entry → completion summary.
+
+Each directory prompt accepts three answers:
+
+1. **Enter** — take the shown default.
+2. **A full path** — used as-is (e.g. `D:\Dev\Zlanpiko`).
+3. **`c`** — open the interactive drive/folder chooser (needs a terminal):
+   pick a drive (type and free space shown, unready drives refused), then
+   pick one of the first 50 folders (`r` = drive root itself), or press
+   `t` and type a folder name (covers folders beyond the first 50) or a
+   deeper relative subpath like `Dev\Projects`. Typed input must already
+   exist — the installer verifies it and only ever *creates* the final app
+   folder (`Zlanpiko` for the program, `AcademicData` for data) inside your
+   choice, after a `y/n` confirmation showing the full path.
+
+Non-interactive use: `--install-dir`, `--data-dir` with `--yes`
+(plus `--no-path` / `--no-shortcut` to skip OS integration). Without a
+terminal and without flags the installer errors instead of hanging.
+
 Update = run newer installer: detects versions, replaces program files only,
 runs migrations, keeps data root, takes a pre-update safety backup, reports
 old→new versions. No auto-update service in v1 (manual re-run; `docs/17`).
+Implementation: `internal/installer` (flow), drive listing via
+`golang.org/x/sys/windows`, chooser UI as a Bubble Tea model over
+`ListDrives`/`ListRootDirs`/`ResolveTypedChoice` (all unit-tested without a
+terminal).
 
 ## PATH integration
 

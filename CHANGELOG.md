@@ -6,6 +6,10 @@ Format follows Keep a Changelog; versions follow semantic versioning.
 
 First usable release: local-first academic management for Windows.
 
+- Installer interactive drive/folder chooser (pick a drive, a folder, the
+  drive root, or type a name/subpath; app folder created inside after
+  confirmation), installer usage guide, first-run prompt fixes.
+
 - Phase 1: Go module, app metadata, logging, domain vocabularies and
   validation, `zlanpiko help` / `zlanpiko version` entry point, docs.
 - Rename: application `Academic Manager` -> `zlanpiko`; module

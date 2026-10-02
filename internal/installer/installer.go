@@ -72,12 +72,15 @@ func Run(opts Options) error {
 		dataDir = defaultDataDir()
 	}
 	if !opts.Yes {
+		// One shared reader: fresh bufio.Readers per prompt would discard
+		// buffered typeahead and break piped answers.
+		reader := bufio.NewReader(in)
 		var err error
-		installDir, err = askPath(in, out, "Install directory", installDir)
+		installDir, err = askDir(reader, in, out, "Install directory", installDir, "Zlanpiko")
 		if err != nil {
 			return err
 		}
-		dataDir, err = askPath(in, out, "Academic data directory", dataDir)
+		dataDir, err = askDir(reader, in, out, "Academic data directory", dataDir, "AcademicData")
 		if err != nil {
 			return err
 		}
@@ -117,18 +120,41 @@ func Run(opts Options) error {
 	return nil
 }
 
-func askPath(in io.Reader, out io.Writer, label, def string) (string, error) {
-	fmt.Fprintf(out, "%s [%s]: ", label, def)
-	reader := bufio.NewReader(in)
+// askDir resolves one directory: Enter keeps the default, "c" opens the
+// interactive drive/folder chooser (which appends appFolder), and any other
+// input is used as the literal path. in is the raw input for the TTY check;
+// answers come from the shared reader.
+func askDir(reader *bufio.Reader, in io.Reader, out io.Writer, label, def, appFolder string) (string, error) {
+	fmt.Fprintf(out, "%s\n  [%s]\n  Enter = default · c = choose drive/folder · or type a path: ", label, def)
 	line, err := reader.ReadString('\n')
 	if err != nil && len(line) == 0 {
-		return "", fmt.Errorf("installer: no input (re-run with explicit directories)")
+		return "", fmt.Errorf("installer: no input (re-run with --yes or explicit directories)")
 	}
-	line = strings.TrimSpace(line)
-	if line == "" {
+	switch choice := strings.TrimSpace(line); {
+	case choice == "":
 		return def, nil
+	case choice == "c" || choice == "C":
+		f, ok := in.(*os.File)
+		if !ok || !isTerminalFile(f) {
+			return "", fmt.Errorf("installer: choosing needs a terminal (pass an explicit path instead)")
+		}
+		parent, err := PickParent(label, appFolder, in, out)
+		if err != nil {
+			return "", err
+		}
+		return filepath.Join(parent, appFolder), nil
+	default:
+		return choice, nil
 	}
-	return line, nil
+}
+
+// isTerminalFile reports whether f is a character device (real terminal).
+func isTerminalFile(f *os.File) bool {
+	st, err := f.Stat()
+	if err != nil {
+		return false
+	}
+	return st.Mode()&os.ModeCharDevice != 0
 }
 
 // detectExisting reports a data root that already holds a database.

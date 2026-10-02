@@ -21,6 +21,10 @@ INSTALL
 2. Run zlanpiko-installer.exe and follow the prompts:
    - installation directory (default: %LocalAppData%\Zlanpiko)
    - academic data directory (default: %USERPROFILE%\AcademicData)
+   At each prompt: Enter takes the default, typing a path uses it
+   as-is, and pressing c opens an interactive drive/folder chooser
+   (pick a drive, then a folder or the drive root, or type a folder
+   name — handy for drives like D:\ with a Dev folder).
 3. Restart your terminal so the PATH entry takes effect.
 4. Start with:  zlanpiko
 

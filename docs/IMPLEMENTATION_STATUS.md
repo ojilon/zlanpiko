@@ -2,7 +2,23 @@
 
 ## Current phase
 
-**Phase 10 — Release preparation: DONE. All 11 phases complete.**
+**Installer rework (post-Phase 10 fix): ready to commit.**
+
+- Interactive drive/folder chooser in the installer: drive list with type
+  and free space, first-50 folder paging with overflow note, drive-root
+  choice, typed name/subpath validated against the disk, confirmation with
+  the final app-folder path; defaults/typed-path answers preserved.
+- Fixed a real prompt bug found by piped-input rehearsal: consecutive
+  prompts now share one buffered reader (fresh readers discarded piped
+  answers and broke the second prompt).
+- `zlanpiko-installer --help` usage guide; `docs/12` installer section and
+  `assets/README.txt` updated with chooser instructions.
+- Verification: unit-tested enumeration/paging/validation/picker state
+  machine; live `--help`, piped-defaults install, and clean non-TTY refusal
+  of the chooser. The interactive picker itself still needs one real-terminal
+  run (checklist item for the user).
+
+**Committed phase log (newest first, details kept for reference):**
 
 - `scripts/package.bat` (new): clean dist/release, versioned release builds
   (version + commit + ISO build date injected), `release\` assembly
@@ -205,6 +221,8 @@
   green (see above).
 - [x] Phase 9: installer + first-run setup; green (see above).
 - [x] Phase 10: release packaging + full rehearsal; green (see above).
+- [x] Installer rework: interactive drive/folder chooser, usage guide,
+  shared prompt reader fix; green (see above).
 
 ## Incomplete tasks / blockers
 
@@ -247,5 +265,5 @@ from `docs/17` (content search, reminders, sync, AI workflows).
 Suggested commit message for this phase:
 
 ```text
-feat: add release packaging and 0.1.0 release notes
+feat: interactive drive/folder picker for the installer
 ```
