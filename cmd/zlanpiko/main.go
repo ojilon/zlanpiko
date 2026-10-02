@@ -8,15 +8,18 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 
 	"zlanpiko/internal/app"
 	"zlanpiko/internal/cli"
+	"zlanpiko/internal/config"
 	"zlanpiko/internal/logging"
 	"zlanpiko/internal/tui"
 )
@@ -51,7 +54,7 @@ func normalize(arg string) string {
 
 func run(args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
-		return runTUI(nil, stdout, stderr)
+		return runTUI(stdout, stderr)
 	}
 	switch normalize(args[0]) {
 	case "help", "h":
@@ -72,18 +75,19 @@ func run(args []string, stdout, stderr io.Writer) int {
 
 // runTUI launches the interactive interface, or prints help when stdout is
 // not a terminal (script-friendly: no hanging on pipes).
-func runTUI(dataRoot *string, stdout, stderr io.Writer) int {
+func runTUI(stdout, stderr io.Writer) int {
 	outFile, ok := stdout.(*os.File)
 	if !ok || !cli.IsTerminal(outFile) {
 		fmt.Fprintf(stdout, usage, app.Version)
 		return 0
 	}
-	var explicit string
-	if dataRoot != nil {
-		explicit = *dataRoot
+	dataRoot, err := ensureConfigured(stdout, stderr, os.Stdin)
+	if err != nil {
+		fmt.Fprintf(stderr, "zlanpiko: %v\n", err)
+		return 1
 	}
 	ctx, err := app.Open(app.OpenOptions{
-		DataRoot: explicit,
+		DataRoot: dataRoot,
 		Logger:   logging.New(stderr, logging.Options{Text: true}),
 	})
 	if err != nil {
@@ -96,6 +100,58 @@ func runTUI(dataRoot *string, stdout, stderr io.Writer) int {
 		return 1
 	}
 	return 0
+}
+
+// ensureConfigured resolves the data root, guiding first-run setup on a
+// terminal when nothing is configured yet (see docs/12). It never invents
+// storage on pipes: unconfigured + non-TTY is an error.
+func ensureConfigured(stdout, stderr io.Writer, stdin *os.File) (string, error) {
+	if root, err := config.ResolveDataRoot(""); err == nil {
+		return root, nil
+	} else if !cli.IsTerminal(stdin) {
+		return "", err
+	}
+	_ = stderr
+	def := filepath.Join(homeDir(), "AcademicData")
+	root, err := promptDataRoot(stdin, stdout, def)
+	if err != nil {
+		return "", err
+	}
+	if err := os.MkdirAll(root, 0o755); err != nil {
+		return "", fmt.Errorf("create data root: %w", err)
+	}
+	if err := config.SavePointer(&config.Pointer{DataRoot: root}); err != nil {
+		return "", err
+	}
+	fmt.Fprintf(stdout, "Data root set to %s\n", root)
+	return root, nil
+}
+
+// promptDataRoot asks for the data directory (empty = default).
+func promptDataRoot(stdin io.Reader, stdout io.Writer, def string) (string, error) {
+	fmt.Fprintf(stdout, "Welcome to %s! First, choose where your academic data lives.\n", app.Name)
+	fmt.Fprintf(stdout, "Data directory [%s]: ", def)
+	reader := bufio.NewReader(stdin)
+	line, err := reader.ReadString('\n')
+	if err != nil && len(strings.TrimSpace(line)) == 0 {
+		return "", fmt.Errorf("no input: set %s or pass --data-root", config.EnvDataRoot)
+	}
+	line = strings.TrimSpace(line)
+	if line == "" {
+		return def, nil
+	}
+	if abs, err := filepath.Abs(line); err == nil {
+		return abs, nil
+	} else {
+		return "", fmt.Errorf("bad path %q: %w", line, err)
+	}
+}
+
+func homeDir() string {
+	if home, err := os.UserHomeDir(); err == nil {
+		return home
+	}
+	return "."
 }
 
 // hasJSONFlag reports --format json in either spelling.
@@ -131,6 +187,14 @@ func extractDataRoot(args []string) (rest []string, dataRoot string) {
 
 func runWithStorage(args []string, stdout, stderr io.Writer) int {
 	rest, dataRoot := extractDataRoot(args)
+	if dataRoot == "" {
+		var err error
+		dataRoot, err = ensureConfigured(stdout, stderr, os.Stdin)
+		if err != nil {
+			fmt.Fprintf(stderr, "zlanpiko: %v\n", err)
+			return 1
+		}
+	}
 	ctx, err := app.Open(app.OpenOptions{
 		DataRoot: dataRoot,
 		Logger:   logging.New(stderr, logging.Options{Text: true}),

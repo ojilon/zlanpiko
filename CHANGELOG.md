@@ -32,3 +32,5 @@ Format follows Keep a Changelog; versions follow semantic versioning.
   persisted command history.
 - Phase 8: plain-text + JSON status reports, full/db-only backups with
   manifests, verify/restore/list commands, export→wipe→restore e2e test.
+- Phase 9: `zlanpiko-installer.exe` (setup, adoption, shortcut, PATH),
+  in-app first-run data-root setup.

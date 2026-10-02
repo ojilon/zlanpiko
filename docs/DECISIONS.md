@@ -154,3 +154,17 @@ alternatives, revisit trigger.
 - Alternatives: raw file copy of the live DB (unsafe under WAL), tar
   (worse Windows tooling).
 - Revisit: none expected.
+
+## D14 — Installer via stock Windows tooling, no new dependencies (Phase 9)
+
+- Context: shortcuts and user-PATH need OS integration; new Go deps would
+  bloat the installer for one-time actions.
+- Choice: Start-Menu `.lnk` via `cscript` + temp VBS (stock Windows),
+  user-PATH via one idempotent PowerShell/.NET call (registry + broadcast,
+  no setx truncation). Both are advisory (setup continues + prints manual
+  steps on failure) and injectable/skippable in tests; real PATH writes are
+  manual-checklist items. First-run setup lives in the main exe (TTY prompt
+  → pointer), never inventing storage on pipes.
+- Alternatives: go-ole shortcut lib, x/sys registry writes without
+  broadcast (leaves stale sessions), always-prompt (hangs scripts).
+- Revisit: none expected.

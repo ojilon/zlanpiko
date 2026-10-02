@@ -10,6 +10,22 @@ import (
 	"zlanpiko/internal/config"
 )
 
+func TestPromptDataRootDefaultAndCustom(t *testing.T) {
+	var out bytes.Buffer
+	got, err := promptDataRoot(strings.NewReader("\n"), &out, `D:\Def`)
+	if err != nil || got != `D:\Def` {
+		t.Errorf("default = %q, %v", got, err)
+	}
+	out.Reset()
+	got, err = promptDataRoot(strings.NewReader("D:\\Mine\n"), &out, `D:\Def`)
+	if err != nil || got != `D:\Mine` {
+		t.Errorf("custom = %q, %v", got, err)
+	}
+	if _, err := promptDataRoot(strings.NewReader(""), &out, `D:\Def`); err == nil {
+		t.Error("expected error on EOF with no input")
+	}
+}
+
 func TestRunVersionJSON(t *testing.T) {
 	var out, errOut bytes.Buffer
 	if code := run([]string{"version", "--format", "json"}, &out, &errOut); code != 0 {

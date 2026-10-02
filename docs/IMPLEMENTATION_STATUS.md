@@ -2,7 +2,21 @@
 
 ## Current phase
 
-**Phase 8 — Export, import and backup: DONE, awaiting user review + commit.**
+**Phase 9 — Installer: DONE, awaiting user review + commit.**
+
+- `internal/installer` + `cmd/installer`: identity display, install/data
+  dir selection (flags or TTY prompts), exe copy from release layout,
+  skeleton + DB init via `app.Open`, existing-data adoption notice,
+  Start-Menu `.lnk` via stock `cscript`, idempotent user-PATH via
+  PowerShell/.NET, idempotent re-runs preserving data (D14).
+- First-run in `zlanpiko.exe`: unconfigured + TTY → guided data-root
+  prompt → pointer saved; unconfigured + piped → error, never invented
+  storage. `scripts/build.bat` now builds both executables.
+- Verification 2026-10-03: `gofmt`/`vet` clean, `go test ./...` green
+  (22 test packages incl. install→reinstall preservation, PATH script
+  shape, real `.lnk` creation in temp, first-run prompt parsing),
+  `scripts/test.bat` exit 0; live installer run into temp dirs completes
+  (exe copied, DB initialised, pointer written to isolated APPDATA).
 
 - `internal/exporter` (new): 72-column phone-friendly text report
   (units, attention topics, upcoming, overdue, summary — all from live rows)
@@ -173,6 +187,7 @@
   strict flags, TUI parity + history persistence; green (see above).
 - [x] Phase 8: exporter, backup/restore, CLI + TUI wiring, e2e round-trip;
   green (see above).
+- [x] Phase 9: installer + first-run setup; green (see above).
 
 ## Incomplete tasks / blockers
 
@@ -206,18 +221,17 @@ Checked 2026-10-02 across all docs (re-swept after rename):
 - Time policy (store UTC RFC3339, local display): 01/05/09/10/11 agree. ✅
 - `zlanpiko .` preview-first: 01/06/08/11/16 agree. ✅
 
-## Next exact implementation step (Phase 9, after commit)
+## Next exact implementation step (Phase 10, after commit)
 
-1. `cmd/installer` + `internal/installer`: identity display, install/data
-   dir selection, skeleton + DB init, Start-Menu shortcut, user-PATH entry,
-   existing-install adoption, idempotent re-runs.
-2. First-run setup inside `zlanpiko.exe` (guided data-root selection when
-   unconfigured) per `docs/12`.
-3. Temp-dir installer tests (install → reinstall preserves data);
-   green `scripts/test.bat`.
+1. `scripts/package.bat` (clean dist, release builds, checksums,
+   `release\` assembly) + `scripts/release.bat` (tag/release checklist,
+   no auto-publish); `README.txt`/`CHANGELOG.txt` generation.
+2. Full release rehearsal: package → fresh install from `release\` without
+   the Go toolchain → CLI/TUI smoke → migration/backup/restore checks.
+3. Tag `v0.1.0`, GitHub Release notes; green `scripts/test.bat`.
 
 Suggested commit message for this phase:
 
 ```text
-feat: add export, backup and restore with e2e test
+feat: add installer and first-run setup
 ```
