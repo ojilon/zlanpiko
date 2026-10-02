@@ -1,10 +1,12 @@
 # 03 — Project Structure
 
-Module path (placeholder until a repo is chosen): `github.com/example/academic-manager`.
-Go minimum: 1.24 (developed with 1.27). All paths Windows-compatible.
+Module path: `zlanpiko` (single-element module path; a repository host
+will be prefixed if the project moves to a public forge).
+Go minimum: 1.26 (raised from 1.24 by the modernc.org/sqlite dependency;
+developed with 1.27). All paths Windows-compatible.
 
 ```text
-academic-manager/
+zlanpiko/
 ├── AGENTS.md
 ├── README.md
 ├── CHANGELOG.md
@@ -13,7 +15,7 @@ academic-manager/
 ├── .gitignore
 │
 ├── cmd/
-│   ├── academic/main.go    # thin: flags → app.Open → cli.Run or tui.Run
+│   ├── zlanpiko/main.go    # thin: flags → app.Open → cli.Run or tui.Run
 │   └── installer/main.go   # thin: → installer.Run
 │
 ├── internal/

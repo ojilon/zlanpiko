@@ -20,7 +20,7 @@ slot beside task-derived events. Needs background reminders first (below).
 
 Toast on approaching deadlines, tray presence. Requires a resident process or
 scheduled task — conflicts with today's short-lived CLI model; design as an
-opt-in `academic watch` command later.
+opt-in `zlanpiko watch` command later.
 
 ## Calendar and cloud sync
 

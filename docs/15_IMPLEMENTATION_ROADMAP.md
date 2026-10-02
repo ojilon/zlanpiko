@@ -12,9 +12,9 @@ no contradictions. Next: user reviews and commits.
 
 ## Phase 1 — Go foundation
 
-`go.mod` (module `github.com/example/academic-manager`, go ≥1.24), `configs/`,
+`go.mod` (module `zlanpiko`, go ≥1.24), `configs/`,
 `internal/app` (Version vars), `internal/logging`, `internal/domain` (enums +
-validation), `cmd/academic` (`--help`/`version` only), `.gitignore`,
+validation), `cmd/zlanpiko` (`--help`/`version` only), `.gitignore`,
 `scripts/test.bat`. Tests: domain validation. Acceptance: `go build ./...`
 + `go test ./...` green; exe prints help/version.
 
@@ -52,7 +52,7 @@ Acceptance: identical numbers across dashboard/CLI/report for one fixture.
 
 ## Phase 7 — CLI and command system
 
-Full command tree (`docs/08`) incl. `academic .`, TUI `/` dispatcher wired to
+Full command tree (`docs/08`) incl. `zlanpiko .`, TUI `/` dispatcher wired to
 the same services, history. CLI tests incl. exit codes.
 Acceptance: every TUI mutation has a CLI equivalent and vice versa.
 
@@ -64,7 +64,7 @@ report tests, 10-step e2e script. Acceptance: export→wipe→restore→identica
 ## Phase 9 — Installer
 
 `cmd/installer` + `internal/installer` (setup, adopt-existing, PATH,
-shortcuts), first-run-in-`academic.exe` path, temp-dir installer tests.
+shortcuts), first-run-in-`zlanpiko.exe` path, temp-dir installer tests.
 Acceptance: fresh install on Windows without Go toolchain; reinstall keeps data.
 
 ## Phase 10 — Release preparation

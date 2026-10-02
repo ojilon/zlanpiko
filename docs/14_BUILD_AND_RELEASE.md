@@ -7,11 +7,11 @@ inject it plus commit/time via linker flags (defined once in
 `configs/build.json`, consumed by `scripts/build.bat`):
 
 ```bat
-go build -trimpath -ldflags "-X <mod>/internal/app.Version=%VER% -X <mod>/internal/app.Commit=%SHA% -X <mod>/internal/app.BuildDate=%DATE%" -o dist\academic.exe .\cmd\academic
-go build -trimpath -ldflags "..." -o dist\academic-installer.exe .\cmd\installer
+go build -trimpath -ldflags "-X zlanpiko/internal/app.Version=%VER% -X zlanpiko/internal/app.Commit=%SHA% -X zlanpiko/internal/app.BuildDate=%DATE%" -o dist\zlanpiko.exe .\cmd\zlanpiko
+go build -trimpath -ldflags "..." -o dist\zlanpiko-installer.exe .\cmd\installer
 ```
 
-`academic version` prints `name version/commit/date + schema_version`;
+`zlanpiko version` prints `name version/commit/date + schema_version`;
 dev builds report `-dirty` when the tree has changes.
 
 ## Workflows (Windows, no extra toolchain)
@@ -30,8 +30,8 @@ Targets: `windows/amd64` (primary); `GOARCH=386` smoke-compile only if asked.
 
 ```text
 release\
-├── academic.exe
-├── academic-installer.exe
+├── zlanpiko.exe
+├── zlanpiko-installer.exe
 ├── README.txt            # install + first-run (generated from README.md)
 ├── CHANGELOG.txt         # from CHANGELOG.md section for the version
 └── checksums.txt         # SHA-256 of every file above

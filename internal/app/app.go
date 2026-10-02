@@ -9,14 +9,14 @@ package app
 import "fmt"
 
 const (
-	// Name is the user-visible placeholder name (see configs/app.json).
-	Name = "Academic Manager"
+	// Name is the user-visible application name (see configs/app.json).
+	Name = "zlanpiko"
 	// ExeName is the main executable file name.
-	ExeName = "academic.exe"
+	ExeName = "zlanpiko.exe"
 	// InstallerExeName is the installer executable file name.
-	InstallerExeName = "academic-installer.exe"
+	InstallerExeName = "zlanpiko-installer.exe"
 	// ID is the application identifier.
-	ID = "com.local.academic-manager"
+	ID = "com.local.zlanpiko"
 	// SchemaVersion is the current SQLite schema version (see docs/05).
 	SchemaVersion = 1
 )

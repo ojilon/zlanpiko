@@ -1,4 +1,4 @@
-// Command academic is the single executable for the TUI and CLI.
+// Command zlanpiko is the single executable for the TUI and CLI.
 //
 // Phase 1: supports `help` and `version` only. With no arguments it prints
 // help (the interactive TUI arrives in Phase 5, the full command tree in
@@ -14,10 +14,10 @@ import (
 	"zlanpiko/internal/app"
 )
 
-const usage = `Academic Manager (%s)
+const usage = `zlanpiko (%s)
 
 Usage:
-  academic [command]
+  zlanpiko [command]
 
 Commands:
   help       Show this help
@@ -46,7 +46,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stdout, "%s\n", app.Info())
 		return 0
 	default:
-		fmt.Fprintf(stderr, "academic: unknown command %q (try: academic help)\n", args[0])
+		fmt.Fprintf(stderr, "zlanpiko: unknown command %q (try: zlanpiko help)\n", args[0])
 		return 2
 	}
 }

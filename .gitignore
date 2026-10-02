@@ -9,7 +9,7 @@ coverage.html
 
 # Local academic data used by dev runs
 AcademicData/
-.academic-test/
+.zlanpiko-test/
 
 # Editor / OS noise
 .vscode/

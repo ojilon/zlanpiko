@@ -4,10 +4,10 @@
 
 ```json
 {
-  "name": "Academic Manager",
-  "exe": "academic.exe",
-  "installer_exe": "academic-installer.exe",
-  "id": "com.local.academic-manager",
+  "name": "zlanpiko",
+  "exe": "zlanpiko.exe",
+  "installer_exe": "zlanpiko-installer.exe",
+  "id": "com.local.zlanpiko",
   "version": "0.1.0",
   "schema_version": 1,
   "default_storage_dir": "AcademicData",
@@ -26,25 +26,25 @@ live in `configs/build.json`.
 
 | What | Where | Example |
 | ---- | ----- | ------- |
-| Program install | user-chosen, default `%LocalAppData%\AcademicManager\` | `academic.exe` |
-| App config (install pointer) | `%AppData%\AcademicManager\app-config.json` → `{data_root, install_dir}` | written by installer |
+| Program install | user-chosen, default `%LocalAppData%\Zlanpiko\` | `zlanpiko.exe` |
+| App config (install pointer) | `%AppData%\Zlanpiko\app-config.json` → `{data_root, install_dir}` | written by installer |
 | Academic data root | user-chosen, default `%USERPROFILE%\AcademicData\` | layout in `docs/06` |
 | Temp work | `os.TempDir()` / `%TEMP%` staging, cleaned after ops | — |
 
 `internal/config`: `Load()` (install pointer → data root), `Save()`,
-`ResolveDataRoot()` (explicit flag > env `ACADEMIC_DATA` > pointer file >
+`ResolveDataRoot()` (explicit flag > env `ZLANPIKO_DATA` > pointer file >
 error, never auto-create elsewhere). Data-local prefs
 (`<root>/config/user.json`: theme, last screen) are separate from the install
 pointer so reinstalls keep preferences.
 
 ## First-run flow
 
-`academic.exe` with no pointer file (or missing data root) starts guided setup
+`zlanpiko.exe` with no pointer file (or missing data root) starts guided setup
 in-place: show identity/version → pick data root (default suggested, free
 choice incl. other drives) → create skeleton (`docs/06`) → init DB + migrate →
 write pointer → continue into the app. No admin rights needed (user scope only).
 
-## Installer (`academic-installer.exe`, same repo)
+## Installer (`zlanpiko-installer.exe`, same repo)
 
 Interactive console flow: identity/version → install dir → data dir (existing
 data detected → **preserve + adopt**, never wipe) → create structure + DB →

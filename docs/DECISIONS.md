@@ -52,7 +52,6 @@ alternatives, revisit trigger.
 - Revisit: add a thin Makefile later if *nix CI is introduced.
 
 ## D6 — Overdue derived, deadlines are task attributes (Phase 0)
-
 - Context: spec asks for first-class deadlines + timeline.
 - Choice: no `deadlines` table in v1; `tasks.due_at` + derived `overdue`;
   no standalone dateless events.
@@ -60,3 +59,16 @@ alternatives, revisit trigger.
   can't rot; fewer tables = fewer migrations.
 - Alternatives: separate events table (more flexible, more UI + migration cost).
 - Revisit: when user-defined dateless reminders are requested (see docs/17).
+
+## D7 — Application and module renamed to zlanpiko (Phase 2)
+
+- Context: user chose the final name; placeholder identity retired.
+- Choice: app `zlanpiko`, module `zlanpiko` (single-element path),
+  `zlanpiko.exe` / `zlanpiko-installer.exe`, DB `zlanpiko.db`,
+  `%LocalAppData%\Zlanpiko`, `%AppData%\Zlanpiko\app-config.json`,
+  env `ZLANPIKO_DATA`. Kept generic: `AcademicData` default storage dir
+  (descriptive, user-changeable) and the `academic` adjective in prose.
+  `AGENTS.md` left untouched (user's file; placeholders illustrative).
+- Alternatives: `github.com/<user>/zlanpiko` module path — adopt if/when a
+  forge host is chosen (mechanical change via `go mod edit -module`).
+- Revisit: only when a repository host is selected.

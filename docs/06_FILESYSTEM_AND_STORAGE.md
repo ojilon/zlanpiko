@@ -5,7 +5,7 @@
 ```text
 <AcademicData>/                       # user-chosen, e.g. D:\AcademicData
 ├── database/
-│   └── academic.db                   # SQLite (truth), see docs/05
+│   └── zlanpiko.db                   # SQLite (truth), see docs/05
 ├── config/
 │   └── user.json                     # data-local prefs (display, last view)
 ├── backups/                          # *.zip created by backup flow (docs/11)

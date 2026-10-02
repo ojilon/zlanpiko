@@ -8,7 +8,7 @@ the safety checklist every phase must satisfy; violations block the checkpoint.
 - Reject absolute segments, `..`, drive letters, UNC, reserved Windows names,
   and over-long paths before touching disk; errors name the offending input.
 - Never follow symlinks/junctions during scans, imports or deletes.
-- All writes stay under the resolved data root; `academic .` never writes
+- All writes stay under the resolved data root; `zlanpiko .` never writes
   outside it (CWD files are *read*, then copied in).
 
 ## Database safety
@@ -51,7 +51,7 @@ user messages stay short and actionable.
 
 ## CLI operating on external folders
 
-`import`/`academic .` treat sources as untrusted: read-only access, skip
+`import`/`zlanpiko .` treat sources as untrusted: read-only access, skip
 executables/hidden/oversize by default (lists skips), never delete or modify
 sources. Destination preview precedes every bulk write.
 

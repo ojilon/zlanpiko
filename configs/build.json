@@ -1,20 +1,20 @@
 {
-  "module": "github.com/example/academic-manager",
-  "go_min": "1.24",
+  "module": "zlanpiko",
+  "go_min": "1.26",
   "targets": ["windows/amd64"],
   "build_flags": ["-trimpath"],
   "ldflags_vars": [
-    "github.com/example/academic-manager/internal/app.Version",
-    "github.com/example/academic-manager/internal/app.Commit",
-    "github.com/example/academic-manager/internal/app.BuildDate"
+    "zlanpiko/internal/app.Version",
+    "zlanpiko/internal/app.Commit",
+    "zlanpiko/internal/app.BuildDate"
   ],
   "outputs": {
-    "academic": "dist\\academic.exe",
-    "installer": "dist\\academic-installer.exe"
+    "zlanpiko": "dist\\zlanpiko.exe",
+    "installer": "dist\\zlanpiko-installer.exe"
   },
   "package_contents": [
-    "academic.exe",
-    "academic-installer.exe",
+    "zlanpiko.exe",
+    "zlanpiko-installer.exe",
     "README.txt",
     "CHANGELOG.txt",
     "checksums.txt"

@@ -1,7 +1,7 @@
 # 05 — Database and Migrations
 
 - Driver: `modernc.org/sqlite` (pure Go, no CGO; see DECISIONS.md D2).
-  DSN: `file:<root>/database/academic.db` with `_pragma=foreign_keys(1)`.
+  DSN: `file:<root>/database/zlanpiko.db` with `_pragma=foreign_keys(1)`.
 - Single-writer assumption: one process holds the DB; TUI *or* CLI per
   invocation, both short-lived except the TUI session. `busy_timeout = 5000ms`,
   WAL mode enabled at open (`PRAGMA journal_mode=WAL`).
@@ -108,11 +108,11 @@ maintenance command, never automatically.
 - Consistency backup uses the SQLite backup API (`VACUUM INTO`) to a temp file,
   then moves it into `backups/` — never a raw copy of a live DB (see `docs/11`).
 - Corruption handling: on open failure, report path + suggest restore from
-  latest backup; provide `academic maintenance verify` (CLI) running
+  latest backup; provide `zlanpiko maintenance verify` (CLI) running
   `PRAGMA integrity_check` plus orphan-file scan (see `docs/08`).
 
 ## Recovery considerations
 
-- Fresh install with existing data root: detect `academic.db`, migrate, keep data.
+- Fresh install with existing data root: detect `zlanpiko.db`, migrate, keep data.
 - Orphan sidecars (DB row missing) and orphan DB rows (file missing, `missing=1`)
   are reported by the verify command, never silently deleted.

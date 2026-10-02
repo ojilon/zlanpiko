@@ -1,42 +1,42 @@
 # 08 — CLI Specification
 
-Binary: `academic.exe`. No arguments launches the TUI. All commands work from
+Binary: `zlanpiko.exe`. No arguments launches the TUI. All commands work from
 any working directory (config locates the data root; never creates one
 implicitly — missing root is a fatal error with setup instructions).
 
 Conventions: `--format text|json` on reads; `--yes` required for destructive
 or bulk writes; exit `0` ok, `2` usage error, `1` runtime error; errors go to
-stderr as `academic: <command>: <message>`; `--help` on every node.
+stderr as `zlanpiko: <command>: <message>`; `--help` on every node.
 
 ## Command tree (v1)
 
 ```text
-academic                                   # launch TUI
-academic units list [--archived] [--format]
-academic units add --name N [--code C] [--colour C]
-academic units rename --unit U --name N
-academic units archive|unarchive --unit U
-academic units delete --unit U --yes
-academic units show --unit U
-academic topics list --unit U [--status unread|pending|read]
-academic topics add --unit U --name N [--priority P]
-academic topics status --unit U --topic T --status S
-academic topics move --unit U --topic T --to UNIT
-academic topics delete --unit U --topic T --yes
-academic tasks list [--unit U] [--status ...|overdue] [--kind K]
-academic tasks add --unit U --title T --kind K --due DATE [--priority P]
-academic tasks edit --unit U --task T [--title|--due|--status|--priority|--kind]
-academic tasks complete|submit --unit U --task T
-academic tasks deadlines [--days N] [--unit U]
-academic timeline [--week YYYY-Www | --offset N]
-academic analytics [--unit U] [--format]
-academic files list [PATH] | import SRC --to DEST [--yes] | move S D | rename P N | delete P --yes | open P | search Q
-academic . [--to DEST] [--yes]            # context import of CWD with preview
-academic export [--unit U] [--format txt|json] [--out FILE]
-academic backup create [--full] [--out FILE] | list | verify FILE | restore FILE --yes
-academic maintenance verify [--repair]
-academic config show | config set KEY VALUE | config path
-academic version | help
+zlanpiko                                   # launch TUI
+zlanpiko units list [--archived] [--format]
+zlanpiko units add --name N [--code C] [--colour C]
+zlanpiko units rename --unit U --name N
+zlanpiko units archive|unarchive --unit U
+zlanpiko units delete --unit U --yes
+zlanpiko units show --unit U
+zlanpiko topics list --unit U [--status unread|pending|read]
+zlanpiko topics add --unit U --name N [--priority P]
+zlanpiko topics status --unit U --topic T --status S
+zlanpiko topics move --unit U --topic T --to UNIT
+zlanpiko topics delete --unit U --topic T --yes
+zlanpiko tasks list [--unit U] [--status ...|overdue] [--kind K]
+zlanpiko tasks add --unit U --title T --kind K --due DATE [--priority P]
+zlanpiko tasks edit --unit U --task T [--title|--due|--status|--priority|--kind]
+zlanpiko tasks complete|submit --unit U --task T
+zlanpiko tasks deadlines [--days N] [--unit U]
+zlanpiko timeline [--week YYYY-Www | --offset N]
+zlanpiko analytics [--unit U] [--format]
+zlanpiko files list [PATH] | import SRC --to DEST [--yes] | move S D | rename P N | delete P --yes | open P | search Q
+zlanpiko . [--to DEST] [--yes]            # context import of CWD with preview
+zlanpiko export [--unit U] [--format txt|json] [--out FILE]
+zlanpiko backup create [--full] [--out FILE] | list | verify FILE | restore FILE --yes
+zlanpiko maintenance verify [--repair]
+zlanpiko config show | config set KEY VALUE | config path
+zlanpiko version | help
 ```
 
 IDs: `--unit unit-001`, `--topic topic-003` (unit-scoped, see `docs/04`).
@@ -45,17 +45,17 @@ Dates: `YYYY-MM-DD` with optional `THH:MM` (local time, stored UTC — `docs/09`
 ## Examples
 
 ```powershell
-academic units add --name "Linear Algebra" --code MATH201
-academic topics add --unit unit-001 --name Eigenvalues
-academic topics status --unit unit-001 --topic topic-001 --status read
-academic tasks add --unit unit-001 --title "Problem set 4" --kind assignment --due 2026-10-09T23:59
-academic tasks deadlines --days 14
-academic export --format txt --out $HOME\Desktop\status.txt
-academic backup create --full
-academic . --to unit-001 --yes
+zlanpiko units add --name "Linear Algebra" --code MATH201
+zlanpiko topics add --unit unit-001 --name Eigenvalues
+zlanpiko topics status --unit unit-001 --topic topic-001 --status read
+zlanpiko tasks add --unit unit-001 --title "Problem set 4" --kind assignment --due 2026-10-09T23:59
+zlanpiko tasks deadlines --days 14
+zlanpiko export --format txt --out $HOME\Desktop\status.txt
+zlanpiko backup create --full
+zlanpiko . --to unit-001 --yes
 ```
 
-## `academic .` (context import)
+## `zlanpiko .` (context import)
 
 1. Scan CWD (non-recursive by default; `--recursive` opts in; skips executables
    and hidden files, lists them as skipped).

@@ -11,10 +11,10 @@ Working placeholder identity (see `docs/12_CONFIGURATION_AND_INSTALLER.md`):
 
 | Field              | Value                                        |
 | ------------------ | -------------------------------------------- |
-| Application name   | Academic Manager (placeholder)               |
-| Executable         | `academic.exe`                               |
-| Installer          | `academic-installer.exe`                     |
-| Application ID     | `com.local.academic-manager`                 |
+| Application name   | zlanpiko                                       |
+| Executable         | `zlanpiko.exe`                                 |
+| Installer          | `zlanpiko-installer.exe`                       |
+| Application ID     | `com.local.zlanpiko`                           |
 | Version            | `0.1.0` (pre-release, Phase 0)               |
 | DB schema version  | `1`                                          |
 | Default storage dir| `AcademicData`                               |

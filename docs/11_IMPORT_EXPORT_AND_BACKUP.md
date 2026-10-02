@@ -3,7 +3,7 @@
 ## File import
 
 Single-file: `files import SRC --to DEST` copies one file; bulk:
-`files import <dir> --to DEST` or `academic . [--to DEST]`.
+`files import <dir> --to DEST` or `zlanpiko . [--to DEST]`.
 
 - `DEST` is a unit/topic/task folder or `inbox`; default `inbox/<YYYY-MM-DD>/`.
 - Preview-first for bulk: list of files + sizes, destination mapping, and
@@ -18,12 +18,12 @@ Single-file: `files import SRC --to DEST` copies one file; bulk:
 
 ## Text status report (phone-friendly)
 
-`academic export --format txt [--unit U] [--out FILE]` renders from live DB
+`zlanpiko export --format txt [--unit U] [--out FILE]` renders from live DB
 rows (never hand-edited text):
 
 ```text
 ACADEMIC STATUS REPORT
-Generated: 2026-10-06 09:30 (local) · Academic Manager 0.1.0
+Generated: 2026-10-06 09:30 (local) · zlanpiko 0.1.0
 
 UNITS (9 active)
 ----------------
@@ -64,6 +64,6 @@ export→wipe→restore round-trip test.
 ## Formats and portability
 
 - Text report: UTF-8, CRLF on Windows, ≤ 72-col lines, no ANSI escapes.
-- Zip layout: `/database/academic.db`, `/files/…` (root-relative), `/manifest.json`.
+- Zip layout: `/database/zlanpiko.db`, `/files/…` (root-relative), `/manifest.json`.
 - Restore is verified by the round-trip acceptance test
   (export → wipe → restore → identical export), see `docs/13`.

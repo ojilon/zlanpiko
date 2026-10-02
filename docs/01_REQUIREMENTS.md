@@ -96,7 +96,7 @@ Legend: **[M]** must-have for v1, **[D]** deferred to a later release (see `docs
 ### CLI [M]
 
 - FR-C1: Same operations as TUI services, non-interactive with explicit flags.
-- FR-C2: Safe bulk import: `academic .` (or `import <path>`) shows a preview
+- FR-C2: Safe bulk import: `zlanpiko .` (or `import <path>`) shows a preview
   (files, destination, collisions) and imports nothing without `--yes`.
 - FR-C3: Works from any working directory; never creates a second database
   implicitly (resolves the configured data root, fails loudly if missing).
@@ -104,7 +104,7 @@ Legend: **[M]** must-have for v1, **[D]** deferred to a later release (see `docs
 
 ### Installer [M]
 
-- FR-S1: `academic-installer.exe`: shows identity/version, chooses install
+- FR-S1: `zlanpiko-installer.exe`: shows identity/version, chooses install
   and data directories, creates structure, initialises DB, optional user-PATH
   entry, re-runnable, preserves existing data.
 - Acceptance: installer test in temp dirs: install → reinstall keeps data.

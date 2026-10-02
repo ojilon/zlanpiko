@@ -16,7 +16,7 @@ hand-rolled rendering where they don't (timeline grid, coverage bars).
 ## Layout (adapts to size; reference 100×28)
 
 ```text
-┌ Academic Manager ───────────── [Tue 2026-10-06 · Week 41] ──── 0.1.0 ─┐
+┌ zlanpiko ───────────── [Tue 2026-10-06 · Week 41] ──── 0.1.0 ─┐
 │ ▶ Dashboard  Units  Topics  Tasks  Files  Timeline  Analytics  Settings│
 ├────────────────────────────────────────────────────────────────────────┤
 │                                                                        │
