@@ -2,7 +2,27 @@
 
 ## Current phase
 
-**Phase 2 — Configuration and storage: DONE, awaiting user review + commit.**
+**Phase 3 — Core academic entities: DONE, awaiting user review + commit.**
+
+- `internal/domain`: JSON tags on entities, UTC helpers (`Now/FormatTime/
+  ParseTime`), `ConfirmRequiredError` + `ChildCounts`.
+- `internal/filesystem` (new, minimal per D8): safe `Join` (escapes, drive
+  letters, UNC, reserved names rejected), record dirs, unit/topic/task
+  skeletons, atomic `WriteJSON` sidecars, collision-safe `MoveDir`.
+- `internal/services`: unit CRUD + rename + archive + confirmed delete;
+  topic CRUD + status transitions + rename + cross-unit move (id kept when
+  free, fresh id on collision) + confirmed delete; per-unit sequential IDs
+  never reused; archived units reject new topics/tasks.
+- `internal/tasks`: task CRUD, `ParseDue` (local date/datetime/RFC3339),
+  `Update` with tri-state due, `completed_at` follows stored status, kind
+  change moves folders, derived-overdue `Filter`, confirmed delete.
+- `internal/cli` (new, thin): `units|topics|tasks` subsets of `docs/08`
+  (text via tabwriter + `--format json`), exit codes 0/1/2; `cmd/zlanpiko`
+  routes non-help commands through `app.Open` (`--data-root` supported).
+- Verification 2026-10-02: `gofmt`/`vet` clean, `go test ./...` green
+  (10 test packages), `scripts/test.bat` exit 0, plus a live exe smoke test:
+  unit → topic → status → task → `tasks deadlines` → `units list` all behave
+  (9 workflow steps 1–6 covered; 7–10 need Phase 4/8).
 
 - Rename applied first: app `zlanpiko`; module `zlanpiko`; `zlanpiko.exe` /
   `zlanpiko-installer.exe`; DB `zlanpiko.db`; `%LocalAppData%\Zlanpiko`,
@@ -36,6 +56,8 @@
 - [x] Rename to `zlanpiko` across code, configs, scripts and docs (D7).
 - [x] Phase 2: config, database + migrations, `app.Open`; full verification
   green (see above).
+- [x] Phase 3: domain tags/time/confirm-error, filesystem record API,
+  services + tasks + CLI subset; full verification green (see above).
 
 ## Incomplete tasks / blockers
 
@@ -47,7 +69,7 @@
 
 ## Test status
 
-- `go test ./...`: 6 test packages green, `migrations` has no test files
+- `go test ./...`: 10 test packages green, `migrations` has no test files
   (by design — exercised through `database` tests via the embedded FS).
 - Manual-on-Windows items (installer PATH/shortcuts, OS `open`) are pre-listed
   in `docs/13` for later phases.
@@ -69,17 +91,18 @@ Checked 2026-10-02 across all docs (re-swept after rename):
 - Time policy (store UTC RFC3339, local display): 01/05/09/10/11 agree. ✅
 - `zlanpiko .` preview-first: 01/06/08/11/16 agree. ✅
 
-## Next exact implementation step (Phase 3, after commit)
+## Next exact implementation step (Phase 4, after commit)
 
-1. `internal/services` (unit CRUD, rename, archive/unarchive, confirmed
-   delete) + `internal/tasks` (task CRUD, deadline edits, derived overdue).
-2. Sidecar writes (`unit.json`, `task.json`) in the same service calls.
-3. `units|topics|tasks` CLI read/write commands (thin, over services).
-4. Service tests (CRUD, archive, confirmed/unconfirmed deletes, overdue
-   derivation); green `scripts/test.bat`.
+1. Extend `internal/filesystem`: file/folder create, rename, move, safe
+   delete, metadata, filename search, missing-file scan, OS-default open.
+2. `internal/importer`: bulk-import preview + execute (skip rules, collision
+   handling per `docs/11`).
+3. `files ...` CLI commands + `zlanpiko .` context import (preview-first).
+4. Filesystem integration tests in temp dirs (collisions, traversal
+   rejection, preview-makes-no-changes); green `scripts/test.bat`.
 
 Suggested commit message for this phase:
 
 ```text
-feat: rename to zlanpiko; implement configuration and SQLite storage
+feat: add unit, topic and task management with CLI
 ```

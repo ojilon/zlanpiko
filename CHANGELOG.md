@@ -14,3 +14,6 @@ Format follows Keep a Changelog; versions follow semantic versioning.
 - Phase 2: configuration (install pointer, data-root resolution, user prefs),
   SQLite storage (`modernc.org/sqlite` v1.60.1, schema v1, forward-only
   migrations, integrity check) and `app.Open` first-run initialisation.
+- Phase 3: unit/topic/task services with folder skeletons and sidecars,
+  `units|topics|tasks` CLI commands (text/json), overdue derivation,
+  confirmation guards on deletes.

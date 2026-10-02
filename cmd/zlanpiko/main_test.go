@@ -2,10 +2,12 @@ package main
 
 import (
 	"bytes"
+	"path/filepath"
 	"strings"
 	"testing"
 
 	"zlanpiko/internal/app"
+	"zlanpiko/internal/config"
 )
 
 func TestRunVersion(t *testing.T) {
@@ -41,11 +43,43 @@ func TestRunNoArgsShowsHelp(t *testing.T) {
 }
 
 func TestRunUnknownCommandFailsUsage(t *testing.T) {
+	root := filepath.Join(t.TempDir(), "Data")
+	t.Setenv(config.EnvDataRoot, root)
 	var out, errOut bytes.Buffer
 	if code := run([]string{"frobnicate"}, &out, &errOut); code != 2 {
-		t.Fatalf("unknown exit = %d, want 2", code)
+		t.Fatalf("unknown exit = %d, want 2 (stderr: %q)", code, errOut.String())
 	}
 	if !strings.Contains(errOut.String(), "unknown command") {
 		t.Errorf("stderr = %q, want usage error", errOut.String())
+	}
+}
+
+func TestExtractDataRoot(t *testing.T) {
+	rest, root := extractDataRoot([]string{"units", "list", "--data-root", "P:/x", "--format", "json"})
+	if root != "P:/x" {
+		t.Errorf("root = %q", root)
+	}
+	if strings.Join(rest, " ") != "units list --format json" {
+		t.Errorf("rest = %q", rest)
+	}
+	rest, root = extractDataRoot([]string{"units", "--data-root=P:/y", "list"})
+	if root != "P:/y" || strings.Join(rest, " ") != "units list" {
+		t.Errorf("root = %q rest = %q", root, rest)
+	}
+}
+
+func TestRunStoragePathEndToEnd(t *testing.T) {
+	root := filepath.Join(t.TempDir(), "Data")
+	t.Setenv(config.EnvDataRoot, root)
+	var out, errOut bytes.Buffer
+	if code := run([]string{"units", "add", "--name", "Physics"}, &out, &errOut); code != 0 {
+		t.Fatalf("units add exit = %d (stderr: %q)", code, errOut.String())
+	}
+	out.Reset()
+	if code := run([]string{"units", "list"}, &out, &errOut); code != 0 {
+		t.Fatalf("units list exit = %d (stderr: %q)", code, errOut.String())
+	}
+	if !strings.Contains(out.String(), "Physics") {
+		t.Errorf("list output missing unit: %q", out.String())
 	}
 }

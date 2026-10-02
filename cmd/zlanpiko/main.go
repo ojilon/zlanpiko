@@ -1,8 +1,10 @@
 // Command zlanpiko is the single executable for the TUI and CLI.
 //
-// Phase 1: supports `help` and `version` only. With no arguments it prints
-// help (the interactive TUI arrives in Phase 5, the full command tree in
-// Phase 7 — see docs/08). Exit codes: 0 success, 2 usage error.
+// help and version run without storage; every other command resolves the
+// data root (--data-root, $ZLANPIKO_DATA or the install pointer), opens it
+// and dispatches to the CLI. With no arguments it prints help (the
+// interactive TUI arrives in Phase 5). Exit codes: 0 success, 1 runtime
+// error, 2 usage error.
 package main
 
 import (
@@ -12,20 +14,25 @@ import (
 	"strings"
 
 	"zlanpiko/internal/app"
+	"zlanpiko/internal/cli"
+	"zlanpiko/internal/logging"
 )
 
 const usage = `zlanpiko (%s)
 
 Usage:
-  zlanpiko [command]
+  zlanpiko [command] [flags] [--data-root PATH]
 
 Commands:
   help       Show this help
   version    Show version information
+  units      Manage course units
+  topics     Manage topics and reading progress
+  tasks      Manage assignments, tests and deadlines
 
-Full topic, task, timeline, file, export and backup commands arrive
-with later phases (see docs/08). With no arguments this help is shown;
-the interactive TUI arrives in Phase 5.
+More commands (timeline, files, export, backup) arrive with later phases
+(see docs/08). With no arguments this help is shown; the interactive TUI
+arrives in Phase 5.
 `
 
 // normalize accepts help, --help, -h and /help spellings.
@@ -46,9 +53,40 @@ func run(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stdout, "%s\n", app.Info())
 		return 0
 	default:
-		fmt.Fprintf(stderr, "zlanpiko: unknown command %q (try: zlanpiko help)\n", args[0])
-		return 2
+		return runWithStorage(args, stdout, stderr)
 	}
+}
+
+// extractDataRoot pulls --data-root (both spellings) out of args.
+func extractDataRoot(args []string) (rest []string, dataRoot string) {
+	for i := 0; i < len(args); i++ {
+		a := args[i]
+		if a == "--data-root" && i+1 < len(args) {
+			dataRoot = args[i+1]
+			i++
+			continue
+		}
+		if v, ok := strings.CutPrefix(a, "--data-root="); ok {
+			dataRoot = v
+			continue
+		}
+		rest = append(rest, a)
+	}
+	return rest, dataRoot
+}
+
+func runWithStorage(args []string, stdout, stderr io.Writer) int {
+	rest, dataRoot := extractDataRoot(args)
+	ctx, err := app.Open(app.OpenOptions{
+		DataRoot: dataRoot,
+		Logger:   logging.New(stderr, logging.Options{Text: true}),
+	})
+	if err != nil {
+		fmt.Fprintf(stderr, "zlanpiko: %v\n", err)
+		return 1
+	}
+	defer ctx.Close()
+	return cli.Run(ctx, rest, stdout, stderr)
 }
 
 func main() {

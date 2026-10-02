@@ -143,14 +143,14 @@ func IsOverdue(status TaskStatus, dueAt *time.Time, now time.Time) bool {
 // services assign them in Phase 3. Timestamps are UTC.
 
 type Unit struct {
-	ID          string
-	Name        string
-	Code        string
-	Description string
-	Colour      string
-	Status      UnitStatus
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID          string     `json:"id"`
+	Name        string     `json:"name"`
+	Code        string     `json:"code"`
+	Description string     `json:"description"`
+	Colour      string     `json:"colour"`
+	Status      UnitStatus `json:"status"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
 }
 
 // Validate checks a unit's field values (uniqueness is a storage concern).
@@ -165,15 +165,15 @@ func (u Unit) Validate() error {
 }
 
 type Topic struct {
-	UnitID        string
-	ID            string // per-unit sequence, e.g. topic-001
-	Name          string
-	Description   string
-	ReadingStatus ReadingStatus
-	Priority      Priority
-	Notes         string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	UnitID        string        `json:"unit_id"`
+	ID            string        `json:"id"` // per-unit sequence, e.g. topic-001
+	Name          string        `json:"name"`
+	Description   string        `json:"description"`
+	ReadingStatus ReadingStatus `json:"reading_status"`
+	Priority      Priority      `json:"priority"`
+	Notes         string        `json:"notes"`
+	CreatedAt     time.Time     `json:"created_at"`
+	UpdatedAt     time.Time     `json:"updated_at"`
 }
 
 // Validate checks a topic's field values.
@@ -191,18 +191,18 @@ func (t Topic) Validate() error {
 }
 
 type Task struct {
-	UnitID      string
-	ID          string // per-unit sequence, e.g. task-001
-	Title       string
-	Kind        TaskKind
-	Status      TaskStatus
-	DueAt       *time.Time // nil = no deadline
-	CompletedAt *time.Time
-	Priority    Priority
-	Description string
-	Notes       string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	UnitID      string     `json:"unit_id"`
+	ID          string     `json:"id"` // per-unit sequence, e.g. task-001
+	Title       string     `json:"title"`
+	Kind        TaskKind   `json:"kind"`
+	Status      TaskStatus `json:"status"`
+	DueAt       *time.Time `json:"due_at"`
+	CompletedAt *time.Time `json:"completed_at"`
+	Priority    Priority   `json:"priority"`
+	Description string     `json:"description"`
+	Notes       string     `json:"notes"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
 }
 
 // Validate checks a task's field values.

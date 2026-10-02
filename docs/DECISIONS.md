@@ -72,3 +72,15 @@ alternatives, revisit trigger.
 - Alternatives: `github.com/<user>/zlanpiko` module path — adopt if/when a
   forge host is chosen (mechanical change via `go mod edit -module`).
 - Revisit: only when a repository host is selected.
+
+## D8 — Record folders and sidecars in Phase 3 via a minimal filesystem API
+
+- Context: Phase 3 services need unit/topic/task folders + sidecars, but full
+  file operations belong to Phase 4.
+- Choice: `internal/filesystem` gains only safe `Join`, record-dir helpers,
+  skeleton creators, atomic `WriteJSON`, `MoveDir` and `RemoveDir` now;
+  import/rename/search/open/delete UX stays Phase 4. Services and tasks call
+  these helpers — no direct `os` calls outside `filesystem`/`config`/`database`.
+- Alternatives: `os.MkdirAll` inline in services (faster now, rework later).
+- Revisit: Phase 4 extends the package; the Phase 3 API surface is frozen
+  unless a safety issue demands changes.
