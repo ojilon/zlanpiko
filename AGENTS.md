@@ -80,7 +80,8 @@ If Cobra is used, the application should still support a simple, discoverable co
 
 ## 4. Application identity
 
-The final application name has not yet been decided.
+The application name is **zlanpiko** (decided post-brief; placeholder
+references to `academic.*` below should be read as `zlanpiko.*`).
 
 Use a configurable placeholder identity during development.
 
@@ -274,7 +275,7 @@ Do not start the main implementation until the documentation and roadmap have be
 Use the following structure as a starting point. Modify it when a clear architectural reason exists and document any significant changes.
 
 ```text
-academic-manager/
+zlanpiko/
 ├── AGENTS.md
 ├── README.md
 ├── CHANGELOG.md
@@ -285,7 +286,7 @@ academic-manager/
 ├── .gitignore
 │
 ├── cmd/
-│   ├── academic/
+│   ├── zlanpiko/
 │   │   └── main.go
 │   └── installer/
 │       └── main.go
@@ -445,7 +446,7 @@ Example:
 ```text
 AcademicData/
 ├── database/
-│   └── academic.db
+│   └── zlanpiko.db
 │
 ├── config/
 │   └── user.json
@@ -734,20 +735,20 @@ The application must be usable from any terminal directory.
 Examples:
 
 ```powershell
-academic
-academic .
-academic /help
-academic units list
-academic topics list
-academic tasks deadlines
-academic analytics
-academic export --format txt
+zlanpiko
+zlanpiko .
+zlanpiko /help
+zlanpiko units list
+zlanpiko topics list
+zlanpiko tasks deadlines
+zlanpiko analytics
+zlanpiko export --format txt
 ```
 
 The command:
 
 ```powershell
-academic .
+zlanpiko .
 ```
 
 should open or invoke the application's context-aware file import workflow for the current working directory.
@@ -911,8 +912,8 @@ Never delete or replace academic data during an application update.
 The repository must produce two Windows executables:
 
 ```text
-academic.exe
-academic-installer.exe
+zlanpiko.exe
+zlanpiko-installer.exe
 ```
 
 The installer must be built from the same repository using Go.
@@ -1439,8 +1440,8 @@ The release package should include:
 
 ```text
 release/
-├── academic.exe
-├── academic-installer.exe
+├── zlanpiko.exe
+├── zlanpiko-installer.exe
 ├── README.txt
 ├── CHANGELOG.txt
 └── checksums.txt

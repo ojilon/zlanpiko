@@ -15,7 +15,7 @@ Working placeholder identity (see `docs/12_CONFIGURATION_AND_INSTALLER.md`):
 | Executable         | `zlanpiko.exe`                                 |
 | Installer          | `zlanpiko-installer.exe`                       |
 | Application ID     | `com.local.zlanpiko`                           |
-| Version            | `0.1.0` (pre-release, Phase 0)               |
+| Version            | `0.1.0` (released, tag `v0.1.0`)                |
 | DB schema version  | `1`                                          |
 | Default storage dir| `AcademicData`                               |
 | Repository         | placeholder (no remote selected yet)         |
@@ -112,6 +112,10 @@ beyond what falls out naturally.
 | 15 | Implementation roadmap (phases 0–10) |
 | 16 | Security and data safety |
 | 17 | Future extensions (deferred) |
+| 18 | CLI user guide (v0.1.0) |
+| 19 | TUI user guide (v0.1.0) |
+| 20 | v0.1.0 limitations + v0.1.1 plan |
+| 21 | How v0.1.0 works (maintainer's map) |
 
 `IMPLEMENTATION_STATUS.md` tracks current phase; `DECISIONS.md` records
 architecture decisions with rationale.

@@ -1,5 +1,9 @@
 # 15 — Implementation Roadmap
 
+> Status as of v0.1.0: all phases below are complete and committed
+> (see `IMPLEMENTATION_STATUS.md` and `docs/20` for what comes next).
+> Historical phase text is preserved as written.
+
 Phases are sequential; each ends with tests + docs update + user commit.
 Do not start the next phase with a red suite. Status tracked in
 `IMPLEMENTATION_STATUS.md`.
@@ -12,7 +16,7 @@ no contradictions. Next: user reviews and commits.
 
 ## Phase 1 — Go foundation
 
-`go.mod` (module `zlanpiko`, go ≥1.24), `configs/`,
+`go.mod` (module `zlanpiko`, go ≥1.26 after the sqlite dependency), `configs/`,
 `internal/app` (Version vars), `internal/logging`, `internal/domain` (enums +
 validation), `cmd/zlanpiko` (`--help`/`version` only), `.gitignore`,
 `scripts/test.bat`. Tests: domain validation. Acceptance: `go build ./...`

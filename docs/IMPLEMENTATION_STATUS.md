@@ -2,7 +2,19 @@
 
 ## Current phase
 
-**Installer rework (post-Phase 10 fix): ready to commit.**
+**Docs batch (post-v0.1.0): user guides + limitations + cleanup — ready to commit.**
+
+- New `docs/18_CLI_USER_GUIDE.md` (every command with examples, workflows,
+  troubleshooting) and `docs/19_TUI_USER_GUIDE.md` (layout, keys per
+  screen, dialogs, commands, theme notes) — both verified against source.
+- New `docs/20_V010_LIMITATIONS_AND_V011_PLAN.md`: honest limitation list
+  (no `mkdir` anywhere, TUI/CLI parity gaps, surprising behaviors,
+  installer rehearsal notes) + prioritized v0.1.1 proposal.
+- New `docs/21_HOW_V010_WORKS.md`: maintainer's map (packages, startup,
+  storage, rules, formats) + scripts reference + step-by-step release push.
+- Cleanup: `AGENTS.md` placeholder names → `zlanpiko.*`, README status →
+  released, `docs/15` completion banner, `docs/00` map + version, stray
+  empty `scripts/dist/` removed.
 
 - Interactive drive/folder chooser in the installer: drive list with type
   and free space, first-50 folder paging with overflow note, drive-root
@@ -223,6 +235,8 @@
 - [x] Phase 10: release packaging + full rehearsal; green (see above).
 - [x] Installer rework: interactive drive/folder chooser, usage guide,
   shared prompt reader fix; green (see above).
+- [x] Docs batch: CLI/TUI user guides, v0.1.0 limitations + v0.1.1 plan,
+  how-it-works, AGENTS.md/README/roadmap cleanup.
 
 ## Incomplete tasks / blockers
 
