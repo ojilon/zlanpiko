@@ -2,7 +2,23 @@
 
 ## Current phase
 
-**Phase 9 — Installer: DONE, awaiting user review + commit.**
+**Phase 10 — Release preparation: DONE. All 11 phases complete.**
+
+- `scripts/package.bat` (new): clean dist/release, versioned release builds
+  (version + commit + ISO build date injected), `release\` assembly
+  (both exes, README.txt, CHANGELOG.txt, SHA-256 checksums via PowerShell).
+- `scripts/release.bat` (new): runs `test.bat` + `package.bat`, then prints
+  the manual publish checklist (verify, rehearsal, tag, push, GitHub
+  Release) — never tags/pushes/uploads by itself.
+- `assets/README.txt` (new): version-agnostic install/first-run/data notes
+  shipped in the package; `CHANGELOG.md` carries the `[0.1.0]` section.
+- Verification 2026-10-03: `release.bat 0.1.0` green end to end;
+  `release\` contains 5 files with valid checksums; `version` reports
+  `0.1.0 (commit …, built 2026-10-03, schema 1)`; fresh install from
+  `release\` into temp dirs completes; installed binary passes CRUD,
+  analytics, timeline, verify, backup → wipe → restore → data intact.
+- Left for the user (deliberately manual per docs/14): `git tag v0.1.0`,
+  push, and the GitHub Release with `release\` files.
 
 - `internal/installer` + `cmd/installer`: identity display, install/data
   dir selection (flags or TTY prompts), exe copy from release layout,
@@ -188,6 +204,7 @@
 - [x] Phase 8: exporter, backup/restore, CLI + TUI wiring, e2e round-trip;
   green (see above).
 - [x] Phase 9: installer + first-run setup; green (see above).
+- [x] Phase 10: release packaging + full rehearsal; green (see above).
 
 ## Incomplete tasks / blockers
 
@@ -221,17 +238,14 @@ Checked 2026-10-02 across all docs (re-swept after rename):
 - Time policy (store UTC RFC3339, local display): 01/05/09/10/11 agree. ✅
 - `zlanpiko .` preview-first: 01/06/08/11/16 agree. ✅
 
-## Next exact implementation step (Phase 10, after commit)
+## Next exact implementation step (after v0.1.0 tag)
 
-1. `scripts/package.bat` (clean dist, release builds, checksums,
-   `release\` assembly) + `scripts/release.bat` (tag/release checklist,
-   no auto-publish); `README.txt`/`CHANGELOG.txt` generation.
-2. Full release rehearsal: package → fresh install from `release\` without
-   the Go toolchain → CLI/TUI smoke → migration/backup/restore checks.
-3. Tag `v0.1.0`, GitHub Release notes; green `scripts/test.bat`.
+User actions: review this status, `git tag v0.1.0`, push, publish the
+GitHub Release with `release\` files. Then optionally: future extensions
+from `docs/17` (content search, reminders, sync, AI workflows).
 
 Suggested commit message for this phase:
 
 ```text
-feat: add installer and first-run setup
+feat: add release packaging and 0.1.0 release notes
 ```

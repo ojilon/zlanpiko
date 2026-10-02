@@ -2,7 +2,9 @@
 
 Format follows Keep a Changelog; versions follow semantic versioning.
 
-## [Unreleased]
+## [0.1.0] - 2026-10-03
+
+First usable release: local-first academic management for Windows.
 
 - Phase 1: Go module, app metadata, logging, domain vocabularies and
   validation, `zlanpiko help` / `zlanpiko version` entry point, docs.
