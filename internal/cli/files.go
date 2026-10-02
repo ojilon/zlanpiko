@@ -225,7 +225,7 @@ func confirmImport(stdout, stderr io.Writer, yes bool) (bool, int) {
 
 // stdinIsTerminal is a variable so tests can force the non-TTY path
 // (a test binary inheriting a real console must never block on input).
-var stdinIsTerminal = func() bool { return isTerminal(os.Stdin) }
+var stdinIsTerminal = func() bool { return IsTerminal(os.Stdin) }
 
 // printPreview renders the plan: copies, destination, collisions and skips.
 func printPreview(stdout io.Writer, pv *importer.Plan) {
@@ -276,8 +276,8 @@ func runDotImport(ctx *app.Context, args []string, stdout, stderr io.Writer) int
 	return runImport(ctx, stdout, stderr, cwd, importOptions(f), f.yes())
 }
 
-// isTerminal reports whether w is a character device (interactive terminal).
-func isTerminal(f *os.File) bool {
+// IsTerminal reports whether f is a character device (interactive terminal).
+func IsTerminal(f *os.File) bool {
 	st, err := f.Stat()
 	if err != nil {
 		return false

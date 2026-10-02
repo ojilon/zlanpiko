@@ -21,3 +21,6 @@ Format follows Keep a Changelog; versions follow semantic versioning.
   metadata, search, OS-default open, DB/filesystem consistency scan),
   preview-first bulk importer with collision policies, `files` CLI commands
   and `zlanpiko .` context import.
+- Phase 5: Bubble Tea TUI (dashboard, units, topics, tasks, files, settings;
+  persistent command input with history; auto/16/none themes), shared
+  coverage package, no-args launches TUI on a terminal.

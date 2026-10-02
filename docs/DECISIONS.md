@@ -100,12 +100,20 @@ alternatives, revisit trigger.
   only) with a test seam (`stdinIsTerminal`) so tests never block.
 - Revisit: if richer progress UI is wanted in the TUI (Phase 5).
 
-- Context: Phase 3 services need unit/topic/task folders + sidecars, but full
-  file operations belong to Phase 4.
-- Choice: `internal/filesystem` gains only safe `Join`, record-dir helpers,
-  skeleton creators, atomic `WriteJSON`, `MoveDir` and `RemoveDir` now;
-  import/rename/search/open/delete UX stays Phase 4. Services and tasks call
-  these helpers — no direct `os` calls outside `filesystem`/`config`/`database`.
-- Alternatives: `os.MkdirAll` inline in services (faster now, rework later).
-- Revisit: Phase 4 extends the package; the Phase 3 API surface is frozen
-  unless a safety issue demands changes.
+## D10 — TUI as a thin Elm front over services (Phase 5)
+
+- Context: the TUI must reuse service logic with no SQL in screens, stay
+  testable without a terminal, and degrade on small/limited terminals.
+- Choice: root Bubble Tea model (tabs, status bar, persistent input with
+  history, `/` command dispatch with typo suggestions) + one screen struct
+  per tab sharing a `Shared` struct (filters, nav requests, flash messages).
+  Reusable form/confirm widgets consume `tea.KeyMsg` directly (unit-tested).
+  Coverage math lives in `internal/analytics` from day one (dashboard,
+  status bar and later reports share it). Themes auto/16/none via a
+  renderer switch + a `Plain` flag (reverse video marks selection).
+  Long imports run as `tea.Cmd` with a result message; everything else is
+  synchronous local SQLite. No-args launches the TUI only on a TTY,
+  otherwise prints help (script-safe).
+- Alternatives: per-screen TUIs or a retained-mode framework (heavier,
+  harder to test).
+- Revisit: timeline/analytics screens and richer widgets in Phase 6.

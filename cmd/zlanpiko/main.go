@@ -2,9 +2,9 @@
 //
 // help and version run without storage; every other command resolves the
 // data root (--data-root, $ZLANPIKO_DATA or the install pointer), opens it
-// and dispatches to the CLI. With no arguments it prints help (the
-// interactive TUI arrives in Phase 5). Exit codes: 0 success, 1 runtime
-// error, 2 usage error.
+// and dispatches to the CLI. With no arguments it launches the interactive
+// TUI on a terminal, or prints help when piped. Exit codes: 0 success,
+// 1 runtime error, 2 usage error.
 package main
 
 import (
@@ -13,9 +13,12 @@ import (
 	"os"
 	"strings"
 
+	tea "github.com/charmbracelet/bubbletea"
+
 	"zlanpiko/internal/app"
 	"zlanpiko/internal/cli"
 	"zlanpiko/internal/logging"
+	"zlanpiko/internal/tui"
 )
 
 const usage = `zlanpiko (%s)
@@ -23,18 +26,19 @@ const usage = `zlanpiko (%s)
 Usage:
   zlanpiko [command] [flags] [--data-root PATH]
 
+With no arguments the interactive TUI starts (on a terminal).
+
 Commands:
-  help       Show this help
-  version    Show version information
   units      Manage course units
   topics     Manage topics and reading progress
   tasks      Manage assignments, tests and deadlines
   files      Manage files (list import move rename delete open search)
   .          Import the working directory (preview first, needs --yes)
+  help       Show this help
+  version    Show version information
 
-More commands (timeline, files, export, backup) arrive with later phases
-(see docs/08). With no arguments this help is shown; the interactive TUI
-arrives in Phase 5.
+More commands (timeline, export, backup) arrive with later phases
+(see docs/08).
 `
 
 // normalize accepts help, --help, -h and /help spellings.
@@ -44,8 +48,7 @@ func normalize(arg string) string {
 
 func run(args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
-		fmt.Fprintf(stdout, usage, app.Version)
-		return 0
+		return runTUI(nil, stdout, stderr)
 	}
 	switch normalize(args[0]) {
 	case "help", "h":
@@ -57,6 +60,34 @@ func run(args []string, stdout, stderr io.Writer) int {
 	default:
 		return runWithStorage(args, stdout, stderr)
 	}
+}
+
+// runTUI launches the interactive interface, or prints help when stdout is
+// not a terminal (script-friendly: no hanging on pipes).
+func runTUI(dataRoot *string, stdout, stderr io.Writer) int {
+	outFile, ok := stdout.(*os.File)
+	if !ok || !cli.IsTerminal(outFile) {
+		fmt.Fprintf(stdout, usage, app.Version)
+		return 0
+	}
+	var explicit string
+	if dataRoot != nil {
+		explicit = *dataRoot
+	}
+	ctx, err := app.Open(app.OpenOptions{
+		DataRoot: explicit,
+		Logger:   logging.New(stderr, logging.Options{Text: true}),
+	})
+	if err != nil {
+		fmt.Fprintf(stderr, "zlanpiko: %v\n", err)
+		return 1
+	}
+	defer ctx.Close()
+	if _, err := tea.NewProgram(tui.NewModel(ctx), tea.WithAltScreen()).Run(); err != nil {
+		fmt.Fprintf(stderr, "zlanpiko: TUI error: %v\n", err)
+		return 1
+	}
+	return 0
 }
 
 // extractDataRoot pulls --data-root (both spellings) out of args.

@@ -2,7 +2,34 @@
 
 ## Current phase
 
-**Phase 4 — Filesystem integration: DONE, awaiting user review + commit.**
+**Phase 5 — Initial TUI: DONE, awaiting user review + commit.**
+
+- Charm libs vendored: bubbletea v1.3.10, lipgloss v1.1.0, bubbles v1.0.0
+  (v1-line, mutually compatible; APIs verified against module sources).
+- `internal/analytics` (new, early for the dashboard): shared coverage
+  formula (`read/total`, empty → `—`), per-unit + overall summaries,
+  upcoming/overdue composition over `tasks`; frozen-time tests.
+- `internal/tui/styles`: light-blue/grey theme, modes auto/16/none
+  (renderer switch + `Plain` flag; reverse-video selection without colour).
+- `internal/tui/components`: multi-field form (tab cycle, required-field
+  validation) + yes/no confirm dialog, both `tea.KeyMsg`-driven and tested.
+- `internal/tui/screens`: dashboard (counts, coverage bars, overdue,
+  upcoming), units (add/rename/archive/delete+confirm, enter→topics),
+  topics (status filter/cycle, add/rename/move/delete), tasks (status
+  filter, add/edit/complete/submit/delete), files (browse, import with
+  preview→confirm→async execute, rename/open/guarded delete), settings
+  (paths, theme cycle persisted to `user.json`, DB verify, version).
+- `internal/tui` root model: tab strip (1–6), persistent command input with
+  history, `/` dispatch (screen jumps + unit filters, version, quit,
+  Phase 6/8 notices, typo suggestions), status bar with live counts,
+  help overlay, 80×24 minimum with a polite warning.
+- `cmd/zlanpiko`: no-args launches the TUI on a TTY, prints help when piped.
+- Verification 2026-10-02: `gofmt`/`vet` clean, `go test ./...` green
+  (16 test packages incl. navigation, input persistence, command dispatch,
+  history, form/confirm widgets, screen reloads, form-driven unit add),
+  `scripts/test.bat` exit 0; live binary: piped no-args prints help,
+  CLI unaffected. Interactive TUI verified via model tests only (no TTY
+  here — please smoke-test `zlanpiko` in a real terminal before release).
 
 - `internal/filesystem` extended: `WriteFile` (no-overwrite), `Mkdir`,
   `Rename` (same-dir, no separators), `Move` (protected sources refused;
@@ -81,6 +108,8 @@
   services + tasks + CLI subset; full verification green (see above).
 - [x] Phase 4: user file ops, consistency scan, preview-first importer,
   `files` CLI + `zlanpiko .`; full verification green (see above).
+- [x] Phase 5: analytics coverage, TUI (styles/components/6 screens/root
+  model), no-args TUI launch; full verification green (see above).
 
 ## Incomplete tasks / blockers
 
@@ -92,7 +121,7 @@
 
 ## Test status
 
-- `go test ./...`: 11 test packages green, `migrations` has no test files
+- `go test ./...`: 16 test packages green, `migrations` has no test files
   (by design — exercised through `database` tests via the embedded FS).
 - Manual-on-Windows items (installer PATH/shortcuts, OS `open`) are pre-listed
   in `docs/13` for later phases.
@@ -114,17 +143,18 @@ Checked 2026-10-02 across all docs (re-swept after rename):
 - Time policy (store UTC RFC3339, local display): 01/05/09/10/11 agree. ✅
 - `zlanpiko .` preview-first: 01/06/08/11/16 agree. ✅
 
-## Next exact implementation step (Phase 5, after commit)
+## Next exact implementation step (Phase 6, after commit)
 
-1. `internal/tui`: root Bubble Tea model, navigation registry, styles
-   (Lipgloss, 16-colour fallback), persistent command input + status bar.
-2. Screens: dashboard, units, topics, tasks, files (over the Phase 3–4
-   services; read-only first, then mutations with confirmations).
-3. TUI model tests (navigation, input persistence, no real TTY);
-   `go get` Charm libs (bubbletea, lipgloss, bubbles); green `test.bat`.
+1. `internal/timeline`: ISO-week buckets, grouping/sorting, overdue section
+   (date logic lives only here); attention-label rules per `docs/10`
+   (in `analytics` or `domain` — pure, frozen-time tested).
+2. TUI timeline + analytics screens; dashboard attention section;
+   inline deadline editing from the timeline; `/timeline` command wiring.
+3. Cross-front number parity test (dashboard = CLI = report fixture);
+   green `scripts/test.bat`.
 
 Suggested commit message for this phase:
 
 ```text
-feat: add file management, scan and preview-first import
+feat: add Bubble Tea TUI with dashboard and management screens
 ```
