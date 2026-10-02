@@ -1,0 +1,22 @@
+{
+  "module": "github.com/example/academic-manager",
+  "go_min": "1.24",
+  "targets": ["windows/amd64"],
+  "build_flags": ["-trimpath"],
+  "ldflags_vars": [
+    "github.com/example/academic-manager/internal/app.Version",
+    "github.com/example/academic-manager/internal/app.Commit",
+    "github.com/example/academic-manager/internal/app.BuildDate"
+  ],
+  "outputs": {
+    "academic": "dist\\academic.exe",
+    "installer": "dist\\academic-installer.exe"
+  },
+  "package_contents": [
+    "academic.exe",
+    "academic-installer.exe",
+    "README.txt",
+    "CHANGELOG.txt",
+    "checksums.txt"
+  ]
+}

@@ -1,0 +1,18 @@
+# Build outputs
+dist/
+release/
+
+# Logs and coverage
+*.log
+coverage.out
+coverage.html
+
+# Local academic data used by dev runs
+AcademicData/
+.academic-test/
+
+# Editor / OS noise
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini

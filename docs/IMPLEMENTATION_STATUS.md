@@ -2,19 +2,26 @@
 
 ## Current phase
 
-**Phase 0 — Repository and documentation: DONE, awaiting user review + commit.**
+**Phase 1 — Go foundation: DONE, awaiting user review + commit.**
 
-- Repo inspected: only `AGENTS.md` + `README.md` present; no code, no `go.mod`.
-- Toolchain: `go1.27.0 windows/amd64`; `GOARCH=amd64`; module proxy reachable.
-- Wrote `docs/00_PROJECT_OVERVIEW.md` … `docs/17_FUTURE_EXTENSIONS.md`
-  (18 docs) + this file + `docs/DECISIONS.md`. No code changes.
+- `go.mod`: module `github.com/example/academic-manager`, floor `go 1.24`
+  (toolchain 1.27; no dependency needs newer stdlib yet).
+- New packages: `internal/app` (metadata + ldflags vars), `internal/logging`
+  (slog bootstrap), `internal/domain` (enums, validation, overdue rule).
+- Entry point `cmd/academic`: `help` (incl. `--help`/`-h`/`/help`) and
+  `version`; unknown command → stderr + exit 2.
+- `configs/app.json` + `configs/build.json`, `.gitignore`,
+  `scripts/test.bat` + `scripts/build.bat`, MIT `LICENSE`, README, CHANGELOG.
+- Verification 2026-10-02: `gofmt -l` clean, `go vet ./...` clean,
+  `go test ./...` green (4 packages), `scripts/test.bat` exit 0,
+  `scripts/build.bat` produces `dist/academic.exe` with commit SHA injected;
+  live run of `version` / bare / unknown-command behaves as specified.
 
 ## Completed tasks
 
-- [x] Repo + toolchain recon (Go 1.27, empty repo, git branch `main`).
-- [x] All 18 planning docs drafted per AGENTS.md §5 requirements.
-- [x] Roadmap phases 0–10 with acceptance criteria (`docs/15`).
-- [x] Consistency self-review (see bottom of this file).
+- [x] Phase 0: repo + toolchain recon, 18 planning docs, consistency review.
+- [x] Phase 1: module, metadata, logging, domain, entry point, scripts,
+  LICENSE/README/CHANGELOG; full verification green (see above).
 
 ## Incomplete tasks / blockers
 
@@ -47,16 +54,16 @@ Checked 2026-10-02 across all docs:
 - Time policy (store UTC RFC3339, local display): 01/05/09/10/11 agree. ✅
 - `academic .` preview-first: 01/06/08/11/16 agree. ✅
 
-## Next exact implementation step (Phase 1, after commit)
+## Next exact implementation step (Phase 2, after commit)
 
-1. `go mod init github.com/example/academic-manager` (go ≥ 1.24).
-2. Add `configs/app.json`, `configs/build.json`, `.gitignore`, `scripts/test.bat`.
-3. Implement `internal/app` version vars + `internal/logging` + `internal/domain`.
-4. Thin `cmd/academic` (`help`, `version`); domain unit tests; green
-   `go build ./...` + `go test ./...` + `go vet ./...`.
+1. `internal/config` (load/save JSON, data-root resolution per `docs/12`).
+2. `internal/database` (open + migration runner + `migrations/0001_init.sql`
+   per `docs/05`); wire first-run init into `internal/app`.
+3. Config round-trip + migrate-fresh + reopen-idempotent + newer-schema
+   refusal tests; green `scripts/test.bat`.
 
 Suggested commit message for this phase:
 
 ```text
-docs: establish project architecture and roadmap
+feat: implement Go foundation with domain and CLI entry point
 ```

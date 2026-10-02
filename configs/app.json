@@ -1,0 +1,11 @@
+{
+  "name": "Academic Manager",
+  "exe": "academic.exe",
+  "installer_exe": "academic-installer.exe",
+  "id": "com.local.academic-manager",
+  "version": "0.1.0",
+  "schema_version": 1,
+  "default_storage_dir": "AcademicData",
+  "repository": "TBD",
+  "channel": "dev"
+}
