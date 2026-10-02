@@ -17,3 +17,7 @@ Format follows Keep a Changelog; versions follow semantic versioning.
 - Phase 3: unit/topic/task services with folder skeletons and sidecars,
   `units|topics|tasks` CLI commands (text/json), overdue derivation,
   confirmation guards on deletes.
+- Phase 4: user file operations (create/move/rename/delete guarded,
+  metadata, search, OS-default open, DB/filesystem consistency scan),
+  preview-first bulk importer with collision policies, `files` CLI commands
+  and `zlanpiko .` context import.

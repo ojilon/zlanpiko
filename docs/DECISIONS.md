@@ -84,3 +84,28 @@ alternatives, revisit trigger.
 - Alternatives: `os.MkdirAll` inline in services (faster now, rework later).
 - Revisit: Phase 4 extends the package; the Phase 3 API surface is frozen
   unless a safety issue demands changes.
+
+## D9 — Preview-first imports with TTY-aware confirmation (Phase 4)
+
+- Context: bulk imports must never surprise; CLI must also never hang
+  waiting for input when scripted.
+- Choice: every import prints its plan (files, destination, collisions,
+  skips) and copies nothing without `--yes`; without `--yes` it prompts
+  only when stdin is a character device, otherwise refuses with exit 1.
+  `--collision overwrite` additionally requires `--yes` even on a TTY.
+  Default collision policy is rename; executables/hidden/oversize are
+  skipped and reported.
+- Alternatives: always-prompt (hangs scripts), always-require-`--yes`
+  (hostile interactively). The TTY check uses `ModeCharDevice` (stdlib
+  only) with a test seam (`stdinIsTerminal`) so tests never block.
+- Revisit: if richer progress UI is wanted in the TUI (Phase 5).
+
+- Context: Phase 3 services need unit/topic/task folders + sidecars, but full
+  file operations belong to Phase 4.
+- Choice: `internal/filesystem` gains only safe `Join`, record-dir helpers,
+  skeleton creators, atomic `WriteJSON`, `MoveDir` and `RemoveDir` now;
+  import/rename/search/open/delete UX stays Phase 4. Services and tasks call
+  these helpers — no direct `os` calls outside `filesystem`/`config`/`database`.
+- Alternatives: `os.MkdirAll` inline in services (faster now, rework later).
+- Revisit: Phase 4 extends the package; the Phase 3 API surface is frozen
+  unless a safety issue demands changes.

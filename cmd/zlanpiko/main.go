@@ -29,6 +29,8 @@ Commands:
   units      Manage course units
   topics     Manage topics and reading progress
   tasks      Manage assignments, tests and deadlines
+  files      Manage files (list import move rename delete open search)
+  .          Import the working directory (preview first, needs --yes)
 
 More commands (timeline, files, export, backup) arrive with later phases
 (see docs/08). With no arguments this help is shown; the interactive TUI

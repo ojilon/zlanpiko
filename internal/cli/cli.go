@@ -28,6 +28,8 @@ Commands:
   units    Manage course units      (list add rename archive unarchive delete show)
   topics   Manage topics            (list add status rename move delete)
   tasks    Manage assignments etc.  (list add edit complete submit delete deadlines)
+  files    Manage files             (list import move rename delete open search)
+  .        Import the working directory (preview first, needs --yes)
   help     Show this help
   version  Show version information
 
@@ -51,6 +53,10 @@ func Run(ctx *app.Context, args []string, stdout, stderr io.Writer) int {
 		return runTopics(ctx, args[1:], stdout, stderr)
 	case "tasks":
 		return runTasks(ctx, args[1:], stdout, stderr)
+	case "files":
+		return runFiles(ctx, args[1:], stdout, stderr)
+	case ".":
+		return runDotImport(ctx, args[1:], stdout, stderr)
 	case "help", "--help", "-h", "/help":
 		fmt.Fprint(stdout, topHelp)
 		return ExitOK
@@ -109,6 +115,48 @@ func parseFlags(args []string) (flags, error) {
 		}
 	}
 	return f, nil
+}
+
+// parseMixed parses flags like parseFlags but also collects positional
+// arguments (used by the files commands, whose grammar mixes both).
+func parseMixed(args []string) (pos []string, f flags, err error) {
+	f = flags{vals: map[string]string{}, present: map[string]bool{}}
+	for i := 0; i < len(args); i++ {
+		a := args[i]
+		if !strings.HasPrefix(a, "--") {
+			if strings.HasPrefix(a, "-") && len(a) > 1 {
+				return nil, f, fmt.Errorf("did you mean -%s? flags use double dashes", a)
+			}
+			pos = append(pos, a)
+			continue
+		}
+		key := strings.TrimPrefix(a, "--")
+		if key == "" {
+			return nil, f, fmt.Errorf("empty flag '--'")
+		}
+		if j := strings.Index(key, "="); j >= 0 {
+			f.vals[key[:j]] = key[j+1:]
+			f.present[key[:j]] = true
+			continue
+		}
+		if i+1 < len(args) && !strings.HasPrefix(args[i+1], "--") {
+			// A value-looking token after a known boolean flag belongs to
+			// the positionals: only --recursive/--yes/--include-large are
+			// bare booleans in the files grammar.
+			if key == "recursive" || key == "yes" || key == "include-large" {
+				f.vals[key] = "true"
+				f.present[key] = true
+				continue
+			}
+			f.vals[key] = args[i+1]
+			f.present[key] = true
+			i++
+		} else {
+			f.vals[key] = "true"
+			f.present[key] = true
+		}
+	}
+	return pos, f, nil
 }
 
 // need returns a required flag or a usage error.

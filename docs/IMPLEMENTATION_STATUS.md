@@ -2,7 +2,28 @@
 
 ## Current phase
 
-**Phase 3 — Core academic entities: DONE, awaiting user review + commit.**
+**Phase 4 — Filesystem integration: DONE, awaiting user review + commit.**
+
+- `internal/filesystem` extended: `WriteFile` (no-overwrite), `Mkdir`,
+  `Rename` (same-dir, no separators), `Move` (protected sources refused;
+  moving *into* inbox etc. allowed), `Delete` (protected root/skeleton/
+  unit-roots refused, `--recursive` needed for trees), `Stat`, `List`,
+  filename `Search` (units/ + inbox/), OS-default `Open` (files only),
+  `Scan` (refreshes `missing` flags, reports unindexed; sidecars ignored).
+- `internal/importer` (new): `Preview` (skips hidden/executables/oversize/
+  links, collision rename|skip|overwrite, default dest `inbox/<date>`,
+  record-link dests `unit`, `unit/topic-*`, `unit/task-*`, bare `inbox`) +
+  `Execute` (context-cancelled, per-file journal, DB-row-first with
+  compensation, sha256 recorded).
+- `internal/cli`: `files` commands (list/import/move/rename/delete/open/
+  search, mixed positional+flag grammar) and `zlanpiko .` context import;
+  preview-first with `--yes` / TTY prompt / non-TTY refusal (D9).
+- Bugs caught by tests and fixed: `Move` refusing protected *destinations*,
+  `Scan` deadlock (UPDATE while rows open on the single-connection DB).
+- Verification 2026-10-02: `gofmt`/`vet` clean, `go test ./...` green
+  (11 test packages), `scripts/test.bat` exit 0, plus a live exe smoke test:
+  unit → bulk import (preview refusal, then `--yes` with `.exe` skipped) →
+  `files list` → `files search` (workflow step 7 covered).
 
 - `internal/domain`: JSON tags on entities, UTC helpers (`Now/FormatTime/
   ParseTime`), `ConfirmRequiredError` + `ChildCounts`.
@@ -58,6 +79,8 @@
   green (see above).
 - [x] Phase 3: domain tags/time/confirm-error, filesystem record API,
   services + tasks + CLI subset; full verification green (see above).
+- [x] Phase 4: user file ops, consistency scan, preview-first importer,
+  `files` CLI + `zlanpiko .`; full verification green (see above).
 
 ## Incomplete tasks / blockers
 
@@ -69,7 +92,7 @@
 
 ## Test status
 
-- `go test ./...`: 10 test packages green, `migrations` has no test files
+- `go test ./...`: 11 test packages green, `migrations` has no test files
   (by design — exercised through `database` tests via the embedded FS).
 - Manual-on-Windows items (installer PATH/shortcuts, OS `open`) are pre-listed
   in `docs/13` for later phases.
@@ -91,18 +114,17 @@ Checked 2026-10-02 across all docs (re-swept after rename):
 - Time policy (store UTC RFC3339, local display): 01/05/09/10/11 agree. ✅
 - `zlanpiko .` preview-first: 01/06/08/11/16 agree. ✅
 
-## Next exact implementation step (Phase 4, after commit)
+## Next exact implementation step (Phase 5, after commit)
 
-1. Extend `internal/filesystem`: file/folder create, rename, move, safe
-   delete, metadata, filename search, missing-file scan, OS-default open.
-2. `internal/importer`: bulk-import preview + execute (skip rules, collision
-   handling per `docs/11`).
-3. `files ...` CLI commands + `zlanpiko .` context import (preview-first).
-4. Filesystem integration tests in temp dirs (collisions, traversal
-   rejection, preview-makes-no-changes); green `scripts/test.bat`.
+1. `internal/tui`: root Bubble Tea model, navigation registry, styles
+   (Lipgloss, 16-colour fallback), persistent command input + status bar.
+2. Screens: dashboard, units, topics, tasks, files (over the Phase 3–4
+   services; read-only first, then mutations with confirmations).
+3. TUI model tests (navigation, input persistence, no real TTY);
+   `go get` Charm libs (bubbletea, lipgloss, bubbles); green `test.bat`.
 
 Suggested commit message for this phase:
 
 ```text
-feat: add unit, topic and task management with CLI
+feat: add file management, scan and preview-first import
 ```
