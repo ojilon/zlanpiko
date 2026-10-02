@@ -2,7 +2,29 @@
 
 ## Current phase
 
-**Phase 5 — Initial TUI: DONE, awaiting user review + commit.**
+**Phase 6 — Timeline and analytics: DONE, awaiting user review + commit.**
+
+- `internal/timeline` (new, sole date-math owner): ISO week math
+  (`MondayOf/SundayOf/Offset/ParseWeek/Title`), `Build` projecting tasks
+  into day buckets + overdue anchor section, deterministic sort
+  (due → priority → title); dateless tasks excluded per docs/09.
+- Attention rules (`internal/analytics/attention.go`, per docs/10 with the
+  D11 simplification): unit labels Overdue/Completed/At Risk/Attention/
+  On Track/None with reasons, pure topic-level assessment with high-priority
+  escalation + Review hint; `NextAssessment`/`NextOpen`/`NextDeadline`
+  query helpers in `tasks`.
+- TUI: timeline screen (week nav n/p/t, compact <90-col mode, detail
+  overlay with inline deadline edit, complete, jump-to-unit) and analytics
+  screen (coverage + attention table, formula footnotes) as tabs 5 and 7;
+  dashboard "Needs attention" section; topics ATTENTION column;
+  `/timeline [next|prev|today|YYYY-Www]` and `/analytics` commands.
+- CLI: `timeline [--week|--offset] [--format]` and `analytics [--unit]
+  [--format]` over the same packages; unknown flags now rejected there.
+- Verification 2026-10-03: `gofmt`/`vet` clean, `go test ./...` green
+  (18 test packages incl. week-math edge cases, one-assessment-per-label
+  fixtures, cross-front parity CLI-vs-library, TUI week jumping),
+  `scripts/test.bat` exit 0; live binary: analytics flags an overdue unit,
+  timeline renders its overdue section (workflow step 8 covered).
 
 - Charm libs vendored: bubbletea v1.3.10, lipgloss v1.1.0, bubbles v1.0.0
   (v1-line, mutually compatible; APIs verified against module sources).
@@ -110,6 +132,8 @@
   `files` CLI + `zlanpiko .`; full verification green (see above).
 - [x] Phase 5: analytics coverage, TUI (styles/components/6 screens/root
   model), no-args TUI launch; full verification green (see above).
+- [x] Phase 6: timeline package, attention rules, timeline/analytics
+  screens + CLI, dashboard/topics attention, parity tests; green (see above).
 
 ## Incomplete tasks / blockers
 
@@ -121,7 +145,7 @@
 
 ## Test status
 
-- `go test ./...`: 16 test packages green, `migrations` has no test files
+- `go test ./...`: 18 test packages green, `migrations` has no test files
   (by design — exercised through `database` tests via the embedded FS).
 - Manual-on-Windows items (installer PATH/shortcuts, OS `open`) are pre-listed
   in `docs/13` for later phases.
@@ -143,18 +167,20 @@ Checked 2026-10-02 across all docs (re-swept after rename):
 - Time policy (store UTC RFC3339, local display): 01/05/09/10/11 agree. ✅
 - `zlanpiko .` preview-first: 01/06/08/11/16 agree. ✅
 
-## Next exact implementation step (Phase 6, after commit)
+## Next exact implementation step (Phase 7, after commit)
 
-1. `internal/timeline`: ISO-week buckets, grouping/sorting, overdue section
-   (date logic lives only here); attention-label rules per `docs/10`
-   (in `analytics` or `domain` — pure, frozen-time tested).
-2. TUI timeline + analytics screens; dashboard attention section;
-   inline deadline editing from the timeline; `/timeline` command wiring.
-3. Cross-front number parity test (dashboard = CLI = report fixture);
-   green `scripts/test.bat`.
+1. Complete the CLI tree per `docs/08`: `config show|set|path`,
+   `maintenance verify [--repair]` (over `filesystem.Scan` + sidecar
+   refresh + temp cleanup), `version` polish; strict unknown-flag
+   rejection everywhere (currently only timeline/analytics).
+2. TUI `/` dispatcher parity (`/files`, `/config`, `/verify`, ...);
+   command history persistence (currently session-only).
+3. CLI tests for exit codes and the verify/repair flow;
+   green `scripts/test.bat`. (Export/backup commands arrive with their
+   Phase 8 packages.)
 
 Suggested commit message for this phase:
 
 ```text
-feat: add Bubble Tea TUI with dashboard and management screens
+feat: add weekly timeline, attention labels and analytics
 ```

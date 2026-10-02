@@ -117,3 +117,15 @@ alternatives, revisit trigger.
 - Alternatives: per-screen TUIs or a retained-mode framework (heavier,
   harder to test).
 - Revisit: timeline/analytics screens and richer widgets in Phase 6.
+
+## D11 — Attention rules quantified; single-connection DB discipline (Phase 6)
+
+- Context: docs/10's "half thresholds" clause is unquantifiable, and the
+  single-writer DB deadlocks when queries nest inside open row iteration
+  (bit twice: filesystem Scan, analytics coverages).
+- Choice: implement the 3/7/14-day and 50/70% rules exactly as written and
+  drop the half-threshold clause (documented in code); rule: never issue
+  queries while rows are open — drain into slices, close, then follow up.
+- Alternatives: background connection pool (breaks the single-writer
+  simplicity for no v1 benefit).
+- Revisit: thresholds become user-configurable only if requested.

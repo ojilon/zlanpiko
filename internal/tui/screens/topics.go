@@ -4,10 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 
+	"zlanpiko/internal/analytics"
 	"zlanpiko/internal/domain"
 	"zlanpiko/internal/services"
 	"zlanpiko/internal/tui/components"
@@ -33,8 +35,8 @@ func NewTopics(shared *Shared) *TopicsModel {
 	t := table.New(
 		table.WithColumns([]table.Column{
 			{Title: "UNIT", Width: 10}, {Title: "ID", Width: 10},
-			{Title: "NAME", Width: 30}, {Title: "STATUS", Width: 9},
-			{Title: "PRIORITY", Width: 9},
+			{Title: "NAME", Width: 26}, {Title: "STATUS", Width: 9},
+			{Title: "PRI", Width: 7}, {Title: "ATTENTION", Width: 10},
 		}),
 		table.WithFocused(true),
 		table.WithHeight(10),
@@ -73,9 +75,25 @@ func (s *TopicsModel) Reload() error {
 		}
 	}
 	s.rows = all
+	// Nearest assessment per unit for the attention column (one query each).
+	exams := map[string]*time.Time{}
+	unitsSeen := map[string]bool{}
+	for _, t := range all {
+		unitsSeen[t.UnitID] = true
+	}
+	for unit := range unitsSeen {
+		exam, err := analytics.NextAssessment(s.shared.Ctx.DB, unit, time.Now())
+		if err != nil {
+			return err
+		}
+		if exam != nil {
+			exams[unit] = exam.DueAt
+		}
+	}
 	rows := make([]table.Row, 0, len(all))
 	for _, t := range all {
-		rows = append(rows, table.Row{t.UnitID, t.ID, t.Name, string(t.ReadingStatus), string(t.Priority)})
+		att, _ := analytics.AssessTopic(t.ReadingStatus, t.Priority, exams[t.UnitID], time.Now())
+		rows = append(rows, table.Row{t.UnitID, t.ID, t.Name, string(t.ReadingStatus), string(t.Priority), string(att)})
 	}
 	s.table.SetRows(rows)
 	return nil

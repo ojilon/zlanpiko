@@ -25,6 +25,18 @@ func ParseTime(s string) (time.Time, error) {
 	return t.UTC(), nil
 }
 
+// PriorityRank orders priorities high → normal → low for sorting.
+func PriorityRank(p Priority) int {
+	switch p {
+	case PriorityHigh:
+		return 0
+	case PriorityNormal:
+		return 1
+	default:
+		return 2
+	}
+}
+
 // ChildCounts tallies records attached to a deletable entity.
 type ChildCounts struct {
 	Topics int

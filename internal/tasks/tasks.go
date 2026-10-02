@@ -368,7 +368,57 @@ func DeleteTask(db *sql.DB, root string, logger *slog.Logger, unitID, taskID str
 	return nil
 }
 
-// Filter narrows ListTasks. Status accepts a stored status, "overdue"
+// NextOpen returns the nearest open task of the given kinds due at or
+// after now, or nil when there is none.
+func NextOpen(db *sql.DB, unitID string, kinds []domain.TaskKind, now time.Time) (*domain.Task, error) {
+	if len(kinds) == 0 {
+		return nil, nil
+	}
+	placeholders := ""
+	args := []any{unitID}
+	for i, k := range kinds {
+		if i > 0 {
+			placeholders += ","
+		}
+		placeholders += "?"
+		args = append(args, string(k))
+	}
+	args = append(args, domain.FormatTime(now))
+	row := db.QueryRow(`SELECT `+taskColumns+` FROM tasks
+		WHERE unit_id = ? AND kind IN (`+placeholders+`)
+		AND status IN ('not_started','in_progress') AND due_at IS NOT NULL AND due_at >= ?
+		ORDER BY due_at LIMIT 1`, args...)
+	t, err := scanTask(row)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+// NextDeadline returns the nearest open due date in the unit (any kind) at
+// or after now, or nil when there is none.
+func NextDeadline(db *sql.DB, unitID string, now time.Time) (*time.Time, error) {
+	var due sql.NullString
+	err := db.QueryRow(`SELECT due_at FROM tasks
+		WHERE unit_id = ? AND status IN ('not_started','in_progress')
+		AND due_at IS NOT NULL AND due_at >= ? ORDER BY due_at LIMIT 1`,
+		unitID, domain.FormatTime(now)).Scan(&due)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	t, err := parseNullableTime(due.String)
+	if err != nil {
+		return nil, err
+	}
+	return t, nil
+}
+
 // (derived) or "" for all. DueBefore/DueAfter bound due_at (nil = unbounded).
 type Filter struct {
 	UnitID    string

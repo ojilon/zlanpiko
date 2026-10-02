@@ -83,6 +83,30 @@ func (d *DashboardModel) Reload() error {
 		b.WriteString(fmt.Sprintf("%-28.28s %s %6s  %d active\n", name,
 			styles.Bar(frac, barW), uc.CoverageText(), uc.ActiveTasks))
 	}
+	b.WriteString("\n" + styles.Header("Needs attention") + "\n")
+	attention := 0
+	for _, uc := range ucs {
+		att, reason, err := analytics.AssessUnit(d.shared.Ctx.DB, uc, now)
+		if err != nil {
+			return err
+		}
+		if att == analytics.AttentionOnTrack || att == analytics.AttentionCompleted || att == analytics.AttentionNone {
+			continue
+		}
+		attention++
+		marker := styles.Warn("•")
+		if att == analytics.AttentionOverdue {
+			marker = styles.Error("!")
+		}
+		line := fmt.Sprintf("%s  %s — %s", marker, uc.Name, att)
+		if reason != "" {
+			line += styles.Muted(" (" + reason + ")")
+		}
+		b.WriteString(line + "\n")
+	}
+	if attention == 0 {
+		b.WriteString(styles.OK("all clear") + "\n")
+	}
 	b.WriteString("\n" + styles.Header("Overdue") + "\n")
 	if len(overdue) == 0 {
 		b.WriteString(styles.OK("none") + "\n")

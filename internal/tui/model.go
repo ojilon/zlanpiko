@@ -47,7 +47,9 @@ func NewModel(ctx *app.Context) *Model {
 		screens.Units:     screens.NewUnits(shared),
 		screens.Topics:    screens.NewTopics(shared),
 		screens.Tasks:     screens.NewTasks(shared),
+		screens.Timeline:  screens.NewTimeline(shared),
 		screens.Files:     screens.NewFiles(shared),
+		screens.Analytics: screens.NewAnalytics(shared),
 		screens.Settings:  screens.NewSettings(shared),
 	}
 	input := textinput.New()
@@ -239,8 +241,12 @@ func (m *Model) View() string {
 	b.WriteString(styles.Muted(fmt.Sprintf("   %s · week %d · %s\n",
 		now.Format("Mon 2006-01-02"), week, app.Version)))
 	tabs := make([]string, 0, len(m.order))
+	compact := m.width < 110
 	for _, id := range m.order {
 		label := "[" + screens.Keys[id] + "] " + screens.Titles[id]
+		if compact {
+			label = "[" + screens.Keys[id] + "]"
+		}
 		if id == m.active {
 			tabs = append(tabs, styles.Selected(" "+label+" "))
 		} else {
@@ -278,7 +284,7 @@ func min(a, b int) int {
 
 func helpView() string {
 	rows := [][]string{
-		{"1–6", "switch screens"},
+		{"1–8", "switch screens"},
 		{"/", "focus command input"},
 		{"esc", "blur input / cancel dialog"},
 		{"?", "this help"},

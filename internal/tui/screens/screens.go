@@ -18,12 +18,14 @@ const (
 	Units
 	Topics
 	Tasks
+	Timeline
 	Files
+	Analytics
 	Settings
 )
 
 // Order is the tab-strip sequence.
-var Order = []ScreenID{Dashboard, Units, Topics, Tasks, Files, Settings}
+var Order = []ScreenID{Dashboard, Units, Topics, Tasks, Timeline, Files, Analytics, Settings}
 
 // Titles maps screens to tab labels.
 var Titles = map[ScreenID]string{
@@ -31,13 +33,16 @@ var Titles = map[ScreenID]string{
 	Units:     "Units",
 	Topics:    "Topics",
 	Tasks:     "Tasks",
+	Timeline:  "Timeline",
 	Files:     "Files",
+	Analytics: "Analytics",
 	Settings:  "Settings",
 }
 
 // Keys maps screens to tab-switch digits.
 var Keys = map[ScreenID]string{
-	Dashboard: "1", Units: "2", Topics: "3", Tasks: "4", Files: "5", Settings: "6",
+	Dashboard: "1", Units: "2", Topics: "3", Tasks: "4", Timeline: "5",
+	Files: "6", Analytics: "7", Settings: "8",
 }
 
 // NoNav clears navigation requests.

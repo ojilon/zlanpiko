@@ -28,6 +28,8 @@ Commands:
   units    Manage course units      (list add rename archive unarchive delete show)
   topics   Manage topics            (list add status rename move delete)
   tasks    Manage assignments etc.  (list add edit complete submit delete deadlines)
+  timeline Show the weekly timeline  (--week YYYY-Www | --offset N)
+  analytics Show coverage + attention [--unit ID]
   files    Manage files             (list import move rename delete open search)
   .        Import the working directory (preview first, needs --yes)
   help     Show this help
@@ -53,6 +55,10 @@ func Run(ctx *app.Context, args []string, stdout, stderr io.Writer) int {
 		return runTopics(ctx, args[1:], stdout, stderr)
 	case "tasks":
 		return runTasks(ctx, args[1:], stdout, stderr)
+	case "timeline":
+		return runTimeline(ctx, args[1:], stdout, stderr)
+	case "analytics":
+		return runAnalytics(ctx, args[1:], stdout, stderr)
 	case "files":
 		return runFiles(ctx, args[1:], stdout, stderr)
 	case ".":
@@ -157,6 +163,20 @@ func parseMixed(args []string) (pos []string, f flags, err error) {
 		}
 	}
 	return pos, f, nil
+}
+
+// rejectUnknown errors on flags outside the allowed set.
+func rejectUnknown(f flags, allowed ...string) error {
+	ok := map[string]bool{}
+	for _, a := range allowed {
+		ok[a] = true
+	}
+	for key := range f.present {
+		if !ok[key] {
+			return fmt.Errorf("unknown flag --%s", key)
+		}
+	}
+	return nil
 }
 
 // need returns a required flag or a usage error.

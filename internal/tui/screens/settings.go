@@ -59,7 +59,7 @@ func (s *SettingsModel) Reload() error {
 	b.WriteString(fmt.Sprintf("Theme         %s  (t cycles auto → 16 → none)\n", s.theme))
 	b.WriteString(fmt.Sprintf("Units         %d active, %d archived\n", units, archived))
 	b.WriteString("\n" + styles.Header("Keys") + "\n")
-	b.WriteString("1–6 screens · / command · esc blur · ? help · q quit\n")
+	b.WriteString("1–8 screens · / command · esc blur · ? help · q quit\n")
 	b.WriteString("\n" + styles.Header("Maintenance") + "\n")
 	b.WriteString("v verify database · exports and backups arrive in Phase 8\n")
 	s.lines = b.String()

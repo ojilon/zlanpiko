@@ -24,3 +24,6 @@ Format follows Keep a Changelog; versions follow semantic versioning.
 - Phase 5: Bubble Tea TUI (dashboard, units, topics, tasks, files, settings;
   persistent command input with history; auto/16/none themes), shared
   coverage package, no-args launches TUI on a terminal.
+- Phase 6: ISO-week timeline package, attention-label rules, timeline and
+  analytics screens (with inline deadline editing), dashboard attention
+  section, `timeline`/`analytics` CLI commands, cross-front parity tests.

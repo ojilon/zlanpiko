@@ -6,14 +6,16 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	"zlanpiko/internal/app"
+	"zlanpiko/internal/timeline"
 	"zlanpiko/internal/tui/screens"
 )
 
 const tuiCommandHelp = `Commands:
-  /help /dashboard /units /topics [unit] /tasks [unit] /files /settings
+  /help /dashboard /units /topics [unit] /tasks [unit]
+  /timeline [next|prev|today|YYYY-Www] /files /analytics /settings
   /version /quit
-  /timeline /analytics /search /export /backup  (later phases)
-Keys work too: 1-6 switch screens, see ? for more.`
+  /search /export /backup  (later phases)
+Keys work too: 1-8 switch screens, see ? for more.`
 
 // dispatch runs a command-input line: history, screen switching, filters,
 // notices and quit. Unknown commands get a closest-match suggestion.
@@ -58,6 +60,32 @@ func (m *Model) dispatch(raw string) tea.Cmd {
 	case "files":
 		m.switchTo(screens.Files)
 		return nil
+	case "timeline":
+		m.switchTo(screens.Timeline)
+		if tl, ok := m.views[screens.Timeline].(*screens.TimelineModel); ok {
+			switch args {
+			case "", "today":
+				tl.GoToday()
+			case "next":
+				tl.Shift(1)
+			case "prev", "previous":
+				tl.Shift(-1)
+			default:
+				y, w, err := timeline.ParseWeek(args)
+				if err != nil {
+					m.status = err.Error()
+					return nil
+				}
+				tl.SetWeek(y, w)
+			}
+			if err := tl.Reload(); err != nil {
+				m.status = err.Error()
+			}
+		}
+		return nil
+	case "analytics":
+		m.switchTo(screens.Analytics)
+		return nil
 	case "settings":
 		m.switchTo(screens.Settings)
 		return nil
@@ -66,9 +94,6 @@ func (m *Model) dispatch(raw string) tea.Cmd {
 		return nil
 	case "quit", "q", "exit":
 		return tea.Quit
-	case "timeline", "analytics":
-		m.status = "/" + name + " arrives in Phase 6"
-		return nil
 	case "search", "export", "backup":
 		m.status = "/" + name + " arrives in Phase 8"
 		return nil

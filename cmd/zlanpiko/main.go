@@ -32,12 +32,14 @@ Commands:
   units      Manage course units
   topics     Manage topics and reading progress
   tasks      Manage assignments, tests and deadlines
+  timeline   Show the weekly timeline
+  analytics  Show coverage and attention
   files      Manage files (list import move rename delete open search)
   .          Import the working directory (preview first, needs --yes)
   help       Show this help
   version    Show version information
 
-More commands (timeline, export, backup) arrive with later phases
+More commands (export, backup) arrive with later phases
 (see docs/08).
 `
 
