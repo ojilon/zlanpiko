@@ -1,4 +1,6 @@
-import { getVersion, windowControl } from './api';
+import { getDashboard, getVersion, getWeekOffset, windowControl } from './api';
+import type { WeekDTO } from './types';
+import { renderDashboard, statusLine } from './views/dashboard';
 
 const NAV = [
   'Dashboard',
@@ -32,20 +34,27 @@ function renderSidebar(onNav: (v: View) => void): void {
   }
 }
 
-function renderView(view: View, version: string): void {
+async function renderView(view: View, version: string): Promise<void> {
   const el = document.getElementById('view');
   if (!el) return;
   if (view === 'Dashboard') {
-    el.innerHTML = `
-      <h2>Academic overview</h2>
-      <p>Wails shell is up. Full dashboard (cards, week rail,
-      deadline-distance bars) lands in Phase B.</p>
-      <div class="cards">
-        <div class="card"><h3>Backend</h3>
-          <div class="dim">${version}</div>
-          <div class="bar"><i style="width:100%"></i></div>
-        </div>
-      </div>`;
+    const d = await getDashboard();
+    if (!d) {
+      el.innerHTML = `<h2>Academic overview</h2>
+        <p>Browser preview: start the Wails window for live data
+        (see docs/cs/10). Dashboard mock lands here.</p>`;
+      return;
+    }
+    const rail: WeekDTO[] = [];
+    for (const off of [-1, 0, 1]) {
+      const w = await getWeekOffset(off);
+      if (w) rail.push(w);
+    }
+    renderDashboard(el, d, rail);
+    const status = document.getElementById('statusline');
+    if (status) status.textContent = `Status: ${statusLine(d.summary)}`;
+    const meta = document.getElementById('titlebar-meta');
+    if (meta) meta.textContent = `${d.week.title} · ${version}`;
     return;
   }
   el.innerHTML = `<h2>${view}</h2><p>Coming in Phase B–F (see docs/cs/11).</p>`;
@@ -96,8 +105,10 @@ async function boot(): Promise<void> {
   if (meta) meta.textContent = `gui shell · ${version}`;
   const status = document.getElementById('statusline');
   if (status) status.textContent = `backend: ${version}`;
-  renderSidebar((v) => renderView(v, version));
-  renderView('Dashboard', version);
+  renderSidebar((v) => {
+    void renderView(v, version);
+  });
+  await renderView('Dashboard', version);
 }
 
 void boot();

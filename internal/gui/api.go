@@ -1,6 +1,8 @@
 package gui
 
 import (
+	"time"
+
 	"zlanpiko/internal/app"
 )
 
@@ -8,22 +10,17 @@ import (
 // go through its methods (see docs/cs/02 for the full catalogue).
 type GuiApi struct {
 	ctx *app.Context
+	// now supplies the current time; tests pin it for deterministic goldens.
+	now func() time.Time
 }
 
 // NewGuiApi wires the shared application context (data root, db, logger).
 // The caller owns ctx; GuiApi never closes the database itself.
 func NewGuiApi(ctx *app.Context) *GuiApi {
-	return &GuiApi{ctx: ctx}
+	return &GuiApi{ctx: ctx, now: time.Now}
 }
 
 // GetVersion returns the build identification string (titlebar + settings).
 func (g *GuiApi) GetVersion() (string, error) {
 	return app.Info(), nil
-}
-
-// GetDashboard is a Phase A placeholder returning zero counts plus the
-// version. Phase B replaces the body with live analytics rows.
-func (g *GuiApi) GetDashboard() (DashboardDTO, error) {
-	_ = g.ctx
-	return DashboardDTO{Version: app.Info()}, nil
 }

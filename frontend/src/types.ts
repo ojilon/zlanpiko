@@ -1,5 +1,7 @@
 // Mirrors internal/gui/dto.go. Hand-kept; parity is enforced by
-// internal/gui/dto_test.go golden files (see docs/cs/02, docs/cs/10).
+// internal/gui/testdata/*.json goldens (see docs/cs/02, docs/cs/10).
+// Times arrive as RFC 3339 local strings; display strings are pre-formatted
+// by Go — never re-derive deadlines here.
 
 export interface GuiError {
   code: string;
@@ -16,11 +18,74 @@ export type GuiErrorCode =
   | 'BACKUP'
   | 'CANCELLED';
 
-// Phase A placeholder — full dashboard DTO lands in Phase B.
-export interface DashboardDTO {
+export interface TaskDTO {
+  id: string;
+  unit_id: string;
+  unit_name: string;
+  title: string;
+  kind: string;
+  status: string;
+  overdue: boolean;
+  priority: string;
+  due_iso?: string;
+  due_display: string;
+  distance: string;
+  days_left?: number;
+  progress_pct?: number;
+}
+
+export interface UnitCardDTO {
+  unit_id: string;
+  name: string;
+  code: string;
+  total: number;
+  read: number;
+  pending: number;
+  unread: number;
+  coverage: number;
+  coverage_text: string;
+  has_topics: boolean;
+  active_tasks: number;
+  completed_tasks: number;
+  next_due_display: string;
+  attention: string;
+  reason?: string;
+}
+
+export interface DayDTO {
+  date: string;
+  display: string;
+  items: TaskDTO[];
+}
+
+export interface WeekDTO {
+  year: number;
+  week: number;
+  title: string;
+  monday: string;
+  days: DayDTO[];
+  overdue: TaskDTO[];
+}
+
+export interface SummaryDTO {
   units: number;
-  topics: number;
-  activeTasks: number;
-  overdue: number;
+  total_topics: number;
+  read: number;
+  pending: number;
+  unread: number;
+  coverage: number;
+  coverage_text: string;
+  has_topics: boolean;
+  active_tasks: number;
+  completed_tasks: number;
+  overdue_tasks: number;
+}
+
+export interface DashboardDTO {
   version: string;
+  summary: SummaryDTO;
+  units: UnitCardDTO[];
+  upcoming: TaskDTO[];
+  overdue: TaskDTO[];
+  week: WeekDTO;
 }

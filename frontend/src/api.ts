@@ -3,6 +3,8 @@
 // in plain-browser preview (vite dev without Wails) the bridge is absent
 // and every call falls back to an explicit "preview" value.
 
+import type { DashboardDTO, WeekDTO } from './types';
+
 interface WailsBridge {
   go?: {
     gui?: {
@@ -30,6 +32,18 @@ export async function getVersion(): Promise<string> {
   const api = bridge();
   if (!api?.GetVersion) return '0.1.0-dev (browser preview)';
   return (await api.GetVersion()) as string;
+}
+
+export async function getDashboard(): Promise<DashboardDTO | null> {
+  const api = bridge();
+  if (!api?.GetDashboard) return null; // browser preview: no backend
+  return (await api.GetDashboard()) as DashboardDTO;
+}
+
+export async function getWeekOffset(offset: number): Promise<WeekDTO | null> {
+  const api = bridge();
+  if (!api?.GetWeekOffset) return null;
+  return (await api.GetWeekOffset(offset)) as WeekDTO;
 }
 
 export function windowControl(action: 'min' | 'max' | 'close'): void {
