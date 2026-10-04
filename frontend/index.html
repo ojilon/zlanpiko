@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>zlanpiko</title>
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+  <div id="titlebar">
+    <div class="tb-left"><span class="tb-dot"></span><span class="tb-name">zlanpiko</span></div>
+    <div class="tb-center" id="titlebar-meta">week — · —</div>
+    <div class="tb-right">
+      <button data-win="min" title="Minimise" tabindex="0">—</button>
+      <button data-win="max" title="Maximise / restore" tabindex="0">▢</button>
+      <button data-win="close" title="Close" tabindex="0">✕</button>
+    </div>
+  </div>
+  <div id="shell">
+    <aside id="sidebar"></aside>
+    <main id="view"></main>
+  </div>
+  <div id="statusline">starting…</div>
+  <div id="commandwrap">
+    <div class="term-label">terminal</div>
+    <div id="commandbar">
+      <span class="prompt">&gt;</span>
+      <input id="cmdinput" type="text" autocomplete="off" spellcheck="false"
+             placeholder="/help · /dashboard · /units list · /tasks deadlines" />
+      <button id="cmdrun" title="Run command">↵ run</button>
+    </div>
+    <div id="cmdmsg"></div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+:root {
+  --bg: #0f141b;
+  --panel: #161d27;
+  --line: #2a3442;
+  --ink: #dbe4f0;
+  --dim: #93a1b5;
+  --accent: #7fb6e8;
+  --accent-soft: #22374d;
+  --ok: #6fbf8f;
+  --warn: #e0b46a;
+  --bad: #e07a7a;
+  --radius: 10px;
+  --border: 1px solid var(--line);
+  --mono: Consolas, "Cascadia Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.45 "Segoe UI", system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Frameless drag region: titlebar drags, buttons opt out. */
+#titlebar {
+  height: 38px;
+  flex: 0 0 38px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px 0 12px;
+  background: var(--panel);
+  border-bottom: var(--border);
+  -webkit-app-region: drag;
+  user-select: none;
+}
+#titlebar .tb-left { display: flex; align-items: center; gap: 8px; min-width: 140px; }
+#titlebar .tb-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+}
+#titlebar .tb-name { font-weight: 600; letter-spacing: 0.02em; }
+#titlebar .tb-center { flex: 1; text-align: center; color: var(--dim); font-size: 12px; }
+#titlebar .tb-right { display: flex; gap: 4px; -webkit-app-region: no-drag; }
+#titlebar .tb-right button {
+  width: 38px; height: 26px;
+  background: transparent; color: var(--ink);
+  border: 1px solid transparent; border-radius: 6px;
+  cursor: pointer; font-size: 12px;
+}
+#titlebar .tb-right button:hover { background: var(--accent-soft); }
+#titlebar .tb-right button:focus-visible { outline: 2px solid var(--accent); }
+
+#shell { flex: 1; display: flex; min-height: 0; }
+#sidebar {
+  width: 168px; flex: 0 0 168px;
+  border-right: var(--border);
+  background: var(--panel);
+  padding: 10px 8px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+#sidebar button {
+  text-align: left;
+  background: transparent; color: var(--ink);
+  border: 1px solid transparent; border-radius: 8px;
+  padding: 7px 10px; cursor: pointer; font-size: 13px;
+}
+#sidebar button:hover { background: var(--accent-soft); }
+#sidebar button.active { border-color: var(--line); background: var(--accent-soft); }
+#sidebar button:focus-visible { outline: 2px solid var(--accent); }
+
+#view { flex: 1; padding: 16px 18px; overflow: auto; }
+
+#statusline {
+  flex: 0 0 auto;
+  padding: 4px 12px;
+  font-size: 12px; color: var(--dim);
+  border-top: var(--border);
+  background: var(--panel);
+}
+
+#commandwrap { flex: 0 0 auto; padding: 8px 12px 10px; background: var(--bg); }
+#commandwrap .term-label {
+  font: 11px var(--mono); color: var(--dim);
+  border: 1px solid var(--line); border-bottom: none;
+  display: inline-block; padding: 1px 10px;
+  border-radius: 8px 8px 0 0; background: var(--panel);
+}
+#commandbar {
+  display: flex; align-items: center; gap: 8px;
+  border: var(--border); border-radius: 0 8px 8px 8px;
+  background: #0b0f15; padding: 8px 10px;
+}
+#commandbar .prompt { font-family: var(--mono); color: var(--accent); }
+#cmdinput {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: var(--ink); font: 14px var(--mono); caret-color: var(--accent);
+}
+#cmdrun {
+  background: var(--accent-soft); color: var(--ink);
+  border: var(--border); border-radius: 6px; padding: 4px 10px; cursor: pointer;
+}
+#cmdmsg { font: 12px var(--mono); min-height: 18px; padding-top: 4px; }
+#cmdmsg.ok { color: var(--ok); }
+#cmdmsg.err { color: var(--bad); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.card {
+  border: var(--border); border-radius: var(--radius);
+  background: var(--panel); padding: 12px 14px;
+}
+.card h3 { margin: 0 0 6px; font-size: 14px; }
+.card .dim { color: var(--dim); font-size: 12px; }
+.bar { height: 6px; border-radius: 3px; background: #232c39; overflow: hidden; margin-top: 8px; }
+.bar > i { display: block; height: 100%; background: var(--accent); }
+
+@media (max-width: 1100px) {
+  #sidebar { width: 52px; flex-basis: 52px; }
+  #sidebar button span.lbl { display: none; }
+}
