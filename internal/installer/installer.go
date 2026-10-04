@@ -12,8 +12,10 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"zlanpiko/internal/app"
+	"zlanpiko/internal/backup"
 	"zlanpiko/internal/config"
 )
 
@@ -25,6 +27,8 @@ type Options struct {
 	AddPath    bool   // offer/perform user-PATH entry (default true)
 	Shortcut   bool   // create Start-Menu shortcut (default true)
 	ExePath    string // zlanpiko.exe to install (default: beside this exe)
+	GuiExePath string // zlanpiko-gui.exe to install (default: beside this exe)
+	NoGUI      bool   // skip the desktop GUI even when present
 	// OS integration overrides (tests):
 	StartMenuDir string // shortcut parent (default user Start Menu\Programs)
 	SkipOS       bool   // skip PATH+shortcut execution (report only)
@@ -71,10 +75,11 @@ func Run(opts Options) error {
 	if dataDir == "" {
 		dataDir = defaultDataDir()
 	}
+	// One shared reader: fresh bufio.Readers per prompt would discard
+	// buffered typeahead and break piped answers.
+	reader := bufio.NewReader(in)
+	wantGUI := false
 	if !opts.Yes {
-		// One shared reader: fresh bufio.Readers per prompt would discard
-		// buffered typeahead and break piped answers.
-		reader := bufio.NewReader(in)
 		var err error
 		installDir, err = askDir(reader, in, out, "Install directory", installDir, "Zlanpiko")
 		if err != nil {
@@ -84,6 +89,9 @@ func Run(opts Options) error {
 		if err != nil {
 			return err
 		}
+		wantGUI = askGUI(reader, out, opts)
+	} else {
+		_, wantGUI = guiWanted(opts)
 	}
 	existing := detectExisting(dataDir)
 	if existing != "" {
@@ -93,8 +101,20 @@ func Run(opts Options) error {
 	if err := os.MkdirAll(installDir, 0o755); err != nil {
 		return fmt.Errorf("installer: create install dir: %w", err)
 	}
+	if existing != "" {
+		// Pre-update safety backup before touching program files: abort
+		// the update when the backup fails (docs/cs/09).
+		if err := preUpdateBackup(out, dataDir); err != nil {
+			return err
+		}
+	}
 	if err := installExe(out, opts.ExePath, installDir); err != nil {
 		fmt.Fprintf(out, "note: %v\n", err)
+	}
+	if wantGUI {
+		if err := installGuiExe(out, opts.GuiExePath, installDir); err != nil {
+			fmt.Fprintf(out, "note: %v\n", err)
+		}
 	}
 	ctx, err := app.Open(app.OpenOptions{DataRoot: dataDir})
 	if err != nil {
@@ -117,6 +137,9 @@ func Run(opts Options) error {
 	}
 	fmt.Fprintf(out, "\nDone. %s is ready.\n", app.Name)
 	fmt.Fprintf(out, "Restart your terminal before using %s from any directory.\n", app.ExeName)
+	if wantGUI {
+		fmt.Fprintf(out, "Desktop GUI installed as zlanpiko-gui.exe (frameless window).\n")
+	}
 	return nil
 }
 
@@ -165,6 +188,75 @@ func detectExisting(dataDir string) string {
 	return ""
 }
 
+// preUpdateBackup writes a db-only safety backup into
+// <dataDir>/backups/pre-update-<UTC stamp>.zip. It opens (and migrates) the
+// existing database first, so a corrupt store aborts before exes move.
+func preUpdateBackup(out io.Writer, dataDir string) error {
+	ctx, err := app.Open(app.OpenOptions{DataRoot: dataDir})
+	if err != nil {
+		return fmt.Errorf("installer: existing data unreadable, update aborted: %w", err)
+	}
+	defer ctx.Close()
+	stamp := time.Now().UTC().Format("20060102-150405")
+	dest := filepath.Join(dataDir, "backups", "pre-update-"+stamp+".zip")
+	if _, err := backup.Create(ctx.DB, dataDir, dest, false, nil); err != nil {
+		return fmt.Errorf("installer: pre-update backup failed, update aborted: %w", err)
+	}
+	fmt.Fprintf(out, "Pre-update backup: %s\n", dest)
+	return nil
+}
+
+// guiCandidate locates zlanpiko-gui.exe beside the installer (or the
+// explicit path) and reports whether it exists.
+func guiCandidate(guiExePath string) (string, bool) {
+	if guiExePath != "" {
+		if _, err := os.Stat(guiExePath); err == nil {
+			return guiExePath, true
+		}
+		return guiExePath, false
+	}
+	self, err := os.Executable()
+	if err != nil {
+		return "", false
+	}
+	p := filepath.Join(filepath.Dir(self), "zlanpiko-gui.exe")
+	if _, err := os.Stat(p); err == nil {
+		return p, true
+	}
+	return "", false
+}
+
+// guiWanted reports whether a GUI payload is available and desired under
+// --yes (present beside the installer, not disabled).
+func guiWanted(opts Options) (path string, ok bool) {
+	if opts.NoGUI {
+		return "", false
+	}
+	return guiCandidate(opts.GuiExePath)
+}
+
+// askGUI confirms the desktop GUI payload interactively (shared reader).
+func askGUI(reader *bufio.Reader, out io.Writer, opts Options) bool {
+	path, present := guiWanted(opts)
+	if !present {
+		fmt.Fprintf(out, "note: zlanpiko-gui.exe not found beside installer; GUI skipped\n")
+		return false
+	}
+	fmt.Fprintf(out, "Install desktop GUI (%s)? [Y/n]: ", filepath.Base(path))
+	line, _ := reader.ReadString('\n')
+	answer := strings.ToLower(strings.TrimSpace(line))
+	return answer == "" || answer == "y" || answer == "yes"
+}
+
+// installGuiExe copies the desktop GUI executable (see installExe).
+func installGuiExe(out io.Writer, guiExePath, installDir string) error {
+	path, _ := guiCandidate(guiExePath)
+	if path == "" {
+		return fmt.Errorf("desktop GUI not found beside installer; skipping GUI (main install continues)")
+	}
+	return copyExe(out, path, installDir, "zlanpiko-gui.exe")
+}
+
 // installExe copies the main executable next to the installer (when the
 // release package layout is present) into the install directory.
 func installExe(out io.Writer, exePath, installDir string) error {
@@ -175,12 +267,26 @@ func installExe(out io.Writer, exePath, installDir string) error {
 		}
 		exePath = filepath.Join(filepath.Dir(self), app.ExeName)
 	}
-	src, err := os.Open(exePath)
+	return copyExe(out, exePath, installDir, app.ExeName)
+}
+
+// copyExe installs one executable with one-generation rollback: the
+// previous install becomes name.prev.exe (docs/cs/09).
+func copyExe(out io.Writer, srcPath, installDir, name string) error {
+	src, err := os.Open(srcPath)
 	if err != nil {
-		return fmt.Errorf("main executable not found beside installer (%s); configuration continues without copying", exePath)
+		return fmt.Errorf("executable not found (%s); configuration continues without copying", srcPath)
 	}
 	defer src.Close()
-	dstPath := filepath.Join(installDir, app.ExeName)
+	dstPath := filepath.Join(installDir, name)
+	if _, err := os.Lstat(dstPath); err == nil {
+		prev := dstPath + ".prev.exe"
+		_ = os.Remove(prev)
+		if err := os.Rename(dstPath, prev); err != nil {
+			return fmt.Errorf("rotate previous executable: %w", err)
+		}
+		fmt.Fprintf(out, "Kept previous as %s\n", prev)
+	}
 	dst, err := os.OpenFile(dstPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0o755)
 	if err != nil {
 		return fmt.Errorf("copy executable: %w", err)

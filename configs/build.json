@@ -10,11 +10,13 @@
   ],
   "outputs": {
     "zlanpiko": "dist\\zlanpiko.exe",
-    "installer": "dist\\zlanpiko-installer.exe"
+    "installer": "dist\\zlanpiko-installer.exe",
+    "gui": "dist\\zlanpiko-gui.exe (via scripts\\build-gui.bat: pnpm build + wails build -skipbindings, frameless)"
   },
   "package_contents": [
     "zlanpiko.exe",
     "zlanpiko-installer.exe",
+    "zlanpiko-gui.exe",
     "README.txt",
     "CHANGELOG.txt",
     "checksums.txt"

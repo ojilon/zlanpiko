@@ -18,7 +18,7 @@ func main() {
 
 Usage:
   zlanpiko-installer [--install-dir DIR] [--data-dir DIR] [--yes]
-                     [--no-path] [--no-shortcut]
+                     [--no-path] [--no-shortcut] [--no-gui] [--gui-exe FILE]
 
 How it works:
   1. You choose an install directory (the program) and a data directory
@@ -31,9 +31,11 @@ How it works:
          or a deeper subpath like Dev\Projects — it must already exist.
      The installer then creates the app folder (Zlanpiko / AcademicData)
      inside your choice and shows it for confirmation (y/n).
-  3. The installer initialises the database, saves the configuration,
-     offers a Start-Menu shortcut and a user-PATH entry, and prints a
-     completion summary. Safe to run again for updates.
+   3. The installer initialises the database, saves the configuration,
+      offers a Start-Menu shortcut and a user-PATH entry, and prints a
+      completion summary. Safe to run again for updates.
+      On updates over existing data a pre-update backup is written first
+      and previous executables are kept as *.prev.exe.
 
 Examples:
   zlanpiko-installer
@@ -49,6 +51,8 @@ Flags:
 	yes := fs.Bool("yes", false, "non-interactive: accept defaults/confirmations")
 	noPath := fs.Bool("no-path", false, "skip user-PATH entry")
 	noShortcut := fs.Bool("no-shortcut", false, "skip Start-Menu shortcut")
+	noGUI := fs.Bool("no-gui", false, "skip the desktop GUI payload")
+	guiExe := fs.String("gui-exe", "", "zlanpiko-gui.exe to install (default: beside this exe)")
 	if err := fs.Parse(os.Args[1:]); err != nil {
 		os.Exit(2)
 	}
@@ -58,6 +62,8 @@ Flags:
 		Yes:        *yes,
 		AddPath:    !*noPath,
 		Shortcut:   !*noShortcut,
+		GuiExePath: *guiExe,
+		NoGUI:      *noGUI,
 		Stdin:      os.Stdin,
 		Stdout:     os.Stdout,
 		Stderr:     os.Stderr,

@@ -1,6 +1,7 @@
 @echo off
-REM Release packaging: clean dist/release, versioned builds of both
-REM executables, release assembly, SHA-256 checksums.
+REM Release packaging: clean dist/release, versioned builds of all three
+REM executables (CLI+TUI, installer, frameless GUI), release assembly,
+REM SHA-256 checksums.
 REM Usage: package.bat [version]  (default 0.1.0)
 setlocal
 set VER=0.1.0
@@ -17,11 +18,17 @@ go build %FLAGS% -o dist\zlanpiko.exe .\cmd\zlanpiko
 if %errorlevel% neq 0 exit /b %errorlevel%
 go build %FLAGS% -o dist\zlanpiko-installer.exe .\cmd\installer
 if %errorlevel% neq 0 exit /b %errorlevel%
+call "%~dp0build-gui.bat" %VER%
+if %errorlevel% neq 0 (
+  echo package.bat: GUI build failed, aborting.
+  exit /b 1
+)
 copy /y dist\zlanpiko.exe release\ >nul
 copy /y dist\zlanpiko-installer.exe release\ >nul
+copy /y dist\zlanpiko-gui.exe release\ >nul
 copy /y assets\README.txt release\ >nul
 copy /y CHANGELOG.md release\CHANGELOG.txt >nul
-powershell -NoProfile -NonInteractive -Command "$files = @('release\zlanpiko.exe','release\zlanpiko-installer.exe','release\README.txt','release\CHANGELOG.txt'); $out = foreach ($f in $files) { $h = (Get-FileHash -Algorithm SHA256 -LiteralPath $f).Hash.ToLower(); \"$h  $(Split-Path $f -Leaf)\" }; $out | Out-File -Encoding ascii release\checksums.txt"
+powershell -NoProfile -NonInteractive -Command "$files = @('release\zlanpiko.exe','release\zlanpiko-installer.exe','release\zlanpiko-gui.exe','release\README.txt','release\CHANGELOG.txt'); $out = foreach ($f in $files) { $h = (Get-FileHash -Algorithm SHA256 -LiteralPath $f).Hash.ToLower(); \"$h  $(Split-Path $f -Leaf)\" }; $out | Out-File -Encoding ascii release\checksums.txt"
 if %errorlevel% neq 0 exit /b %errorlevel%
 echo Release %VER% assembled in release\:
 dir /b release
