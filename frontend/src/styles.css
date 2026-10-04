@@ -224,6 +224,31 @@ body {
 }
 #cmdmsg { white-space: pre-wrap; max-height: 120px; overflow: auto; }
 
+.crumbs { margin: 8px 0; font-size: 13px; }
+.crumbs button { background: none; border: none; color: var(--accent); cursor: pointer; padding: 0; }
+.ftools { display: flex; gap: 6px; margin: 8px 0; flex-wrap: wrap; }
+.ftools input {
+  background: #0b0f15; color: var(--ink);
+  border: var(--border); border-radius: 6px; padding: 5px 8px;
+  font: 12px var(--mono); min-width: 160px;
+}
+.ftools button, .fops button, #bak-create, #rep-load, #cfg-save, #files-confirm {
+  background: var(--panel); color: var(--ink);
+  border: var(--border); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 12px;
+}
+.frow {
+  display: flex; gap: 10px; align-items: center;
+  border-bottom: 1px solid #1c2430; padding: 5px 2px; font-size: 13px;
+}
+.fname { background: none; border: none; color: var(--ink); cursor: pointer; text-align: left; padding: 0; }
+.fops { margin-left: auto; display: flex; gap: 4px; }
+.errline { color: var(--bad); font: 12px var(--mono); margin: 6px 0; }
+.report {
+  background: #0b0f15; border: var(--border); border-radius: 8px;
+  padding: 10px; max-height: 320px; overflow: auto;
+  font: 12px var(--mono); white-space: pre-wrap;
+}
+
 @media (max-width: 1100px) {
   #sidebar { width: 52px; flex-basis: 52px; }
   #sidebar button span.lbl { display: none; }

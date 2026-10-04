@@ -3,6 +3,8 @@ import type { WeekDTO } from './types';
 import { renderDashboard, statusLine } from './views/dashboard';
 import { renderTimeline } from './views/timeline';
 import { renderCalendar } from './views/calendar';
+import { renderFiles } from './views/files';
+import { renderSettings } from './views/settings';
 import { REFRESH_EVENT, refreshOpenDrawer, wireDrawerKeys } from './components/drawer';
 import { wireCommandBar } from './components/commandbar';
 
@@ -117,6 +119,14 @@ async function renderView(view: View, version: string): Promise<void> {
       monthOff = next;
       void renderCurrent();
     });
+    return;
+  }
+  if (view === 'Files') {
+    await renderFiles(el);
+    return;
+  }
+  if (view === 'Settings') {
+    await renderSettings(el);
     return;
   }
   el.innerHTML = `<h2>${view}</h2><p>Coming in Phase E–F (see docs/cs/11).</p>`;

@@ -4,10 +4,16 @@
 // and every call falls back to an explicit "preview" value.
 
 import type {
+  BackupDTO,
   CommandResultDTO,
+  ConfigDTO,
   DashboardDTO,
   DayItemsDTO,
+  FileDTO,
+  ImportPlanDTO,
+  ImportReportDTO,
   MonthDTO,
+  ReportDTO,
   TaskDetailDTO,
   WeekDTO,
 } from './types';
@@ -87,6 +93,72 @@ export async function runCommand(input: string): Promise<CommandResultDTO | null
   const api = bridge();
   if (!api?.RunCommand) return null;
   return (await api.RunCommand(input)) as CommandResultDTO;
+}
+
+function need(name: string): Record<string, (...args: unknown[]) => Promise<unknown>> {
+  const api = bridge();
+  if (!api?.[name]) throw new Error('no backend in browser preview');
+  return api;
+}
+
+export async function listFiles(rel: string): Promise<FileDTO[]> {
+  return (await need('ListFiles').ListFiles(rel)) as FileDTO[];
+}
+
+export async function searchFiles(query: string): Promise<FileDTO[]> {
+  return (await need('SearchFiles').SearchFiles(query)) as FileDTO[];
+}
+
+export async function openFile(rel: string): Promise<string> {
+  return (await need('OpenFile').OpenFile(rel)) as string;
+}
+
+export async function makeDir(rel: string): Promise<FileDTO> {
+  return (await need('MakeDir').MakeDir(rel)) as FileDTO;
+}
+
+export async function renameFile(rel: string, newName: string): Promise<FileDTO> {
+  return (await need('RenameFile').RenameFile(rel, newName)) as FileDTO;
+}
+
+export async function deleteFile(rel: string, recursive: boolean): Promise<string> {
+  return (await need('DeleteFile').DeleteFile(rel, recursive)) as string;
+}
+
+export async function previewImport(srcAbs: string, dest: string, recursive: boolean): Promise<ImportPlanDTO> {
+  return (await need('PreviewImport').PreviewImport(srcAbs, dest, recursive)) as ImportPlanDTO;
+}
+
+export async function confirmImport(token: string): Promise<ImportReportDTO> {
+  return (await need('ConfirmImport').ConfirmImport(token)) as ImportReportDTO;
+}
+
+export async function getReport(unitID: string): Promise<ReportDTO> {
+  return (await need('GetReport').GetReport(unitID)) as ReportDTO;
+}
+
+export async function listBackups(): Promise<BackupDTO[]> {
+  return (await need('ListBackups').ListBackups()) as BackupDTO[];
+}
+
+export async function createBackup(full: boolean): Promise<BackupDTO> {
+  return (await need('CreateBackup').CreateBackup(full)) as BackupDTO;
+}
+
+export async function verifyBackup(path: string): Promise<BackupDTO> {
+  return (await need('VerifyBackup').VerifyBackup(path)) as BackupDTO;
+}
+
+export async function restoreBackup(path: string, overwrite: boolean): Promise<string> {
+  return (await need('RestoreBackup').RestoreBackup(path, overwrite)) as string;
+}
+
+export async function getConfig(): Promise<ConfigDTO> {
+  return (await need('GetConfig').GetConfig()) as ConfigDTO;
+}
+
+export async function setDataRoot(path: string): Promise<string> {
+  return (await need('SetDataRoot').SetDataRoot(path)) as string;
 }
 
 export function windowControl(action: 'min' | 'max' | 'close'): void {

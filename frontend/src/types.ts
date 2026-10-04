@@ -138,3 +138,57 @@ export interface CommandResultDTO {
   week_offset?: number;
   unit?: string;
 }
+
+export interface FileDTO {
+  name: string;
+  rel: string;
+  is_dir: boolean;
+  size: number;
+  size_text: string;
+  mod_display: string;
+}
+
+export interface ImportPlannedDTO {
+  name: string;
+  size: number;
+  dest_rel: string;
+  action: string;
+  reason: string;
+  renamed: boolean;
+}
+
+export interface ImportPlanDTO {
+  token: string;
+  source: string;
+  dest_dir: string;
+  copies: number;
+  plans: ImportPlannedDTO[];
+}
+
+export interface ImportReportDTO {
+  copied: number;
+  skipped: number;
+  failed: number;
+}
+
+export interface ReportDTO {
+  text: string;
+  json: string;
+}
+
+export interface BackupDTO {
+  path: string;
+  name: string;
+  kind: string;
+  created: string;
+  files: number;
+  size: number;
+  size_text: string;
+  readable: boolean;
+}
+
+export interface ConfigDTO {
+  data_root: string;
+  version: string;
+  schema_version: number;
+}
