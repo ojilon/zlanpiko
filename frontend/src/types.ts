@@ -192,3 +192,25 @@ export interface ConfigDTO {
   version: string;
   schema_version: number;
 }
+
+export interface StatusCounts {
+  not_started: number;
+  in_progress: number;
+  completed: number;
+  submitted: number;
+  overdue: number;
+}
+
+export interface HistDay {
+  date: string;
+  display: string;
+  count: number;
+  worst: 'none' | 'info' | 'warn' | 'bad';
+}
+
+export interface AnalyticsDTO {
+  summary: SummaryDTO;
+  units: UnitCardDTO[];
+  statuses: StatusCounts;
+  histogram: HistDay[];
+}

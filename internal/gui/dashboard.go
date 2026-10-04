@@ -132,8 +132,11 @@ func (g *GuiApi) GetUnitCards() ([]UnitCardDTO, error) {
 			return nil, fail(ErrDB, "assess unit "+uc.UnitID, err.Error())
 		}
 		nextDue := ""
+		var nextDays *int
 		if uc.NextDue != nil {
 			nextDue = formatDue(uc.NextDue)
+			_, days := distance(now, uc.NextDue)
+			nextDays = days
 		}
 		out = append(out, UnitCardDTO{
 			UnitID:         uc.UnitID,
@@ -149,6 +152,7 @@ func (g *GuiApi) GetUnitCards() ([]UnitCardDTO, error) {
 			ActiveTasks:    uc.ActiveTasks,
 			CompletedTasks: uc.CompletedTasks,
 			NextDueDisplay: nextDue,
+			NextDueDays:    nextDays,
 			Attention:      string(label),
 			Reason:         reason,
 		})

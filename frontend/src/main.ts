@@ -5,6 +5,7 @@ import { renderTimeline } from './views/timeline';
 import { renderCalendar } from './views/calendar';
 import { renderFiles } from './views/files';
 import { renderSettings } from './views/settings';
+import { renderAnalytics } from './views/analytics';
 import { REFRESH_EVENT, refreshOpenDrawer, wireDrawerKeys } from './components/drawer';
 import { wireCommandBar } from './components/commandbar';
 
@@ -123,6 +124,10 @@ async function renderView(view: View, version: string): Promise<void> {
   }
   if (view === 'Files') {
     await renderFiles(el);
+    return;
+  }
+  if (view === 'Analytics') {
+    await renderAnalytics(el);
     return;
   }
   if (view === 'Settings') {

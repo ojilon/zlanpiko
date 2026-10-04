@@ -84,6 +84,7 @@ type UnitCardDTO struct {
 	ActiveTasks    int     `json:"active_tasks"`
 	CompletedTasks int     `json:"completed_tasks"`
 	NextDueDisplay string  `json:"next_due_display"`
+	NextDueDays    *int    `json:"next_due_days,omitempty"`
 	Attention      string  `json:"attention"`
 	Reason         string  `json:"reason,omitempty"`
 }

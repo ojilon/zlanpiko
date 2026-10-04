@@ -281,6 +281,44 @@ func TestGetMonthGrid(t *testing.T) {
 	golden(t, "month.json", m)
 }
 
+func TestGetAnalytics(t *testing.T) {
+	_, api := openPhaseB(t)
+	a, err := api.GetAnalytics()
+	if err != nil {
+		t.Fatalf("GetAnalytics: %v", err)
+	}
+	if a.Statuses.NotStarted != 2 || a.Statuses.Completed != 1 || a.Statuses.Overdue != 1 {
+		t.Fatalf("status counts wrong: %+v", a.Statuses)
+	}
+	if len(a.Histogram) != 14 {
+		t.Fatalf("histogram days %d, want 14", len(a.Histogram))
+	}
+	// Oct 6 column carries the presentation.
+	found := false
+	for _, h := range a.Histogram {
+		if h.Date == "2026-10-06" {
+			found = true
+			if h.Count != 1 || h.Worst != "warn" {
+				t.Fatalf("Oct 6 column wrong: %+v", h)
+			}
+		}
+	}
+	if !found {
+		t.Fatalf("Oct 6 missing from histogram")
+	}
+	// NextDueDays drives table sorting without display parsing.
+	var per *UnitCardDTO
+	for i := range a.Units {
+		if a.Units[i].Name == "Periodicity" {
+			per = &a.Units[i]
+		}
+	}
+	if per == nil || per.NextDueDays == nil || *per.NextDueDays != 2 {
+		t.Fatalf("next due days wrong: %+v", per)
+	}
+	golden(t, "analytics.json", a)
+}
+
 func TestGetTaskDetail(t *testing.T) {
 	_, api := openPhaseB(t)
 	d, err := api.GetTaskDetail("unit-001", "task-001")

@@ -4,6 +4,7 @@
 // and every call falls back to an explicit "preview" value.
 
 import type {
+  AnalyticsDTO,
   BackupDTO,
   CommandResultDTO,
   ConfigDTO,
@@ -155,6 +156,10 @@ export async function restoreBackup(path: string, overwrite: boolean): Promise<s
 
 export async function getConfig(): Promise<ConfigDTO> {
   return (await need('GetConfig').GetConfig()) as ConfigDTO;
+}
+
+export async function getAnalytics(): Promise<AnalyticsDTO> {
+  return (await need('GetAnalytics').GetAnalytics()) as AnalyticsDTO;
 }
 
 export async function setDataRoot(path: string): Promise<string> {

@@ -249,6 +249,33 @@ body {
   font: 12px var(--mono); white-space: pre-wrap;
 }
 
+.arow { display: flex; gap: 14px; align-items: center; }
+.ring { width: 84px; height: 84px; }
+.ring-bg { fill: none; stroke: #232c39; stroke-width: 9; }
+.ring-fg {
+  fill: none; stroke: var(--accent); stroke-width: 9;
+  stroke-linecap: round; transform: rotate(-90deg); transform-origin: 42px 42px;
+}
+.ring text { fill: var(--ink); font-size: 15px; text-anchor: middle; }
+.stack { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 10px; background: #232c39; }
+.stack .s-ok { background: var(--ok); }
+.stack .s-warn { background: var(--warn); }
+.stack .s-rest { background: transparent; }
+.hrow { display: flex; gap: 8px; align-items: center; margin: 6px 0; font-size: 13px; }
+.hrow .grow { flex: 1; margin-top: 0; }
+.hrow .bar > i.ok { background: var(--ok); }
+.hrow .bar > i.bad { background: var(--bad); }
+.hrow .uname { min-width: 140px; }
+.hcols { display: flex; gap: 4px; align-items: flex-end; margin-top: 8px; }
+.hcol { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 22px; }
+.hcol i { display: block; width: 14px; border-radius: 3px; background: var(--accent); }
+.hcol.warn i { background: var(--warn); }
+.hcol.bad i { background: var(--bad); }
+.hcol.none i { background: #232c39; }
+.hcol span { font-size: 10px; color: var(--dim); }
+table.attn { width: 100%; border-collapse: collapse; font-size: 12px; }
+table.attn th, table.attn td { text-align: left; padding: 4px 6px; border-bottom: 1px solid #1c2430; }
+
 @media (max-width: 1100px) {
   #sidebar { width: 52px; flex-basis: 52px; }
   #sidebar button span.lbl { display: none; }

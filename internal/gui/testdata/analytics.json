@@ -1,0 +1,146 @@
+{
+  "summary": {
+    "units": 2,
+    "total_topics": 5,
+    "read": 1,
+    "pending": 1,
+    "unread": 3,
+    "coverage": 20,
+    "coverage_text": "20%",
+    "has_topics": true,
+    "active_tasks": 2,
+    "completed_tasks": 1,
+    "overdue_tasks": 1
+  },
+  "units": [
+    {
+      "unit_id": "unit-002",
+      "name": "Ecology",
+      "code": "SBE:2101",
+      "total": 0,
+      "read": 0,
+      "pending": 0,
+      "unread": 0,
+      "coverage": 0,
+      "coverage_text": "—",
+      "has_topics": false,
+      "active_tasks": 1,
+      "completed_tasks": 0,
+      "next_due_display": "2026-10-03 12:00",
+      "next_due_days": -1,
+      "attention": "—",
+      "reason": "No topics yet"
+    },
+    {
+      "unit_id": "unit-001",
+      "name": "Periodicity",
+      "code": "SED:2103",
+      "total": 5,
+      "read": 1,
+      "pending": 1,
+      "unread": 3,
+      "coverage": 20,
+      "coverage_text": "20%",
+      "has_topics": true,
+      "active_tasks": 1,
+      "completed_tasks": 1,
+      "next_due_display": "2026-10-06 12:00",
+      "next_due_days": 2,
+      "attention": "Attention",
+      "reason": "deadline 2026-10-06 at 20%"
+    }
+  ],
+  "statuses": {
+    "not_started": 2,
+    "in_progress": 0,
+    "completed": 1,
+    "submitted": 0,
+    "overdue": 1
+  },
+  "histogram": [
+    {
+      "date": "2026-10-04",
+      "display": "Sun 04",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-05",
+      "display": "Mon 05",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-06",
+      "display": "Tue 06",
+      "count": 1,
+      "worst": "warn"
+    },
+    {
+      "date": "2026-10-07",
+      "display": "Wed 07",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-08",
+      "display": "Thu 08",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-09",
+      "display": "Fri 09",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-10",
+      "display": "Sat 10",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-11",
+      "display": "Sun 11",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-12",
+      "display": "Mon 12",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-13",
+      "display": "Tue 13",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-14",
+      "display": "Wed 14",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-15",
+      "display": "Thu 15",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-16",
+      "display": "Fri 16",
+      "count": 0,
+      "worst": "none"
+    },
+    {
+      "date": "2026-10-17",
+      "display": "Sat 17",
+      "count": 0,
+      "worst": "none"
+    }
+  ]
+}

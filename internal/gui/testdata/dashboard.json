@@ -28,6 +28,7 @@
       "active_tasks": 1,
       "completed_tasks": 0,
       "next_due_display": "2026-10-03 12:00",
+      "next_due_days": -1,
       "attention": "—",
       "reason": "No topics yet"
     },
@@ -45,6 +46,7 @@
       "active_tasks": 1,
       "completed_tasks": 1,
       "next_due_display": "2026-10-06 12:00",
+      "next_due_days": 2,
       "attention": "Attention",
       "reason": "deadline 2026-10-06 at 20%"
     }
