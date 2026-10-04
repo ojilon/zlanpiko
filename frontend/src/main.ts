@@ -3,7 +3,8 @@ import type { WeekDTO } from './types';
 import { renderDashboard, statusLine } from './views/dashboard';
 import { renderTimeline } from './views/timeline';
 import { renderCalendar } from './views/calendar';
-import { wireDrawerKeys } from './components/drawer';
+import { REFRESH_EVENT, refreshOpenDrawer, wireDrawerKeys } from './components/drawer';
+import { wireCommandBar } from './components/commandbar';
 
 const NAV = [
   'Dashboard',
@@ -19,7 +20,43 @@ const NAV = [
 
 type View = (typeof NAV)[number];
 
-function renderSidebar(onNav: (v: View) => void): void {
+function isView(s: string): s is View {
+  return (NAV as readonly string[]).includes(s);
+}
+
+let current: View = 'Dashboard';
+let appVersion = '';
+let weekOff = 0;
+let monthOff = 0;
+
+function markActive(view: View): void {
+  const bar = document.getElementById('sidebar');
+  if (!bar) return;
+  const btns = [...bar.querySelectorAll('button')];
+  btns.forEach((b, i) => b.classList.toggle('active', NAV[i] === view));
+}
+
+async function renderCurrent(): Promise<void> {
+  await renderView(current, appVersion);
+  await refreshOpenDrawer();
+}
+
+async function navigate(view: string, opts?: { weekOffset?: number; unit?: string }): Promise<void> {
+  if (!isView(view)) return;
+  if (opts?.weekOffset !== undefined) weekOff = opts.weekOffset;
+  if (opts?.unit) {
+    const msg = document.getElementById('cmdmsg');
+    if (msg) {
+      msg.className = '';
+      msg.textContent = `filtered to ${opts.unit} (per-unit views land in Phase E)`;
+    }
+  }
+  current = view;
+  markActive(view);
+  await renderView(current, appVersion);
+}
+
+function renderSidebar(): void {
   const bar = document.getElementById('sidebar');
   if (!bar) return;
   bar.innerHTML = '';
@@ -28,17 +65,12 @@ function renderSidebar(onNav: (v: View) => void): void {
     b.innerHTML = `<span class="lbl">${name}</span>`;
     b.title = name;
     b.addEventListener('click', () => {
-      for (const el of bar.querySelectorAll('button')) el.classList.remove('active');
-      b.classList.add('active');
-      onNav(name);
+      void navigate(name);
     });
-    if (name === 'Dashboard') b.classList.add('active');
+    if (name === current) b.classList.add('active');
     bar.appendChild(b);
   }
 }
-
-let weekOff = 0;
-let monthOff = 0;
 
 async function renderView(view: View, version: string): Promise<void> {
   const el = document.getElementById('view');
@@ -71,7 +103,7 @@ async function renderView(view: View, version: string): Promise<void> {
     }
     renderTimeline(el, w, weekOff, (next) => {
       weekOff = next;
-      void renderView('Timeline', version);
+      void renderCurrent();
     });
     return;
   }
@@ -83,11 +115,11 @@ async function renderView(view: View, version: string): Promise<void> {
     }
     renderCalendar(el, m, monthOff, (next) => {
       monthOff = next;
-      void renderView('Calendar', version);
+      void renderCurrent();
     });
     return;
   }
-  el.innerHTML = `<h2>${view}</h2><p>Coming in Phase B–F (see docs/cs/11).</p>`;
+  el.innerHTML = `<h2>${view}</h2><p>Coming in Phase E–F (see docs/cs/11).</p>`;
 }
 
 function wireTitlebar(): void {
@@ -101,45 +133,27 @@ function wireTitlebar(): void {
   });
 }
 
-function wireCommandBar(): void {
-  const input = document.getElementById('cmdinput') as HTMLInputElement | null;
-  const msg = document.getElementById('cmdmsg');
-  if (!input || !msg) return;
-  const run = (): void => {
-    const v = input.value.trim();
-    if (!v) return;
-    msg.className = '';
-    msg.textContent = `Phase D wires commands — you typed: ${v}`;
-  };
-  document.getElementById('cmdrun')?.addEventListener('click', run);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') run();
-    if (e.key === 'Escape') {
-      input.value = '';
-      msg.textContent = '';
-    }
-  });
-  window.addEventListener('keydown', (e) => {
-    if (e.key === '/' && document.activeElement !== input) {
-      e.preventDefault();
-      input.focus();
-    }
-  });
-}
-
 async function boot(): Promise<void> {
   wireTitlebar();
-  wireCommandBar();
   wireDrawerKeys();
-  const version = await getVersion();
+  appVersion = await getVersion();
   const meta = document.getElementById('titlebar-meta');
-  if (meta) meta.textContent = `gui shell · ${version}`;
+  if (meta) meta.textContent = `gui shell · ${appVersion}`;
   const status = document.getElementById('statusline');
-  if (status) status.textContent = `backend: ${version}`;
-  renderSidebar((v) => {
-    void renderView(v, version);
+  if (status) status.textContent = `backend: ${appVersion}`;
+  renderSidebar();
+  wireCommandBar({
+    navigate: (v, opts) => {
+      void navigate(v, opts);
+    },
+    refresh: () => {
+      void renderCurrent();
+    },
   });
-  await renderView('Dashboard', version);
+  window.addEventListener(REFRESH_EVENT, () => {
+    void renderCurrent();
+  });
+  await renderCurrent();
 }
 
 void boot();

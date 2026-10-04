@@ -3,7 +3,14 @@
 // in plain-browser preview (vite dev without Wails) the bridge is absent
 // and every call falls back to an explicit "preview" value.
 
-import type { DashboardDTO, DayItemsDTO, MonthDTO, TaskDetailDTO, WeekDTO } from './types';
+import type {
+  CommandResultDTO,
+  DashboardDTO,
+  DayItemsDTO,
+  MonthDTO,
+  TaskDetailDTO,
+  WeekDTO,
+} from './types';
 
 interface WailsBridge {
   go?: {
@@ -62,6 +69,24 @@ export async function getTaskDetail(unitID: string, taskID: string): Promise<Tas
   const api = bridge();
   if (!api?.GetTaskDetail) return null;
   return (await api.GetTaskDetail(unitID, taskID)) as TaskDetailDTO;
+}
+
+export async function moveDeadline(unitID: string, taskID: string, due: string): Promise<TaskDetailDTO> {
+  const api = bridge();
+  if (!api?.MoveDeadline) throw new Error('no backend in browser preview');
+  return (await api.MoveDeadline(unitID, taskID, due)) as TaskDetailDTO;
+}
+
+export async function setTaskStatus(unitID: string, taskID: string, status: string): Promise<TaskDetailDTO> {
+  const api = bridge();
+  if (!api?.SetTaskStatus) throw new Error('no backend in browser preview');
+  return (await api.SetTaskStatus(unitID, taskID, status)) as TaskDetailDTO;
+}
+
+export async function runCommand(input: string): Promise<CommandResultDTO | null> {
+  const api = bridge();
+  if (!api?.RunCommand) return null;
+  return (await api.RunCommand(input)) as CommandResultDTO;
 }
 
 export function windowControl(action: 'min' | 'max' | 'close'): void {

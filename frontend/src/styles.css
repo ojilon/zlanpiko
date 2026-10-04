@@ -212,6 +212,17 @@ body {
 .drawer-head { display: flex; justify-content: space-between; align-items: center; }
 .drawer-head button { background: transparent; color: var(--ink); border: none; cursor: pointer; }
 .drawer-row { display: flex; justify-content: space-between; gap: 8px; margin: 6px 0; font-size: 13px; }
+.drawer-edit { display: flex; gap: 6px; margin: 4px 0 8px; }
+.drawer-edit input, .drawer-edit select {
+  flex: 1; background: #0b0f15; color: var(--ink);
+  border: var(--border); border-radius: 6px; padding: 5px 8px;
+  font: 12px var(--mono); min-width: 0;
+}
+.drawer-edit button {
+  background: var(--accent-soft); color: var(--ink);
+  border: var(--border); border-radius: 6px; padding: 5px 10px; cursor: pointer;
+}
+#cmdmsg { white-space: pre-wrap; max-height: 120px; overflow: auto; }
 
 @media (max-width: 1100px) {
   #sidebar { width: 52px; flex-basis: 52px; }

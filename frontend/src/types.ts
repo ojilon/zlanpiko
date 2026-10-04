@@ -120,3 +120,21 @@ export interface TaskDetailDTO {
   created_display: string;
   completed_display: string;
 }
+
+export interface TopicDTO {
+  unit_id: string;
+  unit_name: string;
+  id: string;
+  name: string;
+  status: string;
+  priority: string;
+}
+
+export interface CommandResultDTO {
+  kind: 'navigate' | 'refresh' | 'message' | 'error';
+  view?: string;
+  message?: string;
+  hint?: string;
+  week_offset?: number;
+  unit?: string;
+}
