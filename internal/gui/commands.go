@@ -24,7 +24,7 @@ type CommandResultDTO struct {
 const guiCommandHelp = `Commands:
   /help /dashboard /units /topics [unit] /tasks [unit]
   /timeline [next|prev|today|YYYY-Www] /calendar /files /analytics /settings
-  /verify /export /backup /version
+  /verify /export /backup /version /clear
   /topics status <unit> <topic> <unread|pending|read>
   /tasks deadline <unit> <task> <YYYY-MM-DD[ HH:MM]>
   /tasks status <unit> <task> <not_started|in_progress|completed|submitted>`

@@ -32,9 +32,11 @@ const COMMANDS = [
   '/settings',
   '/verify',
   '/version',
+  '/clear',
 ];
 
 const HIST_KEY = 'zlanpiko.cmdhistory';
+const COLLAPSE_KEY = 'zlanpiko.cmdcollapsed';
 
 function loadHist(): string[] {
   try {
@@ -78,6 +80,12 @@ export function wireCommandBar(hooks: CmdHooks): void {
       localStorage.setItem(HIST_KEY, JSON.stringify(hist));
     } catch {
       /* private mode: history stays in memory */
+    }
+    // /clear is client-side: wipe the response log, keep everything else.
+    if (v.replace(/^\//, '').toLowerCase() === 'clear') {
+      input.value = '';
+      say('', '');
+      return;
     }
     const r = await runCommand(v);
     if (!r) {
@@ -137,6 +145,32 @@ export function wireCommandBar(hooks: CmdHooks): void {
     } else if (e.key === 'k' && e.ctrlKey) {
       e.preventDefault();
       input.focus();
+    } else if (e.key === '`' && e.ctrlKey) {
+      e.preventDefault();
+      setCollapsed(!isCollapsed());
     }
   });
+  try {
+    setCollapsed(localStorage.getItem(COLLAPSE_KEY) === '1');
+  } catch {
+    setCollapsed(false);
+  }
+  document.getElementById('cmdtoggle')?.addEventListener('click', () => {
+    setCollapsed(!isCollapsed());
+  });
+}
+
+function isCollapsed(): boolean {
+  return document.getElementById('commandwrap')?.classList.contains('collapsed') ?? false;
+}
+
+function setCollapsed(on: boolean): void {
+  document.getElementById('commandwrap')?.classList.toggle('collapsed', on);
+  const t = document.getElementById('cmdtoggle');
+  if (t) t.textContent = on ? '⌃ terminal' : '⌄ terminal';
+  try {
+    localStorage.setItem(COLLAPSE_KEY, on ? '1' : '0');
+  } catch {
+    /* private mode: skip persistence */
+  }
 }

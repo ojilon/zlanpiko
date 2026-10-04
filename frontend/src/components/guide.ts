@@ -97,19 +97,21 @@ const SECTIONS: Section[] = [
   {
     id: 'commands',
     title: 'Command bar',
-    body: `<p>Press <code>/</code> or <code>Ctrl+K</code> anywhere, type, <code>Enter</code> to run.
-      <code>↑↓</code> history (kept), <code>Tab</code> completes, <code>Esc</code> clears.</p>
+    body: `      <p>Press <code>/</code> or <code>Ctrl+K</code> anywhere, type, <code>Enter</code> to run.
+      <code>↑↓</code> history (kept), <code>Tab</code> completes, <code>Esc</code> clears,
+      <code>Ctrl+backtick</code> collapses the terminal for more viewing space.</p>
       <pre>/help                              this list
 /dashboard /units /topics [unit] /tasks [unit]
 /timeline [next|prev|today|YYYY-Www]  /calendar
-/files /analytics /settings /verify /export /backup /version
+/files /analytics /settings /verify /export /backup /version /clear
 /units list                        unit roster
 /topics status &lt;unit&gt; &lt;topic&gt; &lt;unread|pending|read&gt;
 /tasks deadline &lt;unit&gt; &lt;task&gt; &lt;YYYY-MM-DD[ HH:MM]&gt;
 /tasks status &lt;unit&gt; &lt;task&gt; &lt;not_started|in_progress|completed|submitted&gt;
 /tasks list · /tasks deadlines</pre>
       <p>Every important action also has a clickable twin — commands are a shortcut, never a
-      requirement. Unknown commands suggest the closest match.</p>`,
+      requirement. Unknown commands suggest the closest match. <code>/clear</code> wipes the
+      response log under the input.</p>`,
   },
   {
     id: 'safety',
