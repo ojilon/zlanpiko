@@ -3,7 +3,7 @@
 // in plain-browser preview (vite dev without Wails) the bridge is absent
 // and every call falls back to an explicit "preview" value.
 
-import type { DashboardDTO, WeekDTO } from './types';
+import type { DashboardDTO, DayItemsDTO, MonthDTO, TaskDetailDTO, WeekDTO } from './types';
 
 interface WailsBridge {
   go?: {
@@ -44,6 +44,24 @@ export async function getWeekOffset(offset: number): Promise<WeekDTO | null> {
   const api = bridge();
   if (!api?.GetWeekOffset) return null;
   return (await api.GetWeekOffset(offset)) as WeekDTO;
+}
+
+export async function getMonthOffset(offset: number): Promise<MonthDTO | null> {
+  const api = bridge();
+  if (!api?.GetMonthOffset) return null;
+  return (await api.GetMonthOffset(offset)) as MonthDTO;
+}
+
+export async function getDayItems(dateISO: string): Promise<DayItemsDTO | null> {
+  const api = bridge();
+  if (!api?.GetDayItems) return null;
+  return (await api.GetDayItems(dateISO)) as DayItemsDTO;
+}
+
+export async function getTaskDetail(unitID: string, taskID: string): Promise<TaskDetailDTO | null> {
+  const api = bridge();
+  if (!api?.GetTaskDetail) return null;
+  return (await api.GetTaskDetail(unitID, taskID)) as TaskDetailDTO;
 }
 
 export function windowControl(action: 'min' | 'max' | 'close'): void {

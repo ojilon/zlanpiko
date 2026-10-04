@@ -89,3 +89,34 @@ export interface DashboardDTO {
   overdue: TaskDTO[];
   week: WeekDTO;
 }
+
+export interface MonthDayDTO {
+  date: string;
+  display: string;
+  count: number;
+  level: 'none' | 'info' | 'warn' | 'bad' | 'ok';
+  in_month: boolean;
+}
+
+export interface MonthDTO {
+  year: number;
+  month: number;
+  title: string;
+  days: MonthDayDTO[];
+  overdue_count: number;
+}
+
+export interface DayItemsDTO {
+  date: string;
+  display: string;
+  items: TaskDTO[];
+  overdue: TaskDTO[];
+}
+
+export interface TaskDetailDTO {
+  task: TaskDTO;
+  description: string;
+  notes: string;
+  created_display: string;
+  completed_display: string;
+}

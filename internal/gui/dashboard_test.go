@@ -235,6 +235,93 @@ func TestGetWeekMatchesTimeline(t *testing.T) {
 	golden(t, "week.json", got)
 }
 
+func TestGetMonthGrid(t *testing.T) {
+	_, api := openPhaseB(t)
+	m, err := api.GetMonth(2026, 10)
+	if err != nil {
+		t.Fatalf("GetMonth: %v", err)
+	}
+	if m.Title != "October 2026" || len(m.Days) != 42 {
+		t.Fatalf("month shape wrong: title %q days %d", m.Title, len(m.Days))
+	}
+	// Grid starts on a Monday and covers Oct 1 in-month.
+	if m.Days[0].Date != "2026-09-28" {
+		t.Fatalf("grid starts %s, want 2026-09-28", m.Days[0].Date)
+	}
+	inMonth := 0
+	counts := 0
+	for _, d := range m.Days {
+		if d.InMonth {
+			inMonth++
+		}
+		counts += d.Count
+	}
+	if inMonth != 31 {
+		t.Fatalf("in-month cells %d, want 31", inMonth)
+	}
+	// Oct 1 (done quiz) + Oct 3 (overdue report sits in anchor, but its
+	// original day still counts) + Oct 6 is outside October grid? No: Oct 6
+	// is in-month. Expect 3 counted day-items total.
+	if counts != 3 {
+		t.Fatalf("month item count %d, want 3", counts)
+	}
+	if m.OverdueCount != 1 {
+		t.Fatalf("month overdue %d, want 1", m.OverdueCount)
+	}
+	if _, err := api.GetMonth(2026, 13); err == nil {
+		t.Fatalf("month 13 must fail validation")
+	}
+	cur, err := api.GetMonthOffset(0)
+	if err != nil {
+		t.Fatalf("GetMonthOffset: %v", err)
+	}
+	if cur.Year != 2026 || cur.Month != 10 {
+		t.Fatalf("current month wrong: %+v", cur)
+	}
+	golden(t, "month.json", m)
+}
+
+func TestGetTaskDetail(t *testing.T) {
+	_, api := openPhaseB(t)
+	d, err := api.GetTaskDetail("unit-001", "task-001")
+	if err != nil {
+		t.Fatalf("GetTaskDetail: %v", err)
+	}
+	if d.Task.Title != "class presentation" || d.Task.UnitName != "Periodicity" {
+		t.Fatalf("detail wrong: %+v", d.Task)
+	}
+	if _, err := api.GetTaskDetail("unit-001", "task-999"); err == nil {
+		t.Fatalf("unknown task must fail")
+	} else if gerr, ok := err.(*GuiError); !ok || gerr.Code != ErrNotFound {
+		t.Fatalf("unknown task error wrong: %v", err)
+	}
+}
+
+func TestGetDayItems(t *testing.T) {
+	_, api := openPhaseB(t)
+	// Oct 6: the presentation in its day bucket.
+	day, err := api.GetDayItems("2026-10-06")
+	if err != nil {
+		t.Fatalf("GetDayItems: %v", err)
+	}
+	if len(day.Items) != 1 || day.Items[0].Title != "class presentation" {
+		t.Fatalf("Oct 6 items wrong: %+v", day.Items)
+	}
+	// Oct 3: empty bucket, overdue-anchored report attributed to its day.
+	over, err := api.GetDayItems("2026-10-03")
+	if err != nil {
+		t.Fatalf("GetDayItems: %v", err)
+	}
+	if len(over.Items) != 0 || len(over.Overdue) != 1 {
+		t.Fatalf("Oct 3 wrong: %+v", over)
+	}
+	for _, bad := range []string{"2026-13-01", "2026-10-32", "tomorrow"} {
+		if _, err := api.GetDayItems(bad); err == nil {
+			t.Fatalf("date %q must fail validation", bad)
+		}
+	}
+}
+
 func TestGuiErrorText(t *testing.T) {
 	e := fail(ErrValidation, "bad status", "want unread|pending|read")
 	if !strings.Contains(e.Error(), "VALIDATION") || !strings.Contains(e.Error(), "bad status") {

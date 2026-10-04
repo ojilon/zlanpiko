@@ -1,6 +1,9 @@
-import { getDashboard, getVersion, getWeekOffset, windowControl } from './api';
+import { getDashboard, getMonthOffset, getVersion, getWeekOffset, windowControl } from './api';
 import type { WeekDTO } from './types';
 import { renderDashboard, statusLine } from './views/dashboard';
+import { renderTimeline } from './views/timeline';
+import { renderCalendar } from './views/calendar';
+import { wireDrawerKeys } from './components/drawer';
 
 const NAV = [
   'Dashboard',
@@ -34,6 +37,9 @@ function renderSidebar(onNav: (v: View) => void): void {
   }
 }
 
+let weekOff = 0;
+let monthOff = 0;
+
 async function renderView(view: View, version: string): Promise<void> {
   const el = document.getElementById('view');
   if (!el) return;
@@ -55,6 +61,30 @@ async function renderView(view: View, version: string): Promise<void> {
     if (status) status.textContent = `Status: ${statusLine(d.summary)}`;
     const meta = document.getElementById('titlebar-meta');
     if (meta) meta.textContent = `${d.week.title} · ${version}`;
+    return;
+  }
+  if (view === 'Timeline') {
+    const w = await getWeekOffset(weekOff);
+    if (!w) {
+      el.innerHTML = `<h2>Timeline</h2><p class="dim">No backend in browser preview.</p>`;
+      return;
+    }
+    renderTimeline(el, w, weekOff, (next) => {
+      weekOff = next;
+      void renderView('Timeline', version);
+    });
+    return;
+  }
+  if (view === 'Calendar') {
+    const m = await getMonthOffset(monthOff);
+    if (!m) {
+      el.innerHTML = `<h2>Calendar</h2><p class="dim">No backend in browser preview.</p>`;
+      return;
+    }
+    renderCalendar(el, m, monthOff, (next) => {
+      monthOff = next;
+      void renderView('Calendar', version);
+    });
     return;
   }
   el.innerHTML = `<h2>${view}</h2><p>Coming in Phase B–F (see docs/cs/11).</p>`;
@@ -100,6 +130,7 @@ function wireCommandBar(): void {
 async function boot(): Promise<void> {
   wireTitlebar();
   wireCommandBar();
+  wireDrawerKeys();
   const version = await getVersion();
   const meta = document.getElementById('titlebar-meta');
   if (meta) meta.textContent = `gui shell · ${version}`;
