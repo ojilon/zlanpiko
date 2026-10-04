@@ -55,6 +55,15 @@ func TestParseDue(t *testing.T) {
 	if !got.Equal(want.UTC().Truncate(time.Second)) {
 		t.Errorf("got %v, want %v", got, want.UTC())
 	}
+	// The space form users type in the GUI drawer must work too.
+	spaced, err := ParseDue("2026-10-06 07:00")
+	if err != nil {
+		t.Fatalf("space form: %v", err)
+	}
+	wantT, _ := time.ParseInLocation("2006-01-02 15:04", "2026-10-06 07:00", time.Local)
+	if !spaced.Equal(wantT.UTC().Truncate(time.Second)) {
+		t.Errorf("space form: got %v, want %v", spaced, wantT.UTC())
+	}
 	if _, err := ParseDue("09/10/2026"); err == nil {
 		t.Error("expected error for ambiguous format")
 	}

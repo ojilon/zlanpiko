@@ -42,7 +42,8 @@ func (g *GuiApi) SetTopicStatus(unitID, topicID, status string) (TopicDTO, error
 }
 
 // MoveDeadline reparses a deadline string and updates the task. Accepted
-// formats are the CLI's (YYYY-MM-DD or YYYY-MM-DDTHH:MM, local); every
+// formats are the CLI's (YYYY-MM-DD, YYYY-MM-DDTHH:MM or YYYY-MM-DD HH:MM,
+// local); every
 // affected view recomputes from the new value (docs/09).
 func (g *GuiApi) MoveDeadline(unitID, taskID, due string) (TaskDetailDTO, error) {
 	at, err := tasks.ParseDue(due)

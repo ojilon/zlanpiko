@@ -22,14 +22,16 @@ func orDiscard(l *slog.Logger) *slog.Logger {
 	return l
 }
 
-// ParseDue parses a CLI deadline: YYYY-MM-DD, YYYY-MM-DDTHH:MM (local time)
-// or full RFC 3339. Empty input means no deadline (nil, nil).
+// ParseDue parses a deadline: YYYY-MM-DD, YYYY-MM-DDTHH:MM or
+// YYYY-MM-DD HH:MM (local time), or full RFC 3339. The space form exists
+// because people type it and every other form rejects it with a confusing
+// error (see GUI drawer). Empty input means no deadline (nil, nil).
 func ParseDue(s string) (*time.Time, error) {
 	s = strings.TrimSpace(s)
 	if s == "" {
 		return nil, nil
 	}
-	layouts := []string{"2006-01-02", "2006-01-02T15:04", time.RFC3339}
+	layouts := []string{"2006-01-02", "2006-01-02T15:04", "2006-01-02 15:04", time.RFC3339}
 	var lastErr error
 	for _, layout := range layouts {
 		var t time.Time
@@ -45,7 +47,7 @@ func ParseDue(s string) (*time.Time, error) {
 		}
 		lastErr = err
 	}
-	return nil, fmt.Errorf("invalid deadline %q (want YYYY-MM-DD or YYYY-MM-DDTHH:MM): %w", s, lastErr)
+	return nil, fmt.Errorf("invalid deadline %q (want YYYY-MM-DD, YYYY-MM-DDTHH:MM or YYYY-MM-DD HH:MM): %w", s, lastErr)
 }
 
 const taskColumns = `unit_id, id, title, kind, status, due_at, completed_at, priority, description, notes, created_at, updated_at`

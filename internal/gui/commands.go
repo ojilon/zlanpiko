@@ -26,7 +26,7 @@ const guiCommandHelp = `Commands:
   /timeline [next|prev|today|YYYY-Www] /calendar /files /analytics /settings
   /verify /export /backup /version
   /topics status <unit> <topic> <unread|pending|read>
-  /tasks deadline <unit> <task> <YYYY-MM-DD[THH:MM]>
+  /tasks deadline <unit> <task> <YYYY-MM-DD[ HH:MM]>
   /tasks status <unit> <task> <not_started|in_progress|completed|submitted>`
 
 func cmdNavigate(view string) (CommandResultDTO, error) {

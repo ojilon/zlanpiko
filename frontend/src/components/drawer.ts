@@ -31,7 +31,7 @@ function detailHTML(d: TaskDetailDTO): string {
     <h4>Edit</h4>
     <div class="drawer-row"><span class="dim">Deadline</span></div>
     <div class="drawer-edit">
-      <input id="drawer-due" type="text" value="${esc(t.due_display)}" placeholder="YYYY-MM-DD[THH:MM]" />
+      <input id="drawer-due" type="text" value="${esc(t.due_display)}" placeholder="YYYY-MM-DD [HH:MM]" />
       <button id="drawer-move">move</button>
     </div>
     <div class="drawer-row"><span class="dim">Status</span></div>
@@ -125,6 +125,7 @@ export async function refreshOpenDrawer(): Promise<void> {
 
 export function wireDrawerKeys(): void {
   window.addEventListener('keydown', (e) => {
+    if (document.activeElement?.id === 'cmdinput') return; // input owns Esc
     if (e.key === 'Escape' && current) closeDrawer();
   });
 }

@@ -10,6 +10,7 @@ import { renderUnits } from './views/units';
 import { renderTopics } from './views/topics';
 import { renderTasks } from './views/tasks';
 import { REFRESH_EVENT, refreshOpenDrawer, wireDrawerKeys } from './components/drawer';
+import { wireGuideKeys } from './components/guide';
 import { wireCommandBar } from './components/commandbar';
 
 const NAV = [
@@ -161,6 +162,7 @@ function wireTitlebar(): void {
 async function boot(): Promise<void> {
   wireTitlebar();
   wireDrawerKeys();
+  wireGuideKeys();
   appVersion = await getVersion();
   const meta = document.getElementById('titlebar-meta');
   if (meta) meta.textContent = `gui shell · ${appVersion}`;

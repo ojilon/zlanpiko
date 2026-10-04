@@ -68,11 +68,19 @@ func TestRunCommandMutations(t *testing.T) {
 	if r.Kind != "refresh" || !strings.Contains(r.Message, "2026-10-09") {
 		t.Fatalf("deadline -> %+v", r)
 	}
+	// The space form users type must survive Fields-splitting.
+	r, err = api.RunCommand("/tasks deadline unit-001 task-001 2026-10-06 07:00")
+	if err != nil {
+		t.Fatalf("spaced deadline: %v", err)
+	}
+	if r.Kind != "refresh" || !strings.Contains(r.Message, "2026-10-06 07:00") {
+		t.Fatalf("spaced deadline -> %+v", r)
+	}
 	d, err := api.GetTaskDetail("unit-001", "task-001")
 	if err != nil {
 		t.Fatalf("detail: %v", err)
 	}
-	if d.Task.DueDisplay != "2026-10-09 00:00" {
+	if d.Task.DueDisplay != "2026-10-06 07:00" {
 		t.Fatalf("deadline not moved: %+v", d.Task)
 	}
 	r, _ = api.RunCommand("/tasks status unit-001 task-001 completed")
