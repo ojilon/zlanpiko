@@ -6,6 +6,9 @@ import { renderCalendar } from './views/calendar';
 import { renderFiles } from './views/files';
 import { renderSettings } from './views/settings';
 import { renderAnalytics } from './views/analytics';
+import { renderUnits } from './views/units';
+import { renderTopics } from './views/topics';
+import { renderTasks } from './views/tasks';
 import { REFRESH_EVENT, refreshOpenDrawer, wireDrawerKeys } from './components/drawer';
 import { wireCommandBar } from './components/commandbar';
 
@@ -31,6 +34,7 @@ let current: View = 'Dashboard';
 let appVersion = '';
 let weekOff = 0;
 let monthOff = 0;
+let unitPreset = '';
 
 function markActive(view: View): void {
   const bar = document.getElementById('sidebar');
@@ -47,13 +51,7 @@ async function renderCurrent(): Promise<void> {
 async function navigate(view: string, opts?: { weekOffset?: number; unit?: string }): Promise<void> {
   if (!isView(view)) return;
   if (opts?.weekOffset !== undefined) weekOff = opts.weekOffset;
-  if (opts?.unit) {
-    const msg = document.getElementById('cmdmsg');
-    if (msg) {
-      msg.className = '';
-      msg.textContent = `filtered to ${opts.unit} (per-unit views land in Phase E)`;
-    }
-  }
+  unitPreset = opts?.unit ?? '';
   current = view;
   markActive(view);
   await renderView(current, appVersion);
@@ -124,6 +122,18 @@ async function renderView(view: View, version: string): Promise<void> {
   }
   if (view === 'Files') {
     await renderFiles(el);
+    return;
+  }
+  if (view === 'Units') {
+    await renderUnits(el);
+    return;
+  }
+  if (view === 'Topics') {
+    await renderTopics(el, unitPreset);
+    return;
+  }
+  if (view === 'Tasks') {
+    await renderTasks(el, unitPreset);
     return;
   }
   if (view === 'Analytics') {

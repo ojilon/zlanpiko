@@ -242,6 +242,12 @@ body {
 }
 .fname { background: none; border: none; color: var(--ink); cursor: pointer; text-align: left; padding: 0; }
 .fops { margin-left: auto; display: flex; gap: 4px; }
+.ftools select {
+  background: #0b0f15; color: var(--ink);
+  border: var(--border); border-radius: 6px; padding: 5px 8px; font-size: 12px;
+}
+button.ucard { cursor: pointer; text-align: left; color: var(--ink); font: inherit; }
+button.ucard:hover { border-color: var(--accent); }
 .errline { color: var(--bad); font: 12px var(--mono); margin: 6px 0; }
 .report {
   background: #0b0f15; border: var(--border); border-radius: 8px;

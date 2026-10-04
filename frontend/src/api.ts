@@ -15,7 +15,12 @@ import type {
   ImportReportDTO,
   MonthDTO,
   ReportDTO,
+  TaskDTO,
   TaskDetailDTO,
+  TaskFilterDTO,
+  TopicDTO,
+  UnitCardDTO,
+  UnitDetailDTO,
   WeekDTO,
 } from './types';
 
@@ -160,6 +165,64 @@ export async function getConfig(): Promise<ConfigDTO> {
 
 export async function getAnalytics(): Promise<AnalyticsDTO> {
   return (await need('GetAnalytics').GetAnalytics()) as AnalyticsDTO;
+}
+
+export async function getUnitCards(): Promise<UnitCardDTO[]> {
+  return (await need('GetUnitCards').GetUnitCards()) as UnitCardDTO[];
+}
+
+export async function getUnitDetail(unitID: string): Promise<UnitDetailDTO> {
+  return (await need('GetUnitDetail').GetUnitDetail(unitID)) as UnitDetailDTO;
+}
+
+export async function createUnit(name: string, code: string): Promise<UnitCardDTO> {
+  return (await need('CreateUnit').CreateUnit(name, code)) as UnitCardDTO;
+}
+
+export async function renameUnit(unitID: string, newName: string): Promise<UnitCardDTO> {
+  return (await need('RenameUnit').RenameUnit(unitID, newName)) as UnitCardDTO;
+}
+
+export async function setUnitArchived(unitID: string, archived: boolean): Promise<UnitCardDTO> {
+  return (await need('SetUnitArchived').SetUnitArchived(unitID, archived)) as UnitCardDTO;
+}
+
+export async function deleteUnit(unitID: string, confirm: boolean): Promise<string> {
+  return (await need('DeleteUnit').DeleteUnit(unitID, confirm)) as string;
+}
+
+export async function listTopics(unitID: string, status: string): Promise<TopicDTO[]> {
+  return (await need('ListTopics').ListTopics(unitID, status)) as TopicDTO[];
+}
+
+export async function createTopic(unitID: string, name: string, priority: string): Promise<TopicDTO> {
+  return (await need('CreateTopic').CreateTopic(unitID, name, priority)) as TopicDTO;
+}
+
+export async function setTopicStatus(unitID: string, topicID: string, status: string): Promise<TopicDTO> {
+  return (await need('SetTopicStatus').SetTopicStatus(unitID, topicID, status)) as TopicDTO;
+}
+
+export async function deleteTopic(unitID: string, topicID: string, confirm: boolean): Promise<string> {
+  return (await need('DeleteTopic').DeleteTopic(unitID, topicID, confirm)) as string;
+}
+
+export async function listTasksFlat(f: TaskFilterDTO): Promise<TaskDTO[]> {
+  return (await need('ListTasksFlat').ListTasksFlat(f)) as TaskDTO[];
+}
+
+export async function createTask(
+  unitID: string,
+  title: string,
+  kind: string,
+  due: string,
+  priority: string,
+): Promise<TaskDetailDTO> {
+  return (await need('CreateTask').CreateTask(unitID, title, kind, due, priority)) as TaskDetailDTO;
+}
+
+export async function deleteTask(unitID: string, taskID: string, confirm: boolean): Promise<string> {
+  return (await need('DeleteTask').DeleteTask(unitID, taskID, confirm)) as string;
 }
 
 export async function setDataRoot(path: string): Promise<string> {

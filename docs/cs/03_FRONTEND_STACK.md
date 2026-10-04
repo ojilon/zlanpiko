@@ -61,11 +61,12 @@ Wails config (`wails.json`, created by `wails init` then edited):
 Frontend contract (`src/components/titlebar.ts` + `styles/titlebar.css`):
 
 - Custom `#titlebar` (32–40px): app dot + `zlanpiko` wordmark left; week/version
-  centre; `— ▢ ✕` buttons right calling Wails runtime
-  (`WindowMinimise/ToggleMaximise/Quit` via the runtime bridge `api.ts` exposes).
-- Drag region: `body { --wails-draggable: drag }` equivalent —
-  `#titlebar { -webkit-app-region: drag; }` with buttons set to
-  `-webkit-app-region: no-drag` (Wails v2 maps this to drag handling on Windows).
+  centre; `— ▢ ✕` buttons right calling the Wails runtime bridge
+  (`window.runtime.WindowMinimise/WindowToggleMaximise/Quit`, exposed via
+  `api.ts` — note: `window.runtime`, NOT `window.go.runtime`).
+- Drag region: `#titlebar { --wails-draggable: drag; }` with buttons set to
+  `--wails-draggable: no-drag` (the Wails v2 property; `-webkit-app-region`
+  does not work — fixed in 5cd4e45).
 - Double-click titlebar toggles maximise; right-click shows system menu fallback.
 - Keyboard: `Alt+Space` still opens the window menu (do not swallow it);
   window controls must be reachable by Tab with visible focus rings.

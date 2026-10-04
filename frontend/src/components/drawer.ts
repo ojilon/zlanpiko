@@ -1,4 +1,4 @@
-import { getTaskDetail, moveDeadline, setTaskStatus } from '../api';
+import { deleteTask, getTaskDetail, moveDeadline, setTaskStatus } from '../api';
 import { esc } from '../views/dashboard';
 import type { TaskDetailDTO } from '../types';
 
@@ -43,7 +43,8 @@ function detailHTML(d: TaskDetailDTO): string {
       </select>
       <button id="drawer-set">set</button>
     </div>
-    <div id="drawer-msg" class="dim"></div>`;
+    <div id="drawer-msg" class="dim"></div>
+    <div class="drawer-edit"><button id="drawer-del">delete task</button></div>`;
 }
 
 function ensureEl(): HTMLElement {
@@ -101,6 +102,17 @@ function wireEdits(): void {
       .then(() => {
         notify();
         void openTask(current?.unit ?? '', current?.task ?? '');
+      })
+      .catch((e: unknown) => say(e instanceof Error ? e.message : String(e)));
+  });
+  document.getElementById('drawer-del')?.addEventListener('click', () => {
+    if (!current) return;
+    if (!window.confirm('Delete this task?')) return;
+    const { unit, task } = current;
+    deleteTask(unit, task, true)
+      .then(() => {
+        closeDrawer();
+        notify();
       })
       .catch((e: unknown) => say(e instanceof Error ? e.message : String(e)));
   });

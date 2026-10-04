@@ -214,3 +214,15 @@ export interface AnalyticsDTO {
   statuses: StatusCounts;
   histogram: HistDay[];
 }
+
+export interface UnitDetailDTO {
+  card: UnitCardDTO;
+  topics: TopicDTO[];
+  tasks: TaskDTO[];
+}
+
+export interface TaskFilterDTO {
+  unit_id: string;
+  status: string;
+  kind: string;
+}
