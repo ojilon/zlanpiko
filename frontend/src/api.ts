@@ -24,11 +24,11 @@ interface WailsBridge {
     gui?: {
       GuiApi?: Record<string, (...args: unknown[]) => Promise<unknown>>;
     };
-    runtime?: {
-      WindowMinimise?: () => void;
-      WindowToggleMaximise?: () => void;
-      Quit?: () => void;
-    };
+  };
+  runtime?: {
+    WindowMinimise?: () => void;
+    WindowToggleMaximise?: () => void;
+    Quit?: () => void;
   };
 }
 
@@ -37,9 +37,9 @@ function bridge(): Record<string, (...args: unknown[]) => Promise<unknown>> | nu
   return w.go?.gui?.GuiApi ?? null;
 }
 
-function winCtl(): NonNullable<WailsBridge['go']>['runtime'] | null {
+function winCtl(): WailsBridge['runtime'] | null {
   const w = window as unknown as WailsBridge;
-  return w.go?.runtime ?? null;
+  return w.runtime ?? null;
 }
 
 export async function getVersion(): Promise<string> {
