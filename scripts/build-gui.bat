@@ -19,6 +19,33 @@ if %errorlevel% neq 0 (
   echo build-gui.bat: frontend step failed.
   exit /b %errorlevel%
 )
+REM Resolve the Wails CLI without depending on ambient PATH: try PATH,
+REM then GOBIN/GOPATH\bin (go install lands there), then this machine's
+REM known Go workspace. wails.exe is NOT on a default PATH after
+REM "go install", which is why fresh terminals fail here.
+where wails >nul 2>nul
+if %errorlevel% neq 0 (
+  for /f %%i in ('go env GOBIN 2^>nul') do set "WAILS_BIN=%%i"
+  if defined WAILS_BIN if exist "%WAILS_BIN%\wails.exe" set "PATH=%WAILS_BIN%;%PATH%"
+)
+where wails >nul 2>nul
+if %errorlevel% neq 0 (
+  for /f %%i in ('go env GOPATH 2^>nul') do set "WAILS_BIN=%%i\bin"
+  if defined WAILS_BIN if exist "%WAILS_BIN%\wails.exe" set "PATH=%WAILS_BIN%;%PATH%"
+)
+where wails >nul 2>nul
+if %errorlevel% neq 0 (
+  if exist "D:\Dev\go-workspace\bin\wails.exe" set "PATH=D:\Dev\go-workspace\bin;%PATH%"
+)
+where wails >nul 2>nul
+if %errorlevel% neq 0 (
+  echo build-gui.bat: wails CLI not found.
+  echo Install it once with:
+  echo   go install github.com/wailsapp/wails/v2/cmd/wails@v2.15.0
+  echo Then either add its folder to your user PATH
+  echo ^(Windows Settings ^> Environment Variables^) or re-run this script.
+  exit /b 1
+)
 wails build -skipbindings -o zlanpiko-gui.exe -ldflags "-X zlanpiko/internal/app.Version=%VER% -X zlanpiko/internal/app.Commit=%SHA% -X zlanpiko/internal/app.BuildDate=%BUILD_DATE%"
 if %errorlevel% neq 0 (
   echo build-gui.bat: wails build failed.

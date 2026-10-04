@@ -106,6 +106,7 @@ Safe to re-run. The installer itself stays a native console UI; only
 | `pnpm`/`tsc` “not recognized” in PowerShell | Use `cmd /c "…"`; `.ps1` shims are blocked by ExecutionPolicy. Global TS lives in `D:\Dev\pnpm\global` (`pnpm add -g typescript`). |
 | `[ERR_PNPM_IGNORED_BUILDS] esbuild` | Run `pnpm approve-builds esbuild` once per machine (choice is committed in `frontend/pnpm-workspace.yaml`). |
 | `wails build` bindings error (`wailsbindings.exe … not compatible`) | Expected here — always build with `-skipbindings` / `build-gui.bat`. |
+| `'wails' is not recognized` from `build-gui.bat` | `go install` does not put `wails.exe` on PATH. The script now self-resolves via `go env GOBIN` → `GOPATH\bin` → `D:\Dev\go-workspace\bin`; if all fail it prints the one-time install command. For bare `wails …` calls, add `D:\Dev\go-workspace\bin` to your user PATH (Windows Settings → Environment Variables). |
 | `wails.json … frontend:dev:watcher … type string` | That key was removed; dev-watcher config is not used (`wails dev` not required for this project). |
 | `go build` embed error on fresh clone | Run `pnpm build` in `frontend/` first (or `build-gui.bat`); the embed needs `dist-frontend/` content. |
 | GUI shows wrong/old UI after code change | `wails build` re-runs `pnpm build`; plain `go build .` does not — rebuild the frontend. |
