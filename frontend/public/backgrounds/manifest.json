@@ -1,3 +1,16 @@
 {
-  "images": []
+  "images": [
+    {
+      "file": "aurora.svg",
+      "name": "Aurora"
+    },
+    {
+      "file": "dunes.svg",
+      "name": "Dunes"
+    },
+    {
+      "file": "noir.svg",
+      "name": "Noir"
+    }
+  ]
 }

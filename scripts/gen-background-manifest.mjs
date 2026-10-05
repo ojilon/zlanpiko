@@ -16,7 +16,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIR = join(ROOT, 'frontend', 'public', 'backgrounds');
 const MANIFEST = join(DIR, 'manifest.json');
 
-const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif', '.bmp']);
+const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif', '.bmp', '.svg']);
 
 /** "morning-mist.jpg" -> "Morning Mist" */
 function label(file) {

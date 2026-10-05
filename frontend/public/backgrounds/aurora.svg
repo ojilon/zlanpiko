@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1200" viewBox="0 0 1920 1200">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#0b1a2b"/>
+      <stop offset="45%" stop-color="#123049"/>
+      <stop offset="100%" stop-color="#071019"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="0.22" cy="0.18" r="0.62">
+      <stop offset="0%" stop-color="#2f8fa8" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#2f8fa8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="0.82" cy="0.32" r="0.55">
+      <stop offset="0%" stop-color="#4b6fd6" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#4b6fd6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g3" cx="0.55" cy="0.92" r="0.6">
+      <stop offset="0%" stop-color="#1f6f63" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#1f6f63" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="70"/>
+    </filter>
+  </defs>
+  <rect width="1920" height="1200" fill="url(#base)"/>
+  <g filter="url(#soft)">
+    <ellipse cx="420" cy="220" rx="620" ry="380" fill="url(#g1)"/>
+    <ellipse cx="1560" cy="380" rx="560" ry="420" fill="url(#g2)"/>
+    <ellipse cx="1050" cy="1120" rx="700" ry="360" fill="url(#g3)"/>
+  </g>
+  <g opacity="0.5" filter="url(#soft)">
+    <path d="M-100 780 C 320 640, 640 860, 980 720 S 1560 560, 2020 700 L2020 1300 L-100 1300 Z" fill="#0d2233" opacity="0.85"/>
+  </g>
+</svg>
