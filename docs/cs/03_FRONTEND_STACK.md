@@ -27,7 +27,9 @@ frontend/
     main.ts             # boots shell, frameless controls, router, command bar
     api.ts              # typed wrapper over window.go.zlanpiko.GuiApi.*
     types.ts            # mirrors internal/gui/dto.go (hand-kept, tested)
-    theme.ts            # dark / light / system (data-theme on <html>)
+    theme.ts            # active theme + system (data-theme on <html>)
+    themes.ts           # registry: 10 photo-aware presets (add one to plug in)
+    themes.test.ts      # registry completeness + safe slider ranges
     appearance.ts       # background + transparency values -> CSS custom props
     backgrounds.ts      # bundled manifest + IndexedDB store for "my image"
     styles.css          # all tokens and rules, 12 numbered sections
@@ -120,13 +122,24 @@ that golden-files one JSON sample per DTO (CS-10). No silent drift.
 sections (tokens → themes → surfaces → backdrop → reset → shell → cards →
 parts → views → drawer/guide → appearance controls → responsive).
 
-Two themes ship, selected by `data-theme` on `<html>` (set in `index.html` so
-the first paint is already themed). Each theme defines its palette as **raw
+Ten themes ship, selected by `data-theme` on `<html>` (set in `index.html` so
+the first paint is already themed): five dark (Abyss, Forest, Tide, Ember,
+Dusk) and five light (Paper, Meadow, Shore, Sunshine, Bloom). Each pairs its
+palette with a photo family — Forest's fern green and warm amber for nature
+shots, Tide's sea-glass cyan for water, Ember's glow for sunsets, and so on —
+and brings a recommended photo look (transparency, blur, dim) that the
+Settings gallery applies on selection. Old `dark`/`light` values stored by
+earlier versions map onto Abyss/Paper, so updating never resets a user's look.
+To plug in an eleventh theme: add a preset to `themes.ts`, a
+`[data-theme="<id>"]` block plus a `.theme-sw-<id>` swatch in `styles.css` —
+nothing else reads theme names directly.
+
+Each theme defines its palette as **raw
 channel triplets** rather than hex, so every surface can be re-tinted at any
 alpha:
 
 ```css
-[data-theme="dark"] {
+[data-theme="abyss"] {
   --panel-rgb: 22 30 41;      /* not --panel: #161d27 */
   --ink-rgb: 221 229 240;
   --accent-rgb: 127 182 232;  /* light-blue identity, unchanged */
@@ -152,10 +165,14 @@ Type uses a fluid scale (`--fs-2xs` … `--fs-2xl`, `clamp()` at the top end) an
 `ui-sans-serif`, with `Cascadia Mono` / `Consolas` for the command bar. No
 webfonts are ever downloaded.
 
-All cards: `1px solid var(--line)`, `border-radius: 10px`, no heavy shadows —
-thin demarcations as requested. The card grid is
+All cards: `1px solid var(--line)`, `border-radius: 10px`, a theme-tinted drop
+shadow plus a lit top hairline (`--edge-hi-*`) — the glass edge that keeps
+cards distinct over busy photos without hiding them. Sidebar, terminal dock,
+titlebar and inputs derive from the same panel/line tokens at higher alphas,
+so every theme dresses the whole chrome, not just cards. The card grid is
 `repeat(auto-fill, minmax(clamp(210px, 16vw, 280px), 1fr))`, which reflows
 continuously instead of snapping at breakpoints.
 
-Measured contrast on the shipped palettes: dark 13.2:1 body / 6.5:1 secondary;
-light 15.5:1 body / 5.5:1 secondary (WCAG AAA / AA).
+Measured contrast, verified per palette with a script (body / secondary /
+accent against the panel): darks 12.6–13.6 / 6.5–6.8 / 7.3–8.5, lights
+12.6–15.5 / 4.9–5.5 / 5.2–6.0 (WCAG AAA body, AA or better throughout).

@@ -6,11 +6,18 @@ Format follows Keep a Changelog; versions follow semantic versioning.
 
 ### Added
 
-- **Themes.** Dark and light palettes, selectable in Settings → Appearance
-  (Dark / Light / System; System follows the OS app-colour setting). Palettes
-  are stored as raw RGB channel triplets so every surface can be tinted at any
-  opacity. Measured contrast: dark 13.2:1 body / 6.5:1 secondary, light 15.5:1
-  / 5.5:1 (WCAG AAA / AA).
+- **Themes.** Ten photo-aware palettes in Settings → Appearance, grouped Dark
+  (Abyss, Forest, Tide, Ember, Dusk) and Light (Paper, Meadow, Shore,
+  Sunshine, Bloom), plus System (follows the OS app-colour setting). Each
+  theme pairs panels, accents and scrim tint with a photo family (nature,
+  sea, sunshine, sunsets…) and applies a recommended photo look on
+  selection; every slider stays adjustable. Cards get theme-tinted shadows
+  and a lit top hairline so they blend with photos without losing definition.
+  Palettes are stored as raw RGB channel triplets so every surface can be
+  tinted at any opacity. Measured contrast per palette: body 12.6–15.5,
+  secondary 4.9–6.8 (WCAG AAA / AA). Old Dark/Light choices migrate to
+  Abyss/Paper automatically. New themes plug in via `frontend/src/themes.ts`
+  + one CSS palette block.
 - **Typography.** Fluid type scale (`clamp()`), separate display/sans/mono
   stacks (`Segoe UI Variable Text`, `Cascadia Mono`), tuned line heights,
   letter-spacing and tabular numerals. Still system fonts only — no webfonts
