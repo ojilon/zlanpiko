@@ -18,13 +18,8 @@ import type { AppearanceSettings } from '../appearance';
 import { bundledUrl, listBundledBackgrounds, probeImage } from '../backgrounds';
 import { getTheme, setTheme } from '../theme';
 import type { ThemeName } from '../theme';
+import { THEMES, suggestedLook, themePreset } from '../themes';
 import { esc } from '../views/dashboard';
-
-const THEME_LABELS: Record<ThemeName, string> = {
-  dark: 'Dark',
-  light: 'Light',
-  system: 'System',
-};
 
 interface SliderSpec {
   id: string;
@@ -119,8 +114,11 @@ function says(host: HTMLElement, text: string, cls: '' | 'ok' | 'err' = ''): voi
 function sync(host: HTMLElement): void {
   const s = getAppearance();
 
-  for (const btn of host.querySelectorAll<HTMLButtonElement>('#ap-theme button')) {
+  for (const btn of host.querySelectorAll<HTMLButtonElement>('.theme-sw')) {
     btn.setAttribute('aria-pressed', String(btn.dataset.theme === getTheme()));
+  }
+  for (const btn of host.querySelectorAll<HTMLButtonElement>('#ap-theme-system button')) {
+    btn.setAttribute('aria-pressed', String('system' === getTheme()));
   }
   for (const btn of host.querySelectorAll<HTMLButtonElement>('#ap-bg-toggle button')) {
     const on = btn.dataset.bg === 'on';
@@ -177,17 +175,40 @@ export async function renderAppearancePanel(host: HTMLElement): Promise<void> {
 
       <div class="opt-row">
         <div class="opt-label"><span>Theme</span></div>
-        <div class="seg" id="ap-theme">
-          ${(['dark', 'light', 'system'] as ThemeName[])
-            .map(
-              (t) =>
-                `<button type="button" data-theme="${t}" aria-pressed="false">${esc(
-                  THEME_LABELS[t],
-                )}</button>`,
-            )
-            .join('')}
+        <div class="theme-groups">
+          <div>
+            <div class="theme-group-label">Dark · for evenings &amp; rich photos</div>
+            <div class="theme-grid">
+              ${THEMES.filter((t) => t.kind === 'dark')
+                .map(
+                  (t) => `<button type="button" class="theme-sw theme-sw-${t.id}" data-theme="${t.id}" aria-pressed="false" title="${esc(t.blurb)} — ${esc(t.photos)}">
+                      <span class="sw-chip" aria-hidden="true"></span>
+                      <span class="sw-name">${esc(t.name)}</span>
+                      <span class="sw-photos">${esc(t.photos)}</span>
+                    </button>`,
+                )
+                .join('')}
+            </div>
+          </div>
+          <div>
+            <div class="theme-group-label">Light · for daytime &amp; bright photos</div>
+            <div class="theme-grid">
+              ${THEMES.filter((t) => t.kind === 'light')
+                .map(
+                  (t) => `<button type="button" class="theme-sw theme-sw-${t.id}" data-theme="${t.id}" aria-pressed="false" title="${esc(t.blurb)} — ${esc(t.photos)}">
+                      <span class="sw-chip" aria-hidden="true"></span>
+                      <span class="sw-name">${esc(t.name)}</span>
+                      <span class="sw-photos">${esc(t.photos)}</span>
+                    </button>`,
+                )
+                .join('')}
+            </div>
+          </div>
+          <div class="seg" id="ap-theme-system">
+            <button type="button" data-theme="system" aria-pressed="false">System (follow OS)</button>
+          </div>
         </div>
-        <div class="opt-hint">System follows the operating-system app colour setting.</div>
+        <div class="opt-hint">Picking a theme also applies its recommended photo look (transparency, blur, dim) — every slider below stays adjustable. System follows the operating-system app colour setting.</div>
       </div>
 
       <div class="opt-row">
@@ -230,12 +251,28 @@ export async function renderAppearancePanel(host: HTMLElement): Promise<void> {
   </div>`;
 
   /* --- theme ---------------------------------------------------------- */
-  for (const btn of host.querySelectorAll<HTMLButtonElement>('#ap-theme button')) {
+  // Picking a theme brings its recommended photo look with it (documented in
+  // themes.ts); the sliders below stay live, so the pairing is a starting
+  // point, never a lock-in.
+  const pickTheme = (t: ThemeName): void => {
+    setTheme(t);
+    if (t !== 'system') {
+      const preset = themePreset(t);
+      saveAppearance({ ...suggestedLook(t), backgroundEnabled: getAppearance().backgroundEnabled });
+      says(host, `${preset.name}: ${preset.photos.toLowerCase()} look applied`, 'ok');
+    }
+    sync(host);
+  };
+  for (const btn of host.querySelectorAll<HTMLButtonElement>('button.theme-sw')) {
     btn.addEventListener('click', () => {
       const t = btn.dataset.theme;
-      if (t === 'dark' || t === 'light' || t === 'system') setTheme(t);
-      sync(host);
+      if (t === 'system' || (typeof t === 'string' && THEMES.some((p) => p.id === t))) {
+        pickTheme(t as ThemeName);
+      }
     });
+  }
+  for (const btn of host.querySelectorAll<HTMLButtonElement>('#ap-theme-system button')) {
+    btn.addEventListener('click', () => pickTheme('system'));
   }
 
   /* --- background on / off -------------------------------------------- */
