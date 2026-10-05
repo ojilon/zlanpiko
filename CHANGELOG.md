@@ -2,6 +2,48 @@
 
 Format follows Keep a Changelog; versions follow semantic versioning.
 
+## [Unreleased]
+
+### Added
+
+- **Themes.** Dark and light palettes, selectable in Settings → Appearance
+  (Dark / Light / System; System follows the OS app-colour setting). Palettes
+  are stored as raw RGB channel triplets so every surface can be tinted at any
+  opacity. Measured contrast: dark 13.2:1 body / 6.5:1 secondary, light 15.5:1
+  / 5.5:1 (WCAG AAA / AA).
+- **Typography.** Fluid type scale (`clamp()`), separate display/sans/mono
+  stacks (`Segoe UI Variable Text`, `Cascadia Mono`), tuned line heights,
+  letter-spacing and tabular numerals. Still system fonts only — no webfonts
+  are downloaded (offline-first).
+- **Calm texture.** A fixed fractal-noise film over flat colour, adjustable
+  in Settings, which stops large colour fields from banding.
+- **Optional background images.** Bundled (`frontend/public/backgrounds/` +
+  `manifest.json`), *my image* (stored as a Blob in IndexedDB), or a remote
+  URL. See `docs/24_BACKGROUND_IMAGES.md`.
+- **Appearance controls.** Panel transparency, card blur (frosted glass),
+  background blur, background dim and texture, all live-previewing.
+- `scripts/gen-background-manifest.mjs` (+ `.bat`) to regenerate
+  `backgrounds/manifest.json` from the images on disk, preserving hand-edited
+  display names.
+
+### Changed
+
+- **Card grid is fluid.** `repeat(auto-fill, minmax(clamp(210px, 16vw, 280px),
+  1fr))` with fluid gaps and padding, so cards reflow continuously with window
+  size instead of snapping at breakpoints (4–5 columns from 960 px to 1920 px,
+  no horizontal overflow).
+- **Sidebar collapses.** Toggle button in the sidebar header or `Ctrl+B`;
+  collapses to a 54 px icon rail (184 px open). Preference is persisted, and
+  the old automatic width-based collapse still applies until you override it.
+- **Terminal collapses completely.** `Ctrl+`` ` or the `terminal` tab shrinks
+  the dock to a 20 px strip (was ~97 px), reclaiming ~77 px for the view.
+  Focusing the prompt with `/` or `Ctrl+K` expands it automatically.
+- Chrome (titlebar/sidebar/status line) and inputs derive higher opacities than
+  cards, so text stays readable while the gutters between cards show the
+  background image.
+- `.gitignore`: background images are ignored, `manifest.json` is committed;
+  `frontend/package-lock.json` ignored (the project uses pnpm).
+
 ## [0.1.3] - 2026-10-05
 
 Frameless desktop GUI (Wails port): same academic data, same CLI/TUI, plus a

@@ -21,17 +21,26 @@ frontend/
   vite.config.ts        # outDir ../dist-frontend (embedded by Wails, git-ignored)
   tsconfig.json         # strict: true, noUnusedLocals
   index.html            # shell: #titlebar, #sidebar, #view, #commandbar
+  public/
+    backgrounds/        # optional backdrop photos + manifest.json (docs/24)
   src/
     main.ts             # boots shell, frameless controls, router, command bar
     api.ts              # typed wrapper over window.go.zlanpiko.GuiApi.*
     types.ts            # mirrors internal/gui/dto.go (hand-kept, tested)
+    theme.ts            # dark / light / system (data-theme on <html>)
+    appearance.ts       # background + transparency values -> CSS custom props
+    backgrounds.ts      # bundled manifest + IndexedDB store for "my image"
+    styles.css          # all tokens and rules, 12 numbered sections
     views/              # dashboard.ts units.ts topics.ts tasks.ts timeline.ts
                         # calendar.ts files.ts analytics.ts settings.ts
-    components/         # titlebar.ts cards.ts timelineStrip.ts deadlineBar.ts
-                        # charts.ts commandbar.ts toasts.ts modal.ts
-    styles/             # tokens.css base.css cards.css titlebar.css views.css
+    components/         # drawer.ts guide.ts commandbar.ts appearance.ts
   assets/               # logo.svg, icons (inline SVG preferred)
 ```
+
+Note: the styling stays in **one** `styles.css` rather than the `styles/`
+split floated in earlier drafts — one file keeps the ~1.4 k lines of tokens and
+rules easy to diff in order, and avoids a dozen `@import` round-trips on a slow
+WebView. Revisit only if it passes ~2 k lines.
 
 Go embeds the built output, not the source:
 
@@ -107,16 +116,46 @@ that golden-files one JSON sample per DTO (CS-10). No silent drift.
 
 ## 5. Styling tokens (single source)
 
+`src/styles.css` is the single source of truth, organised in twelve numbered
+sections (tokens → themes → surfaces → backdrop → reset → shell → cards →
+parts → views → drawer/guide → appearance controls → responsive).
+
+Two themes ship, selected by `data-theme` on `<html>` (set in `index.html` so
+the first paint is already themed). Each theme defines its palette as **raw
+channel triplets** rather than hex, so every surface can be re-tinted at any
+alpha:
+
 ```css
-:root {
-  --bg: #0f141b; --panel: #161d27; --line: #2a3442;   /* thin card borders */
-  --ink: #dbe4f0; --dim: #93a1b5;
-  --accent: #7fb6e8; --accent-soft: #22374d;          /* light-blue identity */
-  --ok: #6fbf8f; --warn: #e0b46a; --bad: #e07a7a;
-  --radius: 10px; --border: 1px solid var(--line);
+[data-theme="dark"] {
+  --panel-rgb: 22 30 41;      /* not --panel: #161d27 */
+  --ink-rgb: 221 229 240;
+  --accent-rgb: 127 182 232;  /* light-blue identity, unchanged */
+  --ok-rgb: 111 191 143; --warn-rgb: 224 180 106; --bad-rgb: 224 122 122;
+}
+
+/* derived, opacity-aware — resolved lazily, so --card-alpha can change live */
+:root, [data-theme] {
+  --surface:       rgb(var(--panel-rgb) / var(--card-alpha));
+  --surface-chrome: rgb(var(--panel-rgb) / calc(0.4 + 0.6 * var(--card-alpha)));
+  --surface-inset:  rgb(var(--inset-rgb) / calc(0.35 + 0.65 * var(--card-alpha)));
 }
 ```
 
-Light mode mirrors these tokens (OS theme aware, manual toggle in Settings).
+That indirection is what makes the optional background image possible
+(`docs/24`): Settings writes `--card-alpha`, `--card-blur-n`, `--bg-blur-n`,
+`--bg-dim`, `--grain` and `--bg-image` on `<html>`, and the whole app re-tints
+without re-rendering. Chrome and inputs derive *higher* alphas than cards, so
+text stays readable while gutters show the photo.
+
+Type uses a fluid scale (`--fs-2xs` … `--fs-2xl`, `clamp()` at the top end) and
+**system font stacks only** — `Segoe UI Variable Text` / `Segoe UI` /
+`ui-sans-serif`, with `Cascadia Mono` / `Consolas` for the command bar. No
+webfonts are ever downloaded.
+
 All cards: `1px solid var(--line)`, `border-radius: 10px`, no heavy shadows —
-thin demarcations as requested.
+thin demarcations as requested. The card grid is
+`repeat(auto-fill, minmax(clamp(210px, 16vw, 280px), 1fr))`, which reflows
+continuously instead of snapping at breakpoints.
+
+Measured contrast on the shipped palettes: dark 13.2:1 body / 6.5:1 secondary;
+light 15.5:1 body / 5.5:1 secondary (WCAG AAA / AA).
