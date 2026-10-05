@@ -85,9 +85,16 @@
 /* ---------- 2. Theme palettes -------------------------------------------- */
 
 /* Palettes are stored as raw channel triplets ("R G B") so every surface can
-   be re-tinted at any alpha by the Appearance controls (section 3). */
+   be re-tinted at any alpha by the Appearance controls (section 3).
+   Ten registered looks (see frontend/src/themes.ts): five dark, five light.
+   Each pairs panels, accents and scrim tint with a photo family — the scrim
+   compresses the photo's range so text keeps a predictable contrast floor,
+   while the lit hairline edge (--edge-hi-*) and tinted shadows keep cards
+   distinct without hiding the picture. */
 
-[data-theme="dark"] {
+/* --- Dark family ------------------------------------------------------ */
+
+[data-theme="abyss"] {
   color-scheme: dark;
 
   --bg-rgb: 14 19 26;
@@ -120,12 +127,186 @@
   --grain-blend: soft-light;
 
   --shadow-1: 0 1px 2px rgb(0 0 0 / 0.32);
-  --shadow-2: 0 8px 24px -10px rgb(0 0 0 / 0.6);
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.28);
+  --shadow-2: 0 10px 28px -12px rgb(0 0 0 / 0.6);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 22px -12px rgb(0 0 0 / 0.5);
   --focus-ring: 0 0 0 2px rgb(var(--accent-rgb) / 0.55);
+
+  --edge-hi-rgb: 255 255 255;   /* lit hairline on the card's top edge */
+  --edge-hi-a: 0.07;
+  --h-ls: -0.008em;             /* card-heading tracking flavour */
 }
 
-[data-theme="light"] {
+[data-theme="forest"] {
+  color-scheme: dark;
+
+  --bg-rgb: 11 21 16;
+  --bg-tint-rgb: 15 29 21;
+  --panel-rgb: 18 33 24;
+  --panel-2-rgb: 24 41 30;
+  --inset-rgb: 8 16 12;
+  --line-rgb: 33 57 41;
+  --line-soft-rgb: 26 46 34;
+  --track-rgb: 31 51 38;
+
+  --ink-rgb: 221 232 221;
+  --ink-strong-rgb: 242 248 242;
+  --dim-rgb: 149 171 151;
+  --faint-rgb: 109 133 111;
+
+  --accent-rgb: 139 200 124;
+  --accent-bright-rgb: 184 224 165;
+  --accent-soft-rgb: 30 58 32;
+
+  --ok-rgb: 130 205 150;
+  --ok-soft-rgb: 26 60 38;
+  --warn-rgb: 226 186 110;
+  --warn-soft-rgb: 60 48 26;
+  --bad-rgb: 226 128 120;
+  --bad-soft-rgb: 64 36 36;
+
+  --scrim-rgb: 6 12 8;
+  --grain-rgb: 255 255 255;
+  --grain-blend: soft-light;
+
+  --shadow-1: 0 1px 2px rgb(2 10 6 / 0.35);
+  --shadow-2: 0 10px 28px -12px rgb(2 10 6 / 0.65);
+  --shadow-card: 0 1px 2px rgb(2 10 6 / 0.34), 0 8px 22px -12px rgb(2 10 6 / 0.55);
+  --focus-ring: 0 0 0 2px rgb(var(--accent-rgb) / 0.55);
+
+  --edge-hi-rgb: 220 255 225;
+  --edge-hi-a: 0.08;
+  --h-ls: -0.006em;
+}
+
+[data-theme="tide"] {
+  color-scheme: dark;
+
+  --bg-rgb: 9 19 29;
+  --bg-tint-rgb: 13 27 41;
+  --panel-rgb: 16 31 47;
+  --panel-2-rgb: 21 39 57;
+  --inset-rgb: 7 14 23;
+  --line-rgb: 31 53 75;
+  --line-soft-rgb: 24 43 61;
+  --track-rgb: 29 47 67;
+
+  --ink-rgb: 217 231 243;
+  --ink-strong-rgb: 241 247 252;
+  --dim-rgb: 141 165 189;
+  --faint-rgb: 99 123 149;
+
+  --accent-rgb: 110 196 226;
+  --accent-bright-rgb: 159 220 242;
+  --accent-soft-rgb: 23 53 71;
+
+  --ok-rgb: 120 200 170;
+  --ok-soft-rgb: 24 58 46;
+  --warn-rgb: 228 188 112;
+  --warn-soft-rgb: 60 48 26;
+  --bad-rgb: 228 130 122;
+  --bad-soft-rgb: 64 36 36;
+
+  --scrim-rgb: 5 11 19;
+  --grain-rgb: 255 255 255;
+  --grain-blend: soft-light;
+
+  --shadow-1: 0 1px 2px rgb(2 8 16 / 0.35);
+  --shadow-2: 0 10px 28px -12px rgb(2 8 16 / 0.65);
+  --shadow-card: 0 1px 2px rgb(2 8 16 / 0.34), 0 8px 22px -12px rgb(2 8 16 / 0.55);
+  --focus-ring: 0 0 0 2px rgb(var(--accent-rgb) / 0.55);
+
+  --edge-hi-rgb: 210 240 255;
+  --edge-hi-a: 0.08;
+  --h-ls: -0.006em;
+}
+
+[data-theme="ember"] {
+  color-scheme: dark;
+
+  --bg-rgb: 23 14 15;
+  --bg-tint-rgb: 32 19 19;
+  --panel-rgb: 37 25 26;
+  --panel-2-rgb: 46 31 32;
+  --inset-rgb: 17 10 11;
+  --line-rgb: 65 43 43;
+  --line-soft-rgb: 53 35 36;
+  --track-rgb: 59 39 39;
+
+  --ink-rgb: 239 227 221;
+  --ink-strong-rgb: 251 243 238;
+  --dim-rgb: 185 157 147;
+  --faint-rgb: 145 115 107;
+
+  --accent-rgb: 240 150 90;
+  --accent-bright-rgb: 250 190 140;
+  --accent-soft-rgb: 73 41 29;
+
+  --ok-rgb: 132 200 150;
+  --ok-soft-rgb: 30 58 40;
+  --warn-rgb: 240 190 110;
+  --warn-soft-rgb: 64 50 26;
+  --bad-rgb: 235 120 115;
+  --bad-soft-rgb: 66 36 36;
+
+  --scrim-rgb: 13 7 7;
+  --grain-rgb: 255 235 220;
+  --grain-blend: soft-light;
+
+  --shadow-1: 0 1px 2px rgb(16 6 4 / 0.38);
+  --shadow-2: 0 10px 28px -12px rgb(16 6 4 / 0.68);
+  --shadow-card: 0 1px 2px rgb(16 6 4 / 0.36), 0 8px 22px -12px rgb(16 6 4 / 0.58);
+  --focus-ring: 0 0 0 2px rgb(var(--accent-rgb) / 0.55);
+
+  --edge-hi-rgb: 255 225 200;
+  --edge-hi-a: 0.09;
+  --h-ls: -0.004em;
+}
+
+[data-theme="dusk"] {
+  color-scheme: dark;
+
+  --bg-rgb: 16 15 29;
+  --bg-tint-rgb: 22 21 41;
+  --panel-rgb: 28 27 51;
+  --panel-2-rgb: 35 33 61;
+  --inset-rgb: 12 11 23;
+  --line-rgb: 49 46 81;
+  --line-soft-rgb: 40 38 67;
+  --track-rgb: 45 42 73;
+
+  --ink-rgb: 227 225 243;
+  --ink-strong-rgb: 246 244 252;
+  --dim-rgb: 163 157 195;
+  --faint-rgb: 121 115 159;
+
+  --accent-rgb: 170 160 250;
+  --accent-bright-rgb: 202 194 252;
+  --accent-soft-rgb: 47 43 87;
+
+  --ok-rgb: 128 198 160;
+  --ok-soft-rgb: 28 58 44;
+  --warn-rgb: 228 186 112;
+  --warn-soft-rgb: 60 48 26;
+  --bad-rgb: 230 128 128;
+  --bad-soft-rgb: 64 36 38;
+
+  --scrim-rgb: 9 8 19;
+  --grain-rgb: 235 230 255;
+  --grain-blend: soft-light;
+
+  --shadow-1: 0 1px 2px rgb(8 6 20 / 0.38);
+  --shadow-2: 0 10px 28px -12px rgb(8 6 20 / 0.68);
+  --shadow-card: 0 1px 2px rgb(8 6 20 / 0.36), 0 8px 22px -12px rgb(8 6 20 / 0.58);
+  --focus-ring: 0 0 0 2px rgb(var(--accent-rgb) / 0.55);
+
+  --edge-hi-rgb: 225 220 255;
+  --edge-hi-a: 0.09;
+  --h-ls: -0.004em;
+}
+
+/* --- Light family ----------------------------------------------------- */
+
+[data-theme="paper"] {
   color-scheme: light;
 
   --bg-rgb: 240 244 249;
@@ -158,9 +339,181 @@
   --grain-blend: soft-light;
 
   --shadow-1: 0 1px 2px rgb(23 37 56 / 0.07);
-  --shadow-2: 0 8px 24px -12px rgb(23 37 56 / 0.22);
-  --shadow-card: 0 1px 2px rgb(23 37 56 / 0.06);
+  --shadow-2: 0 10px 26px -14px rgb(23 37 56 / 0.25);
+  --shadow-card: 0 1px 2px rgb(23 37 56 / 0.07), 0 6px 18px -10px rgb(23 37 56 / 0.14);
   --focus-ring: 0 0 0 2px rgb(var(--accent-rgb) / 0.45);
+
+  --edge-hi-rgb: 255 255 255;
+  --edge-hi-a: 0.55;
+  --h-ls: -0.008em;
+}
+
+[data-theme="meadow"] {
+  color-scheme: light;
+
+  --bg-rgb: 239 244 233;
+  --bg-tint-rgb: 249 250 243;
+  --panel-rgb: 255 255 252;
+  --panel-2-rgb: 242 247 235;
+  --inset-rgb: 244 248 239;
+  --line-rgb: 205 219 191;
+  --line-soft-rgb: 223 233 211;
+  --track-rgb: 217 227 203;
+
+  --ink-rgb: 37 51 35;
+  --ink-strong-rgb: 19 31 18;
+  --dim-rgb: 95 115 89;
+  --faint-rgb: 137 153 129;
+
+  --accent-rgb: 45 115 50;
+  --accent-bright-rgb: 33 92 40;
+  --accent-soft-rgb: 221 239 219;
+
+  --ok-rgb: 40 128 76;
+  --ok-soft-rgb: 220 240 224;
+  --warn-rgb: 150 104 16;
+  --warn-soft-rgb: 248 236 210;
+  --bad-rgb: 182 60 60;
+  --bad-soft-rgb: 248 224 224;
+
+  --scrim-rgb: 29 41 29;
+  --grain-rgb: 70 90 60;
+  --grain-blend: soft-light;
+
+  --shadow-1: 0 1px 2px rgb(38 58 32 / 0.08);
+  --shadow-2: 0 10px 26px -14px rgb(38 58 32 / 0.28);
+  --shadow-card: 0 1px 2px rgb(38 58 32 / 0.08), 0 6px 18px -10px rgb(38 58 32 / 0.18);
+  --focus-ring: 0 0 0 2px rgb(var(--accent-rgb) / 0.45);
+
+  --edge-hi-rgb: 255 255 255;
+  --edge-hi-a: 0.6;
+  --h-ls: -0.006em;
+}
+
+[data-theme="shore"] {
+  color-scheme: light;
+
+  --bg-rgb: 233 242 246;
+  --bg-tint-rgb: 246 250 252;
+  --panel-rgb: 255 255 255;
+  --panel-2-rgb: 237 245 249;
+  --inset-rgb: 239 247 250;
+  --line-rgb: 199 217 227;
+  --line-soft-rgb: 219 233 239;
+  --track-rgb: 209 225 233;
+
+  --ink-rgb: 27 47 59;
+  --ink-strong-rgb: 11 29 39;
+  --dim-rgb: 87 111 129;
+  --faint-rgb: 129 151 167;
+
+  --accent-rgb: 13 110 132;
+  --accent-bright-rgb: 10 88 108;
+  --accent-soft-rgb: 213 237 243;
+
+  --ok-rgb: 30 130 100;
+  --ok-soft-rgb: 218 240 232;
+  --warn-rgb: 150 104 16;
+  --warn-soft-rgb: 248 236 210;
+  --bad-rgb: 182 60 60;
+  --bad-soft-rgb: 248 224 224;
+
+  --scrim-rgb: 17 37 49;
+  --grain-rgb: 60 95 115;
+  --grain-blend: soft-light;
+
+  --shadow-1: 0 1px 2px rgb(20 50 66 / 0.08);
+  --shadow-2: 0 10px 26px -14px rgb(20 50 66 / 0.28);
+  --shadow-card: 0 1px 2px rgb(20 50 66 / 0.08), 0 6px 18px -10px rgb(20 50 66 / 0.18);
+  --focus-ring: 0 0 0 2px rgb(var(--accent-rgb) / 0.45);
+
+  --edge-hi-rgb: 255 255 255;
+  --edge-hi-a: 0.6;
+  --h-ls: -0.006em;
+}
+
+[data-theme="sun"] {
+  color-scheme: light;
+
+  --bg-rgb: 249 242 229;
+  --bg-tint-rgb: 252 249 241;
+  --panel-rgb: 255 252 247;
+  --panel-2-rgb: 247 239 225;
+  --inset-rgb: 248 243 233;
+  --line-rgb: 227 211 181;
+  --line-soft-rgb: 237 225 199;
+  --track-rgb: 231 215 187;
+
+  --ink-rgb: 61 47 29;
+  --ink-strong-rgb: 37 27 15;
+  --dim-rgb: 127 109 83;
+  --faint-rgb: 163 147 119;
+
+  --accent-rgb: 150 95 14;
+  --accent-bright-rgb: 122 73 10;
+  --accent-soft-rgb: 245 231 203;
+
+  --ok-rgb: 59 129 79;
+  --ok-soft-rgb: 225 239 221;
+  --warn-rgb: 168 118 19;
+  --warn-soft-rgb: 249 237 209;
+  --bad-rgb: 185 79 59;
+  --bad-soft-rgb: 249 227 221;
+
+  --scrim-rgb: 51 39 21;
+  --grain-rgb: 120 95 55;
+  --grain-blend: soft-light;
+
+  --shadow-1: 0 1px 2px rgb(80 58 24 / 0.09);
+  --shadow-2: 0 10px 26px -14px rgb(80 58 24 / 0.3);
+  --shadow-card: 0 1px 2px rgb(80 58 24 / 0.09), 0 6px 18px -10px rgb(80 58 24 / 0.2);
+  --focus-ring: 0 0 0 2px rgb(var(--accent-rgb) / 0.45);
+
+  --edge-hi-rgb: 255 255 255;
+  --edge-hi-a: 0.65;
+  --h-ls: -0.004em;
+}
+
+[data-theme="bloom"] {
+  color-scheme: light;
+
+  --bg-rgb: 249 237 241;
+  --bg-tint-rgb: 252 246 249;
+  --panel-rgb: 255 252 253;
+  --panel-2-rgb: 247 237 241;
+  --inset-rgb: 248 241 244;
+  --line-rgb: 229 203 211;
+  --line-soft-rgb: 239 219 225;
+  --track-rgb: 231 209 217;
+
+  --ink-rgb: 63 37 47;
+  --ink-strong-rgb: 39 19 29;
+  --dim-rgb: 131 101 115;
+  --faint-rgb: 169 139 151;
+
+  --accent-rgb: 172 52 100;
+  --accent-bright-rgb: 140 38 80;
+  --accent-soft-rgb: 245 223 231;
+
+  --ok-rgb: 52 130 96;
+  --ok-soft-rgb: 222 240 230;
+  --warn-rgb: 152 106 20;
+  --warn-soft-rgb: 248 236 210;
+  --bad-rgb: 188 66 80;
+  --bad-soft-rgb: 249 224 230;
+
+  --scrim-rgb: 53 27 39;
+  --grain-rgb: 120 80 95;
+  --grain-blend: soft-light;
+
+  --shadow-1: 0 1px 2px rgb(80 30 46 / 0.09);
+  --shadow-2: 0 10px 26px -14px rgb(80 30 46 / 0.3);
+  --shadow-card: 0 1px 2px rgb(80 30 46 / 0.09), 0 6px 18px -10px rgb(80 30 46 / 0.2);
+  --focus-ring: 0 0 0 2px rgb(var(--accent-rgb) / 0.45);
+
+  --edge-hi-rgb: 255 255 255;
+  --edge-hi-a: 0.6;
+  --h-ls: -0.004em;
 }
 
 /* ---------- 3. Derived surfaces ------------------------------------------ */
@@ -677,7 +1030,9 @@ code, pre, .mono { font-family: var(--font-mono); }
   border-radius: var(--radius);
   background: var(--surface);
   padding: var(--card-pad);
-  box-shadow: var(--shadow-card);
+  /* Tinted drop shadow plus the theme's lit top hairline: the glass edge
+     that keeps cards distinct over busy photos (per-theme tokens). */
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgb(var(--edge-hi-rgb) / var(--edge-hi-a));
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);
@@ -699,6 +1054,7 @@ button.card:hover h3, .card.clickable:hover h3 { color: var(--accent-bright); }
   margin: 0;
   font-size: var(--fs-md);
   line-height: var(--lh-snug);
+  letter-spacing: var(--h-ls);
   color: var(--ink-strong);
   overflow-wrap: anywhere;
 }
@@ -1222,6 +1578,58 @@ table.attn th {
   color: var(--ink-strong);
   font-weight: 600;
 }
+
+/* Theme gallery: grouped swatches, one per registered theme (themes.ts).
+   Each chip previews its palette as panel→accent, so the choice reads at
+   a glance next to its photo hint. */
+.theme-groups { display: grid; gap: var(--sp-3); }
+.theme-group-label {
+  font-size: var(--fs-xs);
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: var(--sp-2);
+}
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: var(--sp-2);
+}
+.theme-sw {
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-2);
+  background: var(--surface-inset);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  text-align: left;
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.theme-sw:hover { transform: translateY(-1px); border-color: rgb(var(--accent-rgb) / 0.6); }
+.theme-sw[aria-pressed="true"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.theme-sw .sw-chip {
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid rgb(127 127 127 / 0.25);
+}
+.theme-sw .sw-name { font-size: var(--fs-sm); font-weight: 600; color: var(--ink-strong); }
+.theme-sw .sw-photos { font-size: var(--fs-2xs); color: var(--dim); line-height: var(--lh-snug); }
+.theme-sw-abyss .sw-chip { background: linear-gradient(135deg, rgb(14 19 26) 50%, rgb(127 182 232) 50%); }
+.theme-sw-forest .sw-chip { background: linear-gradient(135deg, rgb(11 21 16) 50%, rgb(139 200 124) 50%); }
+.theme-sw-tide .sw-chip { background: linear-gradient(135deg, rgb(9 19 29) 50%, rgb(110 196 226) 50%); }
+.theme-sw-ember .sw-chip { background: linear-gradient(135deg, rgb(23 14 15) 50%, rgb(240 150 90) 50%); }
+.theme-sw-dusk .sw-chip { background: linear-gradient(135deg, rgb(16 15 29) 50%, rgb(170 160 250) 50%); }
+.theme-sw-paper .sw-chip { background: linear-gradient(135deg, rgb(240 244 249) 50%, rgb(37 108 168) 50%); }
+.theme-sw-meadow .sw-chip { background: linear-gradient(135deg, rgb(239 244 233) 50%, rgb(45 115 50) 50%); }
+.theme-sw-shore .sw-chip { background: linear-gradient(135deg, rgb(233 242 246) 50%, rgb(13 110 132) 50%); }
+.theme-sw-sun .sw-chip { background: linear-gradient(135deg, rgb(249 242 229) 50%, rgb(150 95 14) 50%); }
+.theme-sw-bloom .sw-chip { background: linear-gradient(135deg, rgb(249 237 241) 50%, rgb(172 52 100) 50%); }
 
 input[type="range"] {
   -webkit-appearance: none;
