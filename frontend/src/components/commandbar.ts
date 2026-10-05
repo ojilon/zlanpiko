@@ -138,13 +138,18 @@ export function wireCommandBar(hooks: CmdHooks): void {
       }
     }
   });
+  // Reaching the prompt by keyboard should always reveal it.
+  const focusInput = (): void => {
+    if (isCollapsed()) setCollapsed(false);
+    input.focus();
+  };
   window.addEventListener('keydown', (e) => {
     if (e.key === '/' && document.activeElement !== input) {
       e.preventDefault();
-      input.focus();
+      focusInput();
     } else if (e.key === 'k' && e.ctrlKey) {
       e.preventDefault();
-      input.focus();
+      focusInput();
     } else if (e.key === '`' && e.ctrlKey) {
       e.preventDefault();
       setCollapsed(!isCollapsed());
@@ -167,7 +172,11 @@ function isCollapsed(): boolean {
 function setCollapsed(on: boolean): void {
   document.getElementById('commandwrap')?.classList.toggle('collapsed', on);
   const t = document.getElementById('cmdtoggle');
-  if (t) t.textContent = on ? '⌃ terminal' : '⌄ terminal';
+  if (t) {
+    t.textContent = on ? '⌃ terminal' : '⌄ terminal';
+    t.title = on ? 'Expand terminal (Ctrl+`)' : 'Collapse terminal (Ctrl+`)';
+    t.setAttribute('aria-expanded', String(!on));
+  }
   try {
     localStorage.setItem(COLLAPSE_KEY, on ? '1' : '0');
   } catch {

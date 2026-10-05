@@ -9,6 +9,7 @@ import {
 } from '../api';
 import { esc } from './dashboard';
 import { openGuide } from '../components/guide';
+import { renderAppearancePanel } from '../components/appearance';
 
 // Settings: storage + identity, plain-text/JSON reports, backup lifecycle
 // (docs/cs/09: restore needs explicit confirmation, overwrite takes a safety
@@ -25,6 +26,7 @@ function errBox(el: HTMLElement, e: unknown): void {
 export async function renderSettings(el: HTMLElement): Promise<void> {
   el.innerHTML = `<h2>Settings</h2><div id="settings-msg" class="dim"></div>
     <div class="navbtns"><button id="guide-open">📖 User guide</button></div>
+    <div id="appearance-card"></div>
     <div class="cols"><div>
       <div class="card"><h3>Storage & version</h3><div id="cfg">loading…</div>
         <div class="drawer-edit"><input id="cfg-root" type="text" placeholder="new storage directory…" />
@@ -55,6 +57,9 @@ export async function renderSettings(el: HTMLElement): Promise<void> {
   }
 
   el.querySelector('#guide-open')?.addEventListener('click', () => openGuide());
+
+  const appearanceHost = el.querySelector<HTMLElement>('#appearance-card');
+  if (appearanceHost) await renderAppearancePanel(appearanceHost);
 
   el.querySelector('#cfg-save')?.addEventListener('click', () => {
     const v = (el.querySelector('#cfg-root') as HTMLInputElement | null)?.value.trim() ?? '';
