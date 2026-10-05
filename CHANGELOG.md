@@ -2,6 +2,37 @@
 
 Format follows Keep a Changelog; versions follow semantic versioning.
 
+## [0.1.3] - 2026-10-05
+
+Frameless desktop GUI (Wails port): same academic data, same CLI/TUI, plus a
+desktop window with calendars, charts, a deadline timeline and a
+terminal-style command bar. Schema stays v1; updating never wipes data.
+
+- Frameless `zlanpiko-gui.exe` (Go backend + TypeScript frontend): custom
+  titlebar, sidebar, status line, collapsible persistent command input with
+  history, Tab-complete, `/clear` and TUI-parity grammar.
+- Dashboard: academic overview, 3-week day rail, per-task deadline-distance
+  bars, attention cards, overdue + 14-day lists.
+- Units/Topics/Tasks views with full CRUD (archive preserves history,
+  double-confirm deletes, one-click topic status cycling, task filters).
+- Timeline (ISO-week lanes, overdue anchor) and month calendar (worst-of-day
+  dots, agendas) with a task drawer: deadline editor (`YYYY-MM-DD`,
+  `…THH:MM`, `… HH:MM`), status controls, delete.
+- Analytics: coverage ring, R/P/U stack, tasks-by-status, 14-day deadline
+  columns, per-unit bars, attention table (formulas stated on every card).
+- Files: browse/search/open, mkdir/rename/delete, preview-first import.
+- Settings: storage + version, plain-text phone report, backup
+  create/verify/restore, in-app user guide (`F1`).
+- Installer: optional GUI payload, pre-update backup (update aborts on
+  failure), previous exes kept as `*.prev.exe`.
+- Tooling: `scripts/build-gui.bat`, `scripts/test.bat` (Go + frontend),
+  `scripts/package.bat` 3-exe release, `docs/cs/00-11` plan, `docs/22`
+  testing and `docs/23` build/packaging guides.
+- Fixes: Wails runtime bridge path and `--wails-draggable` resize/drag,
+  `build-gui.bat` Wails CLI resolution without ambient PATH.
+- Known limitations: global `/search` stubbed (as in TUI); restore replaces
+  the database file (close other fronts first).
+
 ## [0.1.0] - 2026-10-03
 
 First usable release: local-first academic management for Windows.

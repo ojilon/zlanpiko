@@ -1,0 +1,19 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "zlanpiko-gui",
+  "outputfilename": "zlanpiko-gui.exe",
+  "frontend:dir": "frontend",
+  "frontend:install": "pnpm install",
+  "frontend:build": "pnpm build",
+  "devserver": "http://localhost:1420",
+  "author": {
+    "name": "zlanpiko"
+  },
+  "info": {
+    "companyName": "zlanpiko",
+    "productName": "zlanpiko-gui",
+    "productVersion": "0.1.0",
+    "description": "Local-first academic manager (GUI)",
+    "copyright": ""
+  }
+}

@@ -13,7 +13,7 @@ import (
 
 const tasksHelp = `Usage:
   zlanpiko tasks list [--unit ID] [--kind K] [--status S|overdue] [--format text|json]
-  zlanpiko tasks add --unit ID --title TITLE --kind K [--due YYYY-MM-DD[THH:MM]] [--priority P]
+  zlanpiko tasks add --unit ID --title TITLE --kind K [--due YYYY-MM-DD[ HH:MM]] [--priority P]
   zlanpiko tasks edit --unit ID --task ID [--title T] [--kind K] [--status S]
                      [--priority P] [--description D] [--notes N] [--due DATE] [--due= to clear]
   zlanpiko tasks complete|submit --unit ID --task ID

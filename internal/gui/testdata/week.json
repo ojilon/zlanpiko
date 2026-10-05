@@ -1,0 +1,75 @@
+{
+  "year": 2026,
+  "week": 40,
+  "title": "Week 40 · 2026-09-28 – 2026-10-04",
+  "monday": "2026-09-28",
+  "days": [
+    {
+      "date": "2026-09-28",
+      "display": "Mon 28",
+      "items": []
+    },
+    {
+      "date": "2026-09-29",
+      "display": "Tue 29",
+      "items": []
+    },
+    {
+      "date": "2026-09-30",
+      "display": "Wed 30",
+      "items": []
+    },
+    {
+      "date": "2026-10-01",
+      "display": "Thu 01",
+      "items": [
+        {
+          "id": "task-002",
+          "unit_id": "unit-001",
+          "unit_name": "Periodicity",
+          "title": "done quiz",
+          "kind": "test",
+          "status": "completed",
+          "overdue": false,
+          "priority": "normal",
+          "due_iso": "2026-10-01T12:00:00+03:00",
+          "due_display": "2026-10-01 12:00",
+          "distance": "done",
+          "progress_pct": 100
+        }
+      ]
+    },
+    {
+      "date": "2026-10-02",
+      "display": "Fri 02",
+      "items": []
+    },
+    {
+      "date": "2026-10-03",
+      "display": "Sat 03",
+      "items": []
+    },
+    {
+      "date": "2026-10-04",
+      "display": "Sun 04",
+      "items": []
+    }
+  ],
+  "overdue": [
+    {
+      "id": "task-001",
+      "unit_id": "unit-002",
+      "unit_name": "Ecology",
+      "title": "old lab report",
+      "kind": "coursework",
+      "status": "not_started",
+      "overdue": true,
+      "priority": "normal",
+      "due_iso": "2026-10-03T12:00:00+03:00",
+      "due_display": "2026-10-03 12:00",
+      "distance": "overdue by 1d",
+      "days_left": -1,
+      "progress_pct": 100
+    }
+  ]
+}

@@ -1,0 +1,302 @@
+{
+  "year": 2026,
+  "month": 10,
+  "title": "October 2026",
+  "days": [
+    {
+      "date": "2026-09-28",
+      "display": "28",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    },
+    {
+      "date": "2026-09-29",
+      "display": "29",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    },
+    {
+      "date": "2026-09-30",
+      "display": "30",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    },
+    {
+      "date": "2026-10-01",
+      "display": "01",
+      "count": 1,
+      "level": "ok",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-02",
+      "display": "02",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-03",
+      "display": "03",
+      "count": 1,
+      "level": "bad",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-04",
+      "display": "04",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-05",
+      "display": "05",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-06",
+      "display": "06",
+      "count": 1,
+      "level": "warn",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-07",
+      "display": "07",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-08",
+      "display": "08",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-09",
+      "display": "09",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-10",
+      "display": "10",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-11",
+      "display": "11",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-12",
+      "display": "12",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-13",
+      "display": "13",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-14",
+      "display": "14",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-15",
+      "display": "15",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-16",
+      "display": "16",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-17",
+      "display": "17",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-18",
+      "display": "18",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-19",
+      "display": "19",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-20",
+      "display": "20",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-21",
+      "display": "21",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-22",
+      "display": "22",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-23",
+      "display": "23",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-24",
+      "display": "24",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-25",
+      "display": "25",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-26",
+      "display": "26",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-27",
+      "display": "27",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-28",
+      "display": "28",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-29",
+      "display": "29",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-30",
+      "display": "30",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-10-31",
+      "display": "31",
+      "count": 0,
+      "level": "none",
+      "in_month": true
+    },
+    {
+      "date": "2026-11-01",
+      "display": "01",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    },
+    {
+      "date": "2026-11-02",
+      "display": "02",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    },
+    {
+      "date": "2026-11-03",
+      "display": "03",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    },
+    {
+      "date": "2026-11-04",
+      "display": "04",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    },
+    {
+      "date": "2026-11-05",
+      "display": "05",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    },
+    {
+      "date": "2026-11-06",
+      "display": "06",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    },
+    {
+      "date": "2026-11-07",
+      "display": "07",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    },
+    {
+      "date": "2026-11-08",
+      "display": "08",
+      "count": 0,
+      "level": "none",
+      "in_month": false
+    }
+  ],
+  "overdue_count": 1
+}

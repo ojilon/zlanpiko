@@ -118,7 +118,7 @@ func (s *TasksModel) Update(msg tea.Msg) tea.Cmd {
 			{Label: "Unit", Initial: s.shared.TasksUnit, Required: true},
 			{Label: "Title", Required: true},
 			{Label: "Kind (assignment|coursework|test|examination|project|other)"},
-			{Label: "Due (YYYY-MM-DD[THH:MM], empty = none)"},
+			{Label: "Due (YYYY-MM-DD[ HH:MM], empty = none)"},
 			{Label: "Priority"},
 		})
 		return nil
